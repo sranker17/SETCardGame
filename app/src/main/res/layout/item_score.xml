@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/light_blue">
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="7dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginRight="7dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/radius" />
+
+        <TextView
+            android:id="@+id/placement"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="14dp"
+            android:layout_marginTop="11dp"
+            android:textColor="@color/blue"
+            android:text="1."
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/pointsView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="14dp"
+            android:layout_marginTop="11dp"
+            android:textColor="@color/blue"
+            android:layout_toRightOf="@+id/placement"
+            android:text="Points: 9"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/timeView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="14dp"
+            android:layout_marginTop="11dp"
+            android:textColor="@color/blue"
+            android:layout_toRightOf="@+id/pointsView"
+            android:text="Time: 0:16"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/myScoreView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="14dp"
+            android:layout_marginTop="11dp"
+            android:textColor="@color/blue"
+            android:layout_toRightOf="@+id/timeView"
+            android:text="(My Score)"
+            android:textSize="18sp" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/placement"
+            android:layout_marginTop="13dp"
+            android:background="?android:attr/listDivider"
+            android:backgroundTint="@color/dark_blue"
+            android:backgroundTintMode="add" />
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

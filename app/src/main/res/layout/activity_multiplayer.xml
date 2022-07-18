@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ViewModel.multiplayer.MultiplayerActivity"
+    android:background="@drawable/set_background">
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="105dp"
+        android:layout_height="51dp"
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/radius"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/view2"
+        android:layout_width="156dp"
+        android:layout_height="49dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="7dp"
+        android:background="@drawable/radius"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/opponentPointTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/pointTextView"
+        android:textColor="@color/blue"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/view2"
+        app:layout_constraintEnd_toEndOf="@+id/view2"
+        app:layout_constraintHorizontal_bias="0.89"
+        app:layout_constraintStart_toStartOf="@+id/view2"
+        app:layout_constraintTop_toTopOf="@+id/view2" />
+
+    <TextView
+        android:id="@+id/ownPointTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:text="@string/pointTextView"
+        android:textColor="@color/blue"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/view"
+        app:layout_constraintStart_toEndOf="@+id/MeTextView"
+        app:layout_constraintTop_toTopOf="@+id/view" />
+
+    <Button
+        android:id="@+id/callSETBtn"
+        android:layout_width="170dp"
+        android:layout_height="60dp"
+        android:backgroundTint="@color/blue"
+        android:onClick="onSETBtnClick"
+        android:text="@string/appName"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/opponentPointTextView"
+        app:layout_constraintVertical_bias="0.025" />
+
+    <TableLayout
+        android:id="@+id/gameTableLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.489"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/callSETBtn"
+        app:layout_constraintVertical_bias="1.0">
+
+        <TableRow
+            android:id="@+id/tableRow0"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/card0"
+                android:layout_width="100dp"
+                android:layout_height="144dp"
+                android:background="@color/trans"
+                android:contentDescription="@string/contentDescriptionForCards"
+                android:onClick="onCardClick"
+                app:srcCompat="@drawable/gd1"
+                tools:ignore="SpeakableTextPresentCheck,DuplicateSpeakableTextCheck" />
+
+            <ImageView
+                android:id="@+id/card1"
+                android:layout_width="100dp"
+                android:layout_height="144dp"
+                android:background="@color/trans"
+                android:contentDescription="@string/contentDescriptionForCards"
+                android:onClick="onCardClick"
+                app:srcCompat="@drawable/gd1"
+                tools:ignore="SpeakableTextPresentCheck" />
+
+            <ImageView
+                android:id="@+id/card2"
+                android:layout_width="100dp"
+                android:layout_height="144dp"
+                android:background="@color/trans"
+                android:contentDescription="@string/contentDescriptionForCards"
+                android:onClick="onCardClick"
+                app:srcCompat="@drawable/gd1"
+                tools:ignore="SpeakableTextPresentCheck" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/card3"
+                android:layout_width="100dp"
+                android:layout_height="144dp"
+                android:background="@color/trans"
+                android:contentDescription="@string/contentDescriptionForCards"
+                android:onClick="onCardClick"
+                app:srcCompat="@drawable/gd1"
+                tools:ignore="SpeakableTextPresentCheck" />
+
+            <ImageView
+                android:id="@+id/card4"
+                android:layout_width="100dp"
+                android:layout_height="144dp"
+                android:background="@color/trans"
+                android:contentDescription="@string/contentDescriptionForCards"
+                android:onClick="onCardClick"
+                app:srcCompat="@drawable/gd1"
+                tools:ignore="SpeakableTextPresentCheck" />
+
+            <ImageView
+                android:id="@+id/card5"
+                android:layout_width="100dp"
+                android:layout_height="144dp"
+                android:background="@color/trans"
+                android:contentDescription="@string/contentDescriptionForCards"
+                android:onClick="onCardClick"
+                app:srcCompat="@drawable/gd1"
+                tools:ignore="SpeakableTextPresentCheck" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/card6"
+                android:layout_width="100dp"
+                android:layout_height="144dp"
+                android:background="@color/trans"
+                android:contentDescription="@string/contentDescriptionForCards"
+                android:onClick="onCardClick"
+                app:srcCompat="@drawable/gd1"
+                tools:ignore="SpeakableTextPresentCheck" />
+
+            <ImageView
+                android:id="@+id/card7"
+                android:layout_width="100dp"
+                android:layout_height="144dp"
+                android:background="@color/trans"
+                android:contentDescription="@string/contentDescriptionForCards"
+                android:onClick="onCardClick"
+                app:srcCompat="@drawable/gd1"
+                tools:ignore="SpeakableTextPresentCheck" />
+
+            <ImageView
+                android:id="@+id/card8"
+                android:layout_width="100dp"
+                android:layout_height="144dp"
+                android:background="@color/trans"
+                android:contentDescription="@string/contentDescriptionForCards"
+                android:onClick="onCardClick"
+                app:srcCompat="@drawable/gd1"
+                tools:ignore="SpeakableTextPresentCheck" />
+
+        </TableRow>
+
+    </TableLayout>
+
+    <TextView
+        android:id="@+id/MeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/meText"
+        android:textColor="@color/blue"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/view"
+        app:layout_constraintEnd_toEndOf="@+id/view"
+        app:layout_constraintHorizontal_bias="0.36"
+        app:layout_constraintStart_toStartOf="@+id/view"
+        app:layout_constraintTop_toTopOf="@+id/view" />
+
+    <TextView
+        android:id="@+id/opponentTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:text="@string/opponentText"
+        android:textColor="@color/blue"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/view2"
+        app:layout_constraintEnd_toStartOf="@+id/opponentPointTextView"
+        app:layout_constraintTop_toTopOf="@+id/view2" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
