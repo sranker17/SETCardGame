@@ -21,7 +21,7 @@ import java.util.Map;
 
 public class ScoreboardDataService {
 
-    public static final String SCOREBOARD_URL = "https://test-set-card-game.herokuapp.com/scoreboard/";
+    public static final String SCOREBOARD_URL = "https://setcardgameserver-production.up.railway.app/scoreboard/";
     Context context;
 
     public ScoreboardDataService(Context context) {
