@@ -17,6 +17,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.setcardgame.Model.UrlConstants;
 import com.example.setcardgame.Model.Username;
 import com.example.setcardgame.R;
 import com.example.setcardgame.ViewModel.multiplayer.SelectMultiplayerTypeActivity;
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void checkServer() {
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "https://setcardgameserver-production.up.railway.app/available/";
+        String url = UrlConstants.URL + "available/";
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {

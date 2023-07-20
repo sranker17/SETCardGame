@@ -8,6 +8,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.setcardgame.Config.RequestQueueSingleton;
+import com.example.setcardgame.Model.UrlConstants;
 import com.example.setcardgame.Model.scoreboard.Scoreboard;
 
 import org.json.JSONArray;
@@ -21,7 +22,7 @@ import java.util.Map;
 
 public class ScoreboardDataService {
 
-    public static final String SCOREBOARD_URL = "https://setcardgameserver-production.up.railway.app/scoreboard/";
+    public static final String SCOREBOARD_URL = UrlConstants.URL + "scoreboard/";
     Context context;
 
     public ScoreboardDataService(Context context) {

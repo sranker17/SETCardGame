@@ -8,7 +8,6 @@ import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.StompClient;
 
 public class WebSocketClient {
-    public static final String URL = "wss://setcardgameserver-production.up.railway.app/";
     public static StompClient mStompClient;
     public static CompositeDisposable compositeDisposable;
     private static final String TAG = "websocket";

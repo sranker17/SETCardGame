@@ -8,6 +8,7 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.setcardgame.Model.MultiplayerGame;
+import com.example.setcardgame.Model.UrlConstants;
 import com.example.setcardgame.Model.Username;
 import com.example.setcardgame.Config.WebSocketClient;
 import com.example.setcardgame.R;
@@ -28,7 +29,7 @@ public class WaitingForGameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_waiting_for_game);
 
-        WebSocketClient.createWebSocket(WebSocketClient.URL + "multiconnect");
+        WebSocketClient.createWebSocket(UrlConstants.WSS_URL + "multiconnect");
         Disposable topic = WebSocketClient.mStompClient.topic("/topic/waiting").subscribe(topicMessage -> {
             try {
                 JSONObject msg = new JSONObject(topicMessage.getPayload());
