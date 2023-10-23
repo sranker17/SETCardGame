@@ -11,10 +11,10 @@ public enum Color {
         this.label = label;
     }
 
-    public static Color getColorFromString(String COLOR) {
-        if (COLOR.equals("GREEN")) {
+    public static Color getColorFromString(String color) {
+        if (color.equals("GREEN")) {
             return Color.GREEN;
-        } else if (COLOR.equals("RED")) {
+        } else if (color.equals("RED")) {
             return Color.RED;
         }
 

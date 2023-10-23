@@ -35,12 +35,11 @@ public class MultiplayerEndScreenActivity extends AppCompatActivity {
             score.setText(R.string.won);
             score.setTextColor(Color.parseColor("#008000"));
             ownScoreTV.setTextColor(Color.parseColor("#008000"));
-        } else if(winner.equals(opponent)){
+        } else if (winner.equals(opponent)) {
             score.setText(R.string.lost);
             score.setTextColor(Color.parseColor("#C50202"));
             ownScoreTV.setTextColor(Color.parseColor("#C50202"));
-        }
-        else {
+        } else {
             score.setText(R.string.draw);
             score.setTextColor(Color.parseColor("#115EA1"));
         }

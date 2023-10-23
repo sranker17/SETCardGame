@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 public class MultiplayerGame {
@@ -70,8 +71,8 @@ public class MultiplayerGame {
             nullCardIndexesString = nullCardIndexesString.replace(']', ' ');
             nullCardIndexesString = nullCardIndexesString.trim();
             String[] nullCardIndexesStrings = nullCardIndexesString.split(",");
-            for (int i = 0; nullCardIndexesStrings.length > i; i++) {
-                nullCardIndexes.add(Integer.parseInt(nullCardIndexesStrings[i]));
+            for (String cardIndexesString : nullCardIndexesStrings) {
+                nullCardIndexes.add(Integer.parseInt(cardIndexesString));
             }
         }
     }
@@ -132,9 +133,9 @@ public class MultiplayerGame {
         boardString = boardString.replace('{', ' ');
         boardString = boardString.replace('}', ' ');
         boardString = boardString.replace(':', ' ');
-        boardString = boardString.replaceAll("color", "");
-        boardString = boardString.replaceAll("shape", "");
-        boardString = boardString.replaceAll("quantity", "");
+        boardString = boardString.replace("color", "");
+        boardString = boardString.replace("shape", "");
+        boardString = boardString.replace("quantity", "");
         String[] words = boardString.split(",");
 
         for (int i = 0; words.length > i; i++) {
@@ -191,8 +192,8 @@ public class MultiplayerGame {
             selectedCardIndexesString = selectedCardIndexesString.replace(']', ' ');
             selectedCardIndexesString = selectedCardIndexesString.trim();
             String[] selectedCardIndexesStrings = selectedCardIndexesString.split(",");
-            for (int i = 0; selectedCardIndexesStrings.length > i; i++) {
-                selectedCardIndexes.add(Integer.parseInt(selectedCardIndexesStrings[i]));
+            for (String cardIndexesString : selectedCardIndexesStrings) {
+                selectedCardIndexes.add(Integer.parseInt(cardIndexesString));
             }
         }
     }
@@ -214,8 +215,8 @@ public class MultiplayerGame {
     }
 
     public boolean hasSamePoints(Map<UUID, Integer> otherPoints) {
-        boolean same = points.get(player1).equals(otherPoints.get(player1));
-        if (!points.get(player2).equals(otherPoints.get(player2))) {
+        boolean same = Objects.equals(points.get(player1), otherPoints.get(player1));
+        if (!Objects.equals(points.get(player2), otherPoints.get(player2))) {
             same = false;
         }
         return same;

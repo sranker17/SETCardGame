@@ -12,6 +12,9 @@ public class WebSocketClient {
     public static CompositeDisposable compositeDisposable;
     private static final String TAG = "websocket";
 
+    private WebSocketClient() {
+    }
+
     public static void createWebSocket(String WEBSOCKET_CONNECT_URL) {
         compositeDisposable = new CompositeDisposable();
         mStompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, WEBSOCKET_CONNECT_URL);
@@ -40,12 +43,9 @@ public class WebSocketClient {
     }
 
     public static void disconnectWebSocket() {
-        if (mStompClient != null) {
-            if (mStompClient.isConnected()) {
-                mStompClient.disconnect();
-                compositeDisposable.dispose();
-            }
+        if (mStompClient != null && (mStompClient.isConnected())) {
+            mStompClient.disconnect();
+            compositeDisposable.dispose();
         }
-
     }
 }

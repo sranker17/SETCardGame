@@ -9,9 +9,9 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.setcardgame.Model.Difficulty;
 import com.example.setcardgame.Model.Username;
+import com.example.setcardgame.Model.scoreboard.Scoreboard;
 import com.example.setcardgame.Model.scoreboard.ScoresFragment;
 import com.example.setcardgame.Model.scoreboard.ViewPagerAdapter;
-import com.example.setcardgame.Model.scoreboard.Scoreboard;
 import com.example.setcardgame.R;
 import com.example.setcardgame.Service.ScoreboardDataService;
 import com.google.android.material.tabs.TabLayout;
@@ -36,7 +36,7 @@ public class WorldScoresActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.viewPagerPlayer);
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
-        scoreboardDataService.getPlayerScores(false, username, new ScoreboardDataService.ScoreboardResponseListener(){
+        scoreboardDataService.getPlayerScores(false, username, new ScoreboardDataService.ScoreboardResponseListener() {
             @Override
             public void onError(String message) {
                 Toast.makeText(WorldScoresActivity.this, getString(R.string.cantGetScores), Toast.LENGTH_SHORT).show();
@@ -50,16 +50,16 @@ public class WorldScoresActivity extends AppCompatActivity {
                 ArrayList<Scoreboard> easyScoreList = new ArrayList<>();
                 ArrayList<Scoreboard> normalScoreList = new ArrayList<>();
 
-                for(Scoreboard score : scoreboardModels) {
-                    if(score.getPlayerId().toString().equals(username)){
+                for (Scoreboard score : scoreboardModels) {
+                    if (score.getPlayerId().toString().equals(username)) {
                         score.setMyScore(true);
                     }
-                    if(score.getDifficulty() == Difficulty.EASY && easyCounter<100){
+                    if (score.getDifficulty() == Difficulty.EASY && easyCounter < 100) {
                         easyCounter++;
                         score.setPlacement(easyCounter);
                         easyScoreList.add(score);
                     }
-                    if(score.getDifficulty() == Difficulty.NORMAL && normalCounter<100){
+                    if (score.getDifficulty() == Difficulty.NORMAL && normalCounter < 100) {
                         normalCounter++;
                         score.setPlacement(normalCounter);
                         normalScoreList.add(score);
@@ -72,6 +72,6 @@ public class WorldScoresActivity extends AppCompatActivity {
                 viewPager.setAdapter(adapter);
                 tabLayout.setupWithViewPager(viewPager);
             }
-        } );
+        });
     }
 }

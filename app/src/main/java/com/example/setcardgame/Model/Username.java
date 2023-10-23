@@ -3,6 +3,9 @@ package com.example.setcardgame.Model;
 public class Username {
     private static String username;
 
+    private Username() {
+    }
+
     public static String getUsername() {
         return username;
     }

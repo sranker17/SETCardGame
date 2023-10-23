@@ -9,9 +9,9 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.setcardgame.Model.Difficulty;
 import com.example.setcardgame.Model.Username;
+import com.example.setcardgame.Model.scoreboard.Scoreboard;
 import com.example.setcardgame.Model.scoreboard.ScoresFragment;
 import com.example.setcardgame.Model.scoreboard.ViewPagerAdapter;
-import com.example.setcardgame.Model.scoreboard.Scoreboard;
 import com.example.setcardgame.R;
 import com.example.setcardgame.Service.ScoreboardDataService;
 import com.google.android.material.tabs.TabLayout;
@@ -36,7 +36,7 @@ public class PlayerScoresActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.viewPagerPlayer);
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
-        scoreboardDataService.getPlayerScores(true, username, new ScoreboardDataService.ScoreboardResponseListener(){
+        scoreboardDataService.getPlayerScores(true, username, new ScoreboardDataService.ScoreboardResponseListener() {
             @Override
             public void onError(String message) {
                 Toast.makeText(PlayerScoresActivity.this, getString(R.string.cantGetScores), Toast.LENGTH_SHORT).show();
@@ -50,13 +50,13 @@ public class PlayerScoresActivity extends AppCompatActivity {
                 ArrayList<Scoreboard> easyScoreList = new ArrayList<>();
                 ArrayList<Scoreboard> normalScoreList = new ArrayList<>();
 
-                for(Scoreboard score : scoreboardModels) {
-                    if(score.getDifficulty() == Difficulty.EASY && easyCounter<100){
+                for (Scoreboard score : scoreboardModels) {
+                    if (score.getDifficulty() == Difficulty.EASY && easyCounter < 100) {
                         easyCounter++;
                         score.setPlacement(easyCounter);
                         easyScoreList.add(score);
                     }
-                    if(score.getDifficulty() == Difficulty.NORMAL && normalCounter<100){
+                    if (score.getDifficulty() == Difficulty.NORMAL && normalCounter < 100) {
                         normalCounter++;
                         score.setPlacement(normalCounter);
                         normalScoreList.add(score);
@@ -69,6 +69,6 @@ public class PlayerScoresActivity extends AppCompatActivity {
                 viewPager.setAdapter(adapter);
                 tabLayout.setupWithViewPager(viewPager);
             }
-        } );
+        });
     }
 }

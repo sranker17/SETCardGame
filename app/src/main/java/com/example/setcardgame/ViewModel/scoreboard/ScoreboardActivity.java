@@ -16,12 +16,12 @@ public class ScoreboardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_scoreboard);
     }
 
-    public void switchToMyScores(View v){
+    public void switchToMyScores(View v) {
         Intent ms = new Intent(this, PlayerScoresActivity.class);
         startActivity(ms);
     }
 
-    public void switchToWorldScores(View v){
+    public void switchToWorldScores(View v) {
         Intent ws = new Intent(this, WorldScoresActivity.class);
         startActivity(ws);
     }

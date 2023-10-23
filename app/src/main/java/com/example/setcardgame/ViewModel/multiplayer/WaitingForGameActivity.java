@@ -7,10 +7,10 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.setcardgame.Config.WebSocketClient;
 import com.example.setcardgame.Model.MultiplayerGame;
 import com.example.setcardgame.Model.UrlConstants;
 import com.example.setcardgame.Model.Username;
-import com.example.setcardgame.Config.WebSocketClient;
 import com.example.setcardgame.R;
 
 import org.json.JSONException;
@@ -20,7 +20,7 @@ import io.reactivex.disposables.Disposable;
 
 public class WaitingForGameActivity extends AppCompatActivity {
 
-    private final String TAG = "waiting";
+    private static final String TAG = "waiting";
     private MultiplayerGame game;
     private final String username = Username.getUsername();
 
@@ -47,9 +47,7 @@ public class WaitingForGameActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }, throwable -> {
-            Log.d(TAG, "error at subscribing");
-        });
+        }, throwable -> Log.d(TAG, "error at subscribing"));
         WebSocketClient.compositeDisposable.add(topic);
 
         JSONObject jsonPlayer = new JSONObject();
@@ -92,7 +90,7 @@ public class WaitingForGameActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (game != null){
+        if (game != null) {
             JSONObject destroyGame = new JSONObject();
             try {
                 destroyGame.put("gameId", game.getGameId());

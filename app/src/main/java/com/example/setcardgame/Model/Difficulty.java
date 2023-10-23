@@ -1,5 +1,7 @@
 package com.example.setcardgame.Model;
 
+import androidx.annotation.NonNull;
+
 public enum Difficulty {
     EASY("Easy"),
     NORMAL("Normal");
@@ -18,6 +20,7 @@ public enum Difficulty {
         return NORMAL;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return label;

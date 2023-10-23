@@ -3,15 +3,12 @@ package com.example.setcardgame.Service;
 import android.content.Context;
 
 import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.setcardgame.Config.RequestQueueSingleton;
 import com.example.setcardgame.Model.UrlConstants;
 import com.example.setcardgame.Model.scoreboard.Scoreboard;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -39,28 +36,24 @@ public class ScoreboardDataService {
         }
 
         JsonArrayRequest arrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
+                response -> {
 
-                        try {
-                            for (int i = 0; response.length() > i; i++) {
-                                JSONObject JSONScore = response.getJSONObject(i);
-                                Scoreboard score = new Scoreboard(JSONScore.getInt("scoreId"), JSONScore.getString("playerId"), JSONScore.getString("difficulty"), JSONScore.getInt("score"), JSONScore.getInt("time"));
-                                scores.add(score);
-                            }
-                            scoreboardResponseListener.onResponse(scores);
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                    try {
+                        for (int i = 0; response.length() > i; i++) {
+                            JSONObject jsonObject = response.getJSONObject(i);
+                            Scoreboard score = new Scoreboard(jsonObject.getInt("scoreId"),
+                                    jsonObject.getString("playerId"),
+                                    jsonObject.getString("difficulty"),
+                                    jsonObject.getInt("score"),
+                                    jsonObject.getInt("time"));
+                            scores.add(score);
                         }
+                        scoreboardResponseListener.onResponse(scores);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                scoreboardResponseListener.onError("Did not get score");
-            }
-        });
+                }, error -> scoreboardResponseListener.onError("Did not get score"));
 
         RequestQueueSingleton.getInstance(context).addToRequestQueue(arrayRequest);
     }
@@ -78,17 +71,7 @@ public class ScoreboardDataService {
         }
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, SCOREBOARD_URL, postObj,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        scoreAddedResponseListener.onResponse(response);
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                scoreAddedResponseListener.onError(error.getMessage());
-            }
-        }) {
+                scoreAddedResponseListener::onResponse, error -> scoreAddedResponseListener.onError(error.getMessage())) {
             @Override
             public Map<String, String> getHeaders() {
                 HashMap<String, String> params = new HashMap<String, String>();

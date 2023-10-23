@@ -1,9 +1,11 @@
 package com.example.setcardgame.Model.card;
 
+import androidx.annotation.NonNull;
+
 public class Card {
-    private Color color;
-    private Shape shape;
-    private Quantity quantity;
+    private final Color color;
+    private final Shape shape;
+    private final Quantity quantity;
 
     public Card(Color color, Shape shape, Quantity quantity) {
         this.color = color;
@@ -29,6 +31,7 @@ public class Card {
         return quantity;
     }
 
+    @NonNull
     public String toString() {
         return color.label + shape.label + quantity.label;
     }

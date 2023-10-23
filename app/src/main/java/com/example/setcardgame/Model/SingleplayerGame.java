@@ -8,9 +8,10 @@ import com.example.setcardgame.Model.card.Card;
 
 import java.util.ArrayList;
 
-public class SingleplayerGame{
+public class SingleplayerGame {
 
-    public SingleplayerGame() {}
+    public SingleplayerGame() {
+    }
 
     public boolean hasSet(ArrayList<Card> cards, ArrayList<ImageView> board) {
         if (cards.size() >= 3) {
@@ -45,20 +46,14 @@ public class SingleplayerGame{
                             for (int y = 0; board.size() > y; y++) {
                                 String boardDesc = (String) board.get(y).getContentDescription();
 
-                                if (boardDesc.equals(cardDesc1)) {
-                                    if (board.get(y).getVisibility() == View.VISIBLE) {
-                                        visibilityChecks.set(0, true);
-                                    }
+                                if (boardDesc.equals(cardDesc1) && (board.get(y).getVisibility() == View.VISIBLE)) {
+                                    visibilityChecks.set(0, true);
                                 }
-                                if (boardDesc.equals(cardDesc2)) {
-                                    if (board.get(y).getVisibility() == View.VISIBLE) {
-                                        visibilityChecks.set(1, true);
-                                    }
+                                if (boardDesc.equals(cardDesc2) && (board.get(y).getVisibility() == View.VISIBLE)) {
+                                    visibilityChecks.set(1, true);
                                 }
-                                if (boardDesc.equals(cardDesc3)) {
-                                    if (board.get(y).getVisibility() == View.VISIBLE) {
-                                        visibilityChecks.set(2, true);
-                                    }
+                                if (boardDesc.equals(cardDesc3) && (board.get(y).getVisibility() == View.VISIBLE)) {
+                                    visibilityChecks.set(2, true);
                                 }
                             }
 

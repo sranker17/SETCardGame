@@ -62,15 +62,12 @@ public class SingleplayerActivity extends AppCompatActivity {
         timerTask = new TimerTask() {
             @Override
             public void run() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        time++;
-                        int time = getTimer();
-                        int seconds = time % 60;
-                        int minutes = time / 60;
-                        timerTextView.setText(String.format("%d:%02d", minutes, seconds));
-                    }
+                runOnUiThread(() -> {
+                    time++;
+                    int time = getTimer();
+                    int seconds = time % 60;
+                    int minutes = time / 60;
+                    timerTextView.setText(String.format("%d:%02d", minutes, seconds));
                 });
             }
         };
@@ -144,7 +141,7 @@ public class SingleplayerActivity extends AppCompatActivity {
                 boardCards.add(cards.get(0));
                 cards.remove(0);
             }
-        }while (!game.hasSet(boardCards, board));
+        } while (!game.hasSet(boardCards, board));
 
         pointTextView = findViewById(R.id.opponentPointTextView);
         timerTextView = findViewById(R.id.timerTextView);
@@ -167,7 +164,7 @@ public class SingleplayerActivity extends AppCompatActivity {
             }
 
             if (selectedCardIds.size() == 3) {
-                if(game.hasSet(selectedCards, board)){
+                if (game.hasSet(selectedCards, board)) {
                     for (int i = 0; board.size() > i; i++) {
                         if (board.get(i).getId() == selectedCardIds.get(0)
                                 || board.get(i).getId() == selectedCardIds.get(1)
@@ -180,7 +177,7 @@ public class SingleplayerActivity extends AppCompatActivity {
                     stopUserInteractions = true;
                     removeCardsFromBoard();
 
-                    if(game.isGameOver(board) || !game.hasSet(boardCards, board)){
+                    if (game.isGameOver(board) || !game.hasSet(boardCards, board)) {
                         timerTask.cancel();
                         endGame();
                     }
@@ -238,7 +235,7 @@ public class SingleplayerActivity extends AppCompatActivity {
             if (img.getId() == selectedCardIds.get(0)
                     || img.getId() == selectedCardIds.get(1)
                     || img.getId() == selectedCardIds.get(2)) {
-                if (cards.size() > 0) {
+                if (!cards.isEmpty()) {
                     int resImage = getResources().getIdentifier(cards.get(0).toString(), "drawable", getPackageName());
                     img.setImageResource(resImage);
                     img.setContentDescription(cards.get(0).toString());

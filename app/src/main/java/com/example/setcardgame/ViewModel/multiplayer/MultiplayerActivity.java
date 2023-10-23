@@ -178,9 +178,7 @@ public class MultiplayerActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }, throwable -> {
-            Log.d(TAG, "cannot create websocket");
-        });
+        }, throwable -> Log.d(TAG, "cannot create websocket"));
         WebSocketClient.compositeDisposable.add(topic);
         WebSocketClient.mStompClient.send("/app/start", jsonGameId.toString()).subscribe();
     }
@@ -248,12 +246,9 @@ public class MultiplayerActivity extends AppCompatActivity {
         punishTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (game.getBlockedBy() == null) {
-                            resetButtonAndCardClicks();
-                        }
+                runOnUiThread(() -> {
+                    if (game.getBlockedBy() == null) {
+                        resetButtonAndCardClicks();
                     }
                 });
             }
@@ -286,10 +281,10 @@ public class MultiplayerActivity extends AppCompatActivity {
         if (game.getBlockedBy().toString().equals(username) && selectedCardIds.size() < 3) {
             if (!selectedCardIds.contains(view.getId())) {
                 resetInt++;
-                if (resetInt==3){
+                if (resetInt == 3) {
                     resetTimer.cancel();
                     resetTimer.purge();
-                    resetInt=0;
+                    resetInt = 0;
                 }
                 boolean found = false;
                 int counter = 0;
@@ -373,6 +368,7 @@ public class MultiplayerActivity extends AppCompatActivity {
         }, 300);
     }
 
+    @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         if (stopUserInteractions) {
             return true;
@@ -392,10 +388,9 @@ public class MultiplayerActivity extends AppCompatActivity {
         mpes.putExtra("opponentScore", opponentPointTextView.getText());
         mpes.putExtra("ownScore", ownPointTextView.getText());
         mpes.putExtra("winner", game.getWinner().toString());
-        if(game.getPlayer1().toString().equals(username)){
+        if (game.getPlayer1().toString().equals(username)) {
             mpes.putExtra("opponent", game.getPlayer2().toString());
-        }
-        else {
+        } else {
             mpes.putExtra("opponent", game.getPlayer1().toString());
         }
 

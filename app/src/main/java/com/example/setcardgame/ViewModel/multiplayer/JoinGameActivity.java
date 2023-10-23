@@ -8,10 +8,10 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.setcardgame.Config.WebSocketClient;
 import com.example.setcardgame.Model.MultiplayerGame;
 import com.example.setcardgame.Model.UrlConstants;
 import com.example.setcardgame.Model.Username;
-import com.example.setcardgame.Config.WebSocketClient;
 import com.example.setcardgame.R;
 
 import org.json.JSONException;
@@ -21,7 +21,7 @@ import io.reactivex.disposables.Disposable;
 
 public class JoinGameActivity extends AppCompatActivity {
 
-    private final String TAG = "joinGame";
+    private static final String TAG = "joinGame";
     private final String username = Username.getUsername();
     private EditText connectionCodeET;
     private MultiplayerGame game;

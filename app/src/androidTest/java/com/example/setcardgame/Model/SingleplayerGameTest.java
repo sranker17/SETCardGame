@@ -39,7 +39,7 @@ public class SingleplayerGameTest {
         cards.add(new Card(Color.RED, Shape.WAVY, Quantity.ONE));
         cards.add(new Card(Color.RED, Shape.OVAL, Quantity.ONE));
 
-        for(int i=0; 9>i;i++){
+        for (int i = 0; 9 > i; i++) {
             ImageView img = new ImageView(c);
             img.setVisibility(View.VISIBLE);
             img.setContentDescription(cards.get(i).toString());
@@ -67,7 +67,7 @@ public class SingleplayerGameTest {
         cardsWithoutSet.add(new Card(Color.RED, Shape.WAVY, Quantity.TWO));
         cardsWithoutSet.add(new Card(Color.PURPLE, Shape.OVAL, Quantity.ONE));
 
-        for(int i=0; 9>i;i++){
+        for (int i = 0; 9 > i; i++) {
             ImageView img = new ImageView(c);
             img.setVisibility(View.VISIBLE);
             img.setContentDescription(cards.get(i).toString());
@@ -79,7 +79,7 @@ public class SingleplayerGameTest {
 
     @Test
     public void hasSetWithAllInvisibleShouldReturnFalse() {
-        for(int i = 0; i<board.size(); i++){
+        for (int i = 0; i < board.size(); i++) {
             board.get(i).setVisibility(View.INVISIBLE);
         }
         assertThat(game.hasSet(cards, board)).isFalse();
@@ -87,7 +87,7 @@ public class SingleplayerGameTest {
 
     @Test
     public void hasSetWithThreeVisibleShouldReturnTrue() {
-        for(int i = 3; i<board.size();i++){
+        for (int i = 3; i < board.size(); i++) {
             board.get(i).setVisibility(View.INVISIBLE);
         }
         assertThat(game.hasSet(cards, board)).isTrue();
@@ -95,7 +95,7 @@ public class SingleplayerGameTest {
 
     @Test
     public void hasSetWithThreeVisibleShouldReturnFalse() {
-        for(int i = 0; i<board.size()-3;i++){
+        for (int i = 0; i < board.size() - 3; i++) {
             board.get(i).setVisibility(View.INVISIBLE);
         }
         assertThat(game.hasSet(cards, board)).isFalse();
@@ -130,7 +130,7 @@ public class SingleplayerGameTest {
 
     @Test
     public void isGameOverWithThreeVisibleShouldReturnFalse() {
-        for(int i = 3; i<board.size();i++){
+        for (int i = 3; i < board.size(); i++) {
             board.get(i).setVisibility(View.INVISIBLE);
         }
         assertThat(game.isGameOver(board)).isFalse();
@@ -138,7 +138,7 @@ public class SingleplayerGameTest {
 
     @Test
     public void isGameOverShouldReturnTrue() {
-        for(int i = 0; i<board.size();i++){
+        for (int i = 0; i < board.size(); i++) {
             board.get(i).setVisibility(View.INVISIBLE);
         }
         assertThat(game.isGameOver(board)).isTrue();

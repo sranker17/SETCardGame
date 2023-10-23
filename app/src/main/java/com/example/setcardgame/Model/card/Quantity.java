@@ -11,10 +11,10 @@ public enum Quantity {
         this.label = label;
     }
 
-    public static Quantity getQuantityFromString(String QUANTITY) {
-        if (QUANTITY.equals("ONE")) {
+    public static Quantity getQuantityFromString(String quantity) {
+        if (quantity.equals("ONE")) {
             return Quantity.ONE;
-        } else if (QUANTITY.equals("TWO")) {
+        } else if (quantity.equals("TWO")) {
             return Quantity.TWO;
         }
 

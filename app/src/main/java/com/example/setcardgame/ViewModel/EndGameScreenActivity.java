@@ -18,6 +18,8 @@ import com.example.setcardgame.ViewModel.scoreboard.ScoreboardActivity;
 
 import org.json.JSONObject;
 
+import java.util.Objects;
+
 public class EndGameScreenActivity extends AppCompatActivity {
     private int finalTime;
     private String finalScore;
@@ -31,7 +33,7 @@ public class EndGameScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_end_game_screen);
 
         Intent egs = getIntent();
-        finalTime = Integer.parseInt(egs.getStringExtra("time"));
+        finalTime = Integer.parseInt(Objects.requireNonNull(egs.getStringExtra("time")));
         finalScore = egs.getStringExtra("score");
         finalDifficulty = egs.getStringExtra("diff");
         int seconds = finalTime % 60;
@@ -41,11 +43,10 @@ public class EndGameScreenActivity extends AppCompatActivity {
         TextView finalDifficultyTextView = (TextView) findViewById(R.id.difficultyTextView);
 
         finalTimeTextView.setText(String.format("%s: %d:%02d", getString(R.string.timeText), minutes, seconds));
-        finalScoreTextView.setText(String.format("%s: %s", getString(R.string.pointsText) ,finalScore));
-        if(finalDifficulty.equals(Difficulty.EASY.toString())){
+        finalScoreTextView.setText(String.format("%s: %s", getString(R.string.pointsText), finalScore));
+        if (finalDifficulty.equals(Difficulty.EASY.toString())) {
             finalDifficultyTextView.setText(String.format("%s", getString(R.string.easy)));
-        }
-        else {
+        } else {
             finalDifficultyTextView.setText(String.format("%s", getString(R.string.normal)));
         }
 
