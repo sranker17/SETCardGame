@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ViewModel.scoreboard.PlayerScoresActivity">
+    tools:context=".viewmodel.scoreboard.PlayerScoresActivity">
 
     <com.google.android.material.tabs.TabLayout
         android:background="@color/blue"

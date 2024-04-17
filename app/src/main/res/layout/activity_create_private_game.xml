@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ViewModel.multiplayer.CreatePrivateGameActivity"
+    tools:context=".viewmodel.multiplayer.CreatePrivateGameActivity"
     android:background="@drawable/set_background">
 
     <TextView
@@ -45,7 +45,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="00000"
+        android:text="@string/loading"
         android:textColor="@color/blue"
         android:textSize="48sp"
         app:layout_constraintBottom_toBottomOf="@+id/view"

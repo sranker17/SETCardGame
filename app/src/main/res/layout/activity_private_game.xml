@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ViewModel.multiplayer.PrivateGameActivity"
+    tools:context=".viewmodel.multiplayer.PrivateGameActivity"
     android:background="@drawable/set_background">
 
     <TextView

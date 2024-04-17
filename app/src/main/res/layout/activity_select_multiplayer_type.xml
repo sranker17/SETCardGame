@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ViewModel.multiplayer.SelectMultiplayerTypeActivity"
+    tools:context=".viewmodel.multiplayer.SelectMultiplayerTypeActivity"
     android:background="@drawable/set_background">
 
     <TextView

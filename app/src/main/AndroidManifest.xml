@@ -12,88 +12,88 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SETCardGame">
         <activity
-            android:name=".ViewModel.scoreboard.WorldScoresActivity"
-            android:parentActivityName=".ViewModel.scoreboard.ScoreboardActivity"
+            android:name=".viewmodel.scoreboard.WorldScoresActivity"
+            android:parentActivityName=".viewmodel.scoreboard.ScoreboardActivity"
             android:label="@string/worldScoresText"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ViewModel.scoreboard.PlayerScoresActivity"
-            android:parentActivityName=".ViewModel.scoreboard.ScoreboardActivity"
+            android:name=".viewmodel.scoreboard.PlayerScoresActivity"
+            android:parentActivityName=".viewmodel.scoreboard.ScoreboardActivity"
             android:label="@string/myScoreText"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ViewModel.multiplayer.MultiplayerEndScreenActivity"
+            android:name=".viewmodel.multiplayer.MultiplayerEndScreenActivity"
             android:exported="false"
             android:label="@string/scoreTextView"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ViewModel.multiplayer.JoinGameActivity"
+            android:name=".viewmodel.multiplayer.JoinGameActivity"
             android:exported="false"
             android:label="@string/joinGameText"
-            android:parentActivityName=".ViewModel.multiplayer.PrivateGameActivity"
+            android:parentActivityName=".viewmodel.multiplayer.PrivateGameActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ViewModel.multiplayer.PrivateGameActivity"
+            android:name=".viewmodel.multiplayer.PrivateGameActivity"
             android:exported="false"
             android:label="@string/privateGameText"
-            android:parentActivityName=".ViewModel.multiplayer.SelectMultiplayerTypeActivity"
+            android:parentActivityName=".viewmodel.multiplayer.SelectMultiplayerTypeActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ViewModel.multiplayer.WaitingForGameActivity"
+            android:name=".viewmodel.multiplayer.WaitingForGameActivity"
             android:exported="false"
             android:label="@string/waitingText"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ViewModel.multiplayer.CreatePrivateGameActivity"
+            android:name=".viewmodel.multiplayer.CreatePrivateGameActivity"
             android:exported="false"
             android:label="@string/createPrivateGameText"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ViewModel.multiplayer.SelectMultiplayerTypeActivity"
+            android:name=".viewmodel.multiplayer.SelectMultiplayerTypeActivity"
             android:exported="false"
             android:label="@string/chooseMultiTypeText"
-            android:parentActivityName=".ViewModel.MainActivity"
+            android:parentActivityName=".viewmodel.MainActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ViewModel.DifficultyActivity"
+            android:name=".viewmodel.DifficultyActivity"
             android:exported="false"
             android:label="@string/difficulty"
-            android:parentActivityName=".ViewModel.MainActivity"
+            android:parentActivityName=".viewmodel.MainActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ViewModel.HowToPageActivity"
+            android:name=".viewmodel.HowToPageActivity"
             android:exported="false"
             android:label="@string/howToTitle"
-            android:parentActivityName=".ViewModel.MainActivity"
+            android:parentActivityName=".viewmodel.MainActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ViewModel.EndGameScreenActivity"
+            android:name=".viewmodel.EndGameScreenActivity"
             android:exported="false"
             android:label="@string/scoreText"
-            android:parentActivityName=".ViewModel.MainActivity"
+            android:parentActivityName=".viewmodel.MainActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ViewModel.scoreboard.ScoreboardActivity"
+            android:name=".viewmodel.scoreboard.ScoreboardActivity"
             android:exported="false"
             android:label="@string/scoreboardText"
-            android:parentActivityName=".ViewModel.MainActivity"
+            android:parentActivityName=".viewmodel.MainActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ViewModel.multiplayer.MultiplayerActivity"
+            android:name=".viewmodel.multiplayer.MultiplayerActivity"
             android:exported="false"
             android:label="@string/multiplayerText"
-            android:parentActivityName=".ViewModel.MainActivity"
+            android:parentActivityName=".viewmodel.MainActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ViewModel.SingleplayerActivity"
+            android:name=".viewmodel.SingleplayerActivity"
             android:exported="false"
             android:label="@string/singleplayerText"
-            android:parentActivityName=".ViewModel.MainActivity"
+            android:parentActivityName=".viewmodel.MainActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ViewModel.MainActivity"
+            android:name=".viewmodel.MainActivity"
             android:exported="true"
             android:label="@string/setCardGameText"
             android:screenOrientation="portrait">

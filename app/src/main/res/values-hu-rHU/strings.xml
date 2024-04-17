@@ -47,4 +47,5 @@
     <string name="pointsText">Pontok</string>
     <string name="cantGetScores">Nem sikerült lekérni az eredményeket.</string>
     <string name="serverUnavailable">A szerver nem érhető el.</string>
+    <string name="loading">Töltés</string>
 </resources>
