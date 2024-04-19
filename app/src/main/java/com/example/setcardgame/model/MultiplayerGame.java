@@ -26,34 +26,7 @@ public class MultiplayerGame {
     private boolean playerLeft;
 
     public MultiplayerGame(JSONObject game) {
-        //TODO Object mapper?
-        try {
-            setGameIdString(game.getString("gameId"));
-            if (!game.getString("playerLeft").equals("null")) {
-                setPlayerLeft(game.getBoolean("playerLeft"));
-            }
-            if (!game.getString("player1").equals("null")) {
-                this.player1 = UUID.fromString(game.getString("player1"));
-            }
-
-            if (!game.getString("player2").equals("null")) {
-                this.player2 = UUID.fromString(game.getString("player2"));
-            }
-            if (!game.getString("blockedBy").equals("null")) {
-                this.blockedBy = UUID.fromString(game.getString("blockedBy"));
-            } else {
-                this.blockedBy = null;
-            }
-            if (!game.getString("winner").equals("null")) {
-                this.winner = UUID.fromString(game.getString("winner"));
-            }
-            setNullCardIndexesString(game.getString("nullCardIndexes"));
-            setBoardString(game.getString("board"));
-            setSelectedCardIndexesString(game.getString("selectedCardIndexes"));
-            setPointsString(game.getString("points"));
-        } catch (JSONException e) {
-            e.getMessage();
-        }
+        createMultiplayerGame(game);
     }
 
     public MultiplayerGame() {
@@ -244,6 +217,36 @@ public class MultiplayerGame {
             while (pointWords.length > i) {
                 points.put(UUID.fromString(pointWords[i++]), Integer.parseInt(pointWords[i++]));
             }
+        }
+    }
+
+    private void createMultiplayerGame(JSONObject game) {
+        try {
+            setGameIdString(game.getString("gameId"));
+            if (!game.getString("playerLeft").equals("null")) {
+                setPlayerLeft(game.getBoolean("playerLeft"));
+            }
+            if (!game.getString("player1").equals("null")) {
+                this.player1 = UUID.fromString(game.getString("player1"));
+            }
+
+            if (!game.getString("player2").equals("null")) {
+                this.player2 = UUID.fromString(game.getString("player2"));
+            }
+            if (!game.getString("blockedBy").equals("null")) {
+                this.blockedBy = UUID.fromString(game.getString("blockedBy"));
+            } else {
+                this.blockedBy = null;
+            }
+            if (!game.getString("winner").equals("null")) {
+                this.winner = UUID.fromString(game.getString("winner"));
+            }
+            setNullCardIndexesString(game.getString("nullCardIndexes"));
+            setBoardString(game.getString("board"));
+            setSelectedCardIndexesString(game.getString("selectedCardIndexes"));
+            setPointsString(game.getString("points"));
+        } catch (JSONException e) {
+            e.getMessage();
         }
     }
 }
