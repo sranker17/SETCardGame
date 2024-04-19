@@ -24,6 +24,7 @@ import com.example.setcardgame.model.card.Shape;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -44,14 +45,16 @@ public class SingleplayerActivity extends AppCompatActivity {
     private boolean stopUserInteractions = false;
     private final SingleplayerGame game = new SingleplayerGame();
 
+    private static final String DIFF_MODE = "diffMode";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_singleplayer);
 
         Intent sp = getIntent();
-        if (!sp.getStringExtra("diffMode").isEmpty()) {
-            difficulty = Difficulty.getDifficultyFromString(sp.getStringExtra("diffMode"));
+        if (!Objects.requireNonNull(sp.getStringExtra(DIFF_MODE)).isEmpty()) {
+            difficulty = Difficulty.getDifficultyFromString(Objects.requireNonNull(sp.getStringExtra(DIFF_MODE)));
         }
 
         startGame();
@@ -65,9 +68,9 @@ public class SingleplayerActivity extends AppCompatActivity {
             public void run() {
                 runOnUiThread(() -> {
                     time++;
-                    int time = getTimer();
-                    int seconds = time % 60;
-                    int minutes = time / 60;
+                    int timeInInt = getTimer();
+                    int seconds = timeInInt % 60;
+                    int minutes = timeInInt / 60;
                     timerTextView.setText(String.format("%d:%02d", minutes, seconds));
                 });
             }
@@ -88,36 +91,36 @@ public class SingleplayerActivity extends AppCompatActivity {
         selectedCards.clear();
         selectedCardIds.clear();
 
-        board.add((ImageView) findViewById(R.id.card0));
-        board.add((ImageView) findViewById(R.id.card1));
-        board.add((ImageView) findViewById(R.id.card2));
-        board.add((ImageView) findViewById(R.id.card3));
-        board.add((ImageView) findViewById(R.id.card4));
-        board.add((ImageView) findViewById(R.id.card5));
-        board.add((ImageView) findViewById(R.id.card6));
-        board.add((ImageView) findViewById(R.id.card7));
-        board.add((ImageView) findViewById(R.id.card8));
+        board.add(findViewById(R.id.card0));
+        board.add(findViewById(R.id.card1));
+        board.add(findViewById(R.id.card2));
+        board.add(findViewById(R.id.card3));
+        board.add(findViewById(R.id.card4));
+        board.add(findViewById(R.id.card5));
+        board.add(findViewById(R.id.card6));
+        board.add(findViewById(R.id.card7));
+        board.add(findViewById(R.id.card8));
 
 
         if (difficulty == Difficulty.NORMAL) {
-            TableLayout tableLayout = (TableLayout) findViewById(R.id.gameTableLayout);
-            TableRow lastTableRow = (TableRow) findViewById(R.id.tableRow3);
+            TableLayout tableLayout = findViewById(R.id.gameTableLayout);
+            TableRow lastTableRow = findViewById(R.id.tableRow3);
             tableLayout.removeView(lastTableRow);
         }
 
         if (difficulty == Difficulty.EASY) {
-            board.add((ImageView) findViewById(R.id.card9));
-            board.add((ImageView) findViewById(R.id.card10));
-            board.add((ImageView) findViewById(R.id.card11));
+            board.add(findViewById(R.id.card9));
+            board.add(findViewById(R.id.card10));
+            board.add(findViewById(R.id.card11));
 
             if (getScreenSizeInInches() < 5.3) {
-                ImageView card = (ImageView) findViewById(R.id.card8);
+                ImageView card = findViewById(R.id.card8);
                 ViewGroup.LayoutParams params = card.getLayoutParams();
                 params.height *= 0.8;
                 params.width *= 0.8;
 
-                for (ImageView cards : board) {
-                    cards.setLayoutParams(params);
+                for (ImageView imageViewCards : board) {
+                    imageViewCards.setLayoutParams(params);
                 }
             }
         }

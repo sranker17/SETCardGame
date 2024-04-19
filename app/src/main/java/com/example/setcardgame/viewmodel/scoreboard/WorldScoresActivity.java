@@ -26,6 +26,7 @@ public class WorldScoresActivity extends AppCompatActivity {
     private ViewPagerAdapter adapter;
     private final String username = Username.getName();
     private final ScoreboardDataService scoreboardDataService = new ScoreboardDataService(WorldScoresActivity.this);
+    private static final String TAG = "World score";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +41,7 @@ public class WorldScoresActivity extends AppCompatActivity {
             @Override
             public void onError(String message) {
                 Toast.makeText(WorldScoresActivity.this, getString(R.string.cantGetScores), Toast.LENGTH_SHORT).show();
-                Log.d("score", getString(R.string.cantGetScores));
+                Log.d(TAG, getString(R.string.cantGetScores));
             }
 
             @Override

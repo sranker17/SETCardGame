@@ -43,9 +43,9 @@ public class EndGameScreenActivity extends AppCompatActivity {
         finalDifficulty = egs.getStringExtra(DIFF);
         int seconds = finalTime % 60;
         int minutes = finalTime / 60;
-        TextView finalTimeTextView = (TextView) findViewById(R.id.finalTimeTextView);
-        TextView finalScoreTextView = (TextView) findViewById(R.id.finalPointTextView);
-        TextView finalDifficultyTextView = (TextView) findViewById(R.id.difficultyTextView);
+        TextView finalTimeTextView = findViewById(R.id.finalTimeTextView);
+        TextView finalScoreTextView = findViewById(R.id.finalPointTextView);
+        TextView finalDifficultyTextView = findViewById(R.id.difficultyTextView);
 
         finalTimeTextView.setText(String.format("%s: %d:%02d", getString(R.string.timeText), minutes, seconds));
         finalScoreTextView.setText(String.format("%s: %s", getString(R.string.pointsText), finalScore));

@@ -26,6 +26,7 @@ public class PlayerScoresActivity extends AppCompatActivity {
     private ViewPagerAdapter adapter;
     private final String username = Username.getName();
     private final ScoreboardDataService scoreboardDataService = new ScoreboardDataService(PlayerScoresActivity.this);
+    private static final String TAG = "Player score";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +41,7 @@ public class PlayerScoresActivity extends AppCompatActivity {
             @Override
             public void onError(String message) {
                 Toast.makeText(PlayerScoresActivity.this, getString(R.string.cantGetScores), Toast.LENGTH_SHORT).show();
-                Log.d("score", getString(R.string.cantGetScores));
+                Log.d(TAG, getString(R.string.cantGetScores));
             }
 
             @Override

@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences sp;
 
     private static final String USERNAME = "username";
+    private static final String TAG = "Main activity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,11 +48,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void checkServer() {
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = UrlConstants.URL + "available/";
+        String url = UrlConstants.URL + "available";
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                response -> Log.d("check", "available"), error -> {
-            Log.d("check", "not available");
+                response -> Log.d(TAG, "Server available"), error -> {
+            Log.d(TAG, "Server not available");
             Toast.makeText(MainActivity.this, getString(R.string.serverUnavailable), Toast.LENGTH_SHORT).show();
         });
 

@@ -22,6 +22,8 @@ import io.reactivex.disposables.Disposable;
 public class JoinGameActivity extends AppCompatActivity {
 
     private static final String TAG = "joinGame";
+    private static final String GAME_ID = "gameId";
+    private static final String PLAYER_ID = "playerId";
     private final String username = Username.getName();
     private EditText connectionCodeET;
     private MultiplayerGame game;
@@ -51,8 +53,8 @@ public class JoinGameActivity extends AppCompatActivity {
         if (!connectionCodeET.getText().toString().isEmpty()) {
             JSONObject jsonConnect = new JSONObject();
             try {
-                jsonConnect.put("gameId", connectionCodeET.getText());
-                jsonConnect.put("playerId", username);
+                jsonConnect.put(GAME_ID, connectionCodeET.getText());
+                jsonConnect.put(PLAYER_ID, username);
             } catch (JSONException e) {
                 e.getMessage();
             }
@@ -62,7 +64,7 @@ public class JoinGameActivity extends AppCompatActivity {
 
     private void switchToMultiplayer() {
         Intent mp = new Intent(this, MultiplayerActivity.class);
-        mp.putExtra("gameId", Integer.toString(game.getGameId()));
+        mp.putExtra(GAME_ID, Integer.toString(game.getGameId()));
         startActivity(mp);
     }
 }

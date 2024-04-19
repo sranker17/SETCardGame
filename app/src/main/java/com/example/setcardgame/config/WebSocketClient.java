@@ -10,28 +10,27 @@ import ua.naiksoftware.stomp.StompClient;
 public class WebSocketClient {
     public static StompClient mStompClient;
     public static CompositeDisposable compositeDisposable;
-    private static final String TAG = "websocket";
+    private static final String TAG = "WebSocketClient";
 
     private WebSocketClient() {
     }
 
-    public static void createWebSocket(String WEBSOCKET_CONNECT_URL) {
+    public static void createWebSocket(String websocketConnectUrl) {
         compositeDisposable = new CompositeDisposable();
-        mStompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, WEBSOCKET_CONNECT_URL);
+        mStompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, websocketConnectUrl);
         Disposable lifecycle = mStompClient.lifecycle().subscribe(lifecycleEvent -> {
             switch (lifecycleEvent.getType()) {
                 case OPENED:
-                    Log.i(TAG, "Stomp Connection Opened");
+                    Log.d(TAG, "Stomp connection opened");
                     break;
                 case ERROR:
-                    Log.d(TAG, "Error ", lifecycleEvent.getException());
+                    Log.e(TAG, "Error: ", lifecycleEvent.getException());
                     break;
                 case CLOSED:
-                    Log.w(TAG, "Stomp Connection Closed");
-
+                    Log.d(TAG, "Stomp connection closed");
                     break;
                 case FAILED_SERVER_HEARTBEAT:
-                    Log.d(TAG, "Failed Server Heartbeat");
+                    Log.d(TAG, "Failed server heartbeat");
                     break;
             }
         });
@@ -46,6 +45,7 @@ public class WebSocketClient {
         if (mStompClient != null && (mStompClient.isConnected())) {
             mStompClient.disconnect();
             compositeDisposable.dispose();
+            Log.d(TAG, "Disconnected");
         }
     }
 }

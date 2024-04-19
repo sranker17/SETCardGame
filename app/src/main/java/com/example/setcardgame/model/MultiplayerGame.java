@@ -23,10 +23,15 @@ public class MultiplayerGame {
     private List<Integer> selectedCardIndexes = new ArrayList<>();
     private Map<UUID, Integer> points = new HashMap<>();
     private List<Integer> nullCardIndexes = new ArrayList<>();
+    private boolean playerLeft;
 
     public MultiplayerGame(JSONObject game) {
+        //TODO Object mapper?
         try {
             setGameIdString(game.getString("gameId"));
+            if (!game.getString("playerLeft").equals("null")) {
+                setPlayerLeft(game.getBoolean("playerLeft"));
+            }
             if (!game.getString("player1").equals("null")) {
                 this.player1 = UUID.fromString(game.getString("player1"));
             }
@@ -34,17 +39,14 @@ public class MultiplayerGame {
             if (!game.getString("player2").equals("null")) {
                 this.player2 = UUID.fromString(game.getString("player2"));
             }
-
             if (!game.getString("blockedBy").equals("null")) {
                 this.blockedBy = UUID.fromString(game.getString("blockedBy"));
             } else {
                 this.blockedBy = null;
             }
-
             if (!game.getString("winner").equals("null")) {
                 this.winner = UUID.fromString(game.getString("winner"));
             }
-
             setNullCardIndexesString(game.getString("nullCardIndexes"));
             setBoardString(game.getString("board"));
             setSelectedCardIndexesString(game.getString("selectedCardIndexes"));
@@ -126,30 +128,40 @@ public class MultiplayerGame {
         this.board = board;
     }
 
+    public boolean isPlayerLeft() {
+        return playerLeft;
+    }
+
+    public void setPlayerLeft(boolean playerLeft) {
+        this.playerLeft = playerLeft;
+    }
+
     public void setBoardString(String boardString) {
-        board.clear();
-        boardString = boardString.replace('"', ' ');
-        boardString = boardString.replace('[', ' ');
-        boardString = boardString.replace(']', ' ');
-        boardString = boardString.replace('{', ' ');
-        boardString = boardString.replace('}', ' ');
-        boardString = boardString.replace(':', ' ');
-        boardString = boardString.replace("color", "");
-        boardString = boardString.replace("shape", "");
-        boardString = boardString.replace("quantity", "");
-        String[] words = boardString.split(",");
+        if (!boardString.equals("[]")) {
+            board.clear();
+            boardString = boardString.replace('"', ' ');
+            boardString = boardString.replace('[', ' ');
+            boardString = boardString.replace(']', ' ');
+            boardString = boardString.replace('{', ' ');
+            boardString = boardString.replace('}', ' ');
+            boardString = boardString.replace(':', ' ');
+            boardString = boardString.replace("color", "");
+            boardString = boardString.replace("shape", "");
+            boardString = boardString.replace("quantity", "");
+            String[] words = boardString.split(",");
 
-        for (int i = 0; words.length > i; i++) {
-            words[i] = words[i].trim();
-        }
+            for (int i = 0; words.length > i; i++) {
+                words[i] = words[i].trim();
+            }
 
-        int i = 0;
-        while (words.length > i) {
-            if (!words[i].equals("null")) {
-                Card newCard = new Card(words[i++], words[i++], words[i++]);
-                board.add(newCard);
-            } else {
-                board.add(null);
+            int i = 0;
+            while (words.length > i) {
+                if (!words[i].equals("null")) {
+                    Card newCard = new Card(words[i++], words[i++], words[i++]);
+                    board.add(newCard);
+                } else {
+                    board.add(null);
+                }
             }
         }
     }
@@ -216,7 +228,7 @@ public class MultiplayerGame {
     }
 
     public void setPointsString(String pointsString) {
-        if (player1 != null && player2 != null) {
+        if (player1 != null && player2 != null && !pointsString.equals("{}")) {
 
             pointsString = pointsString.replace('"', ' ');
             pointsString = pointsString.replace('{', ' ');

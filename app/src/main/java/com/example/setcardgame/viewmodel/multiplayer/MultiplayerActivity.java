@@ -23,6 +23,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -30,7 +31,7 @@ import io.reactivex.disposables.Disposable;
 
 public class MultiplayerActivity extends AppCompatActivity {
 
-    private static final String TAG = "multi";
+    private static final String TAG = "Multiplayer";
     private static final String PLAYER_ID = "playerId";
     private static final String GAME_ID = "gameId";
     private static final String SELECTED_CARD_INDEX = "selectedCardIndex";
@@ -54,7 +55,7 @@ public class MultiplayerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_multiplayer);
         Intent mp = getIntent();
-        gameId = Integer.parseInt(mp.getStringExtra(GAME_ID));
+        gameId = Integer.parseInt(Objects.requireNonNull(mp.getStringExtra(GAME_ID)));
         setBtn = findViewById(R.id.callSETBtn);
 
         JSONObject jsonGameId = new JSONObject();
@@ -68,6 +69,12 @@ public class MultiplayerActivity extends AppCompatActivity {
             try {
                 JSONObject msg = new JSONObject(topicMessage.getPayload());
                 MultiplayerGame tempGame = new MultiplayerGame(msg);
+                //player left
+                if (tempGame.isPlayerLeft()) {
+                    game = tempGame;
+                    Log.d(TAG, "Other player left the game");
+                    endGame();
+                }
                 Log.d(TAG, msg.toString());
                 if (tempGame.getPlayer1() != null && tempGame.getPlayer2() != null) {
                     runOnUiThread(new Thread(new Runnable() {
@@ -76,7 +83,7 @@ public class MultiplayerActivity extends AppCompatActivity {
                             if (game == null) {
                                 game = new MultiplayerGame(msg);
                                 startGame();
-                                Log.d(TAG, "start game");
+                                Log.d(TAG, "Game started with id: " + gameId);
                             } else {
                                 //SET button press
                                 if (tempGame.getBlockedBy() != null && tempGame.getBlockedBy().toString().equals(username) && tempGame.getSelectedCardIndexes().isEmpty()) {
@@ -149,7 +156,7 @@ public class MultiplayerActivity extends AppCompatActivity {
 
                                         if (tempGame.getWinner() != null) {
                                             game.setWinner(tempGame.getWinner());
-                                            Log.d(TAG, "END");
+                                            Log.d(TAG, "Game ended with id: " + gameId);
                                             endGame();
                                         }
 
@@ -191,15 +198,15 @@ public class MultiplayerActivity extends AppCompatActivity {
         boardIV.clear();
         selectedCardIds.clear();
 
-        boardIV.add((ImageView) findViewById(R.id.card0));
-        boardIV.add((ImageView) findViewById(R.id.card1));
-        boardIV.add((ImageView) findViewById(R.id.card2));
-        boardIV.add((ImageView) findViewById(R.id.card3));
-        boardIV.add((ImageView) findViewById(R.id.card4));
-        boardIV.add((ImageView) findViewById(R.id.card5));
-        boardIV.add((ImageView) findViewById(R.id.card6));
-        boardIV.add((ImageView) findViewById(R.id.card7));
-        boardIV.add((ImageView) findViewById(R.id.card8));
+        boardIV.add(findViewById(R.id.card0));
+        boardIV.add(findViewById(R.id.card1));
+        boardIV.add(findViewById(R.id.card2));
+        boardIV.add(findViewById(R.id.card3));
+        boardIV.add(findViewById(R.id.card4));
+        boardIV.add(findViewById(R.id.card5));
+        boardIV.add(findViewById(R.id.card6));
+        boardIV.add(findViewById(R.id.card7));
+        boardIV.add(findViewById(R.id.card8));
 
         for (int i = 0; boardIV.size() > i; i++) {
             ImageView img = boardIV.get(i);
@@ -215,7 +222,7 @@ public class MultiplayerActivity extends AppCompatActivity {
         ownPointTextView.setText("0");
         setBtn = findViewById(R.id.callSETBtn);
 
-        TableLayout tableLayout = (TableLayout) findViewById(R.id.gameTableLayout);
+        TableLayout tableLayout = findViewById(R.id.gameTableLayout);
         tableLayout.setVisibility(View.VISIBLE);
     }
 
@@ -392,10 +399,12 @@ public class MultiplayerActivity extends AppCompatActivity {
         mpes.putExtra("opponentScore", opponentPointTextView.getText());
         mpes.putExtra("ownScore", ownPointTextView.getText());
         mpes.putExtra("winner", game.getWinner().toString());
-        if (game.getPlayer1().toString().equals(username)) {
-            mpes.putExtra("opponent", game.getPlayer2().toString());
-        } else {
-            mpes.putExtra("opponent", game.getPlayer1().toString());
+        if (game.getPlayer1() != null && game.getPlayer2() != null) {
+            if (game.getPlayer1().toString().equals(username)) {
+                mpes.putExtra("opponent", game.getPlayer2().toString());
+            } else {
+                mpes.putExtra("opponent", game.getPlayer1().toString());
+            }
         }
 
         startActivity(mpes);

@@ -20,6 +20,10 @@ import java.util.Map;
 public class ScoreboardDataService {
 
     public static final String SCOREBOARD_URL = UrlConstants.URL + "scoreboard/";
+    private static final String PLAYER_ID = "playerId";
+    private static final String DIFFICULTY = "difficulty";
+    private static final String SCORE = "score";
+    private static final String TIME = "time";
     Context context;
 
     public ScoreboardDataService(Context context) {
@@ -28,7 +32,7 @@ public class ScoreboardDataService {
 
     public void getPlayerScores(boolean usesUsername, String username, ScoreboardResponseListener scoreboardResponseListener) {
         List<Scoreboard> scores = new ArrayList<>();
-        String url = "";
+        String url;
         if (usesUsername) {
             url = SCOREBOARD_URL + "player/" + username;
         } else {
@@ -42,10 +46,10 @@ public class ScoreboardDataService {
                         for (int i = 0; response.length() > i; i++) {
                             JSONObject jsonObject = response.getJSONObject(i);
                             Scoreboard score = new Scoreboard(
-                                    jsonObject.getString("playerId"),
-                                    jsonObject.getString("difficulty"),
-                                    jsonObject.getInt("score"),
-                                    jsonObject.getInt("time"));
+                                    jsonObject.getString(PLAYER_ID),
+                                    jsonObject.getString(DIFFICULTY),
+                                    jsonObject.getInt(SCORE),
+                                    jsonObject.getInt(TIME));
                             scores.add(score);
                         }
                         scoreboardResponseListener.onResponse(scores);
@@ -61,10 +65,10 @@ public class ScoreboardDataService {
     public void addScore(Scoreboard scoreboardModel, ScoreAddedResponseListener scoreAddedResponseListener) {
         JSONObject postObj = new JSONObject();
         try {
-            postObj.put("playerId", scoreboardModel.getPlayerId());
-            postObj.put("difficulty", scoreboardModel.getDifficulty().toString());
-            postObj.put("score", scoreboardModel.getScore());
-            postObj.put("time", scoreboardModel.getTime());
+            postObj.put(PLAYER_ID, scoreboardModel.getPlayerId());
+            postObj.put(DIFFICULTY, scoreboardModel.getDifficulty().toString());
+            postObj.put(SCORE, scoreboardModel.getScore());
+            postObj.put(TIME, scoreboardModel.getTime());
 
         } catch (JSONException e) {
             e.getMessage();

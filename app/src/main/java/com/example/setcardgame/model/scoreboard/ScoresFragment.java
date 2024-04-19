@@ -17,8 +17,6 @@ import java.util.List;
 
 public class ScoresFragment extends Fragment {
 
-    private View view;
-    private RecyclerView recyclerView;
     private final List<Scoreboard> scoreList;
 
     public ScoresFragment(List<Scoreboard> scoreList) {
@@ -28,8 +26,8 @@ public class ScoresFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_score, container, false);
-        recyclerView = view.findViewById(R.id.recyclerView);
+        View view = inflater.inflate(R.layout.fragment_score, container, false);
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
         RecyclerViewScoreAdapter adapter = new RecyclerViewScoreAdapter(getContext(), scoreList);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
