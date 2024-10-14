@@ -13,15 +13,13 @@ import com.example.setcardgame.R;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public class RecyclerViewScoreAdapter extends RecyclerView.Adapter<RecyclerViewScoreAdapter.ViewHolder> {
 
-    Context context;
-    List<Scoreboard> list;
-
-    public RecyclerViewScoreAdapter(Context context, List<Scoreboard> list) {
-        this.context = context;
-        this.list = list;
-    }
+    private final Context context;
+    private final List<Scoreboard> list;
 
     @NonNull
     @Override

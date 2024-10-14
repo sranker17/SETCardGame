@@ -31,6 +31,10 @@ public class MultiplayerEndScreenActivity extends AppCompatActivity {
         ownScoreTV.setText(ownScore);
         opponentScoreTV.setText(opponentScore);
 
+        if (winner == null) {
+            throw new IllegalArgumentException("Winner cannot be null");
+        }
+
         if (username.equals(winner)) {
             score.setText(R.string.won);
             score.setTextColor(Color.parseColor("#008000"));
@@ -45,12 +49,12 @@ public class MultiplayerEndScreenActivity extends AppCompatActivity {
         }
     }
 
-    public void switchToMultiplayerType(View v) {
+    public void switchToMultiplayerType(View view) {
         Intent wfg = new Intent(this, SelectMultiplayerTypeActivity.class);
         startActivity(wfg);
     }
 
-    public void backToMenu(View v) {
+    public void backToMenu(View view) {
         Intent m = new Intent(this, MainActivity.class);
         startActivity(m);
     }

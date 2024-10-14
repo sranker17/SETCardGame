@@ -12,8 +12,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-public class MultiplayerGame {
+import lombok.Getter;
+import lombok.Setter;
 
+@Setter
+@Getter
+public class MultiplayerGame {
     private int gameId;
     private UUID player1;
     private UUID player2;
@@ -30,14 +34,6 @@ public class MultiplayerGame {
     }
 
     public MultiplayerGame() {
-    }
-
-    public List<Integer> getNullCardIndexes() {
-        return nullCardIndexes;
-    }
-
-    public void setNullCardIndexes(List<Integer> nullCardIndexes) {
-        this.nullCardIndexes = nullCardIndexes;
     }
 
     public void setNullCardIndexesString(String nullCardIndexesString) {
@@ -57,24 +53,8 @@ public class MultiplayerGame {
         selectedCardIndexes.clear();
     }
 
-    public int getGameId() {
-        return gameId;
-    }
-
-    public void setGameId(int gameId) {
-        this.gameId = gameId;
-    }
-
     public void setGameIdString(String gameId) {
         this.gameId = Integer.parseInt(gameId);
-    }
-
-    public UUID getPlayer1() {
-        return player1;
-    }
-
-    public void setPlayer1(UUID player1) {
-        this.player1 = player1;
     }
 
     public void setPlayer1String(String player1) {
@@ -83,30 +63,6 @@ public class MultiplayerGame {
 
     public void setPlayer2String(String player2) {
         this.player2 = UUID.fromString(player2);
-    }
-
-    public UUID getPlayer2() {
-        return player2;
-    }
-
-    public void setPlayer2(UUID player2) {
-        this.player2 = player2;
-    }
-
-    public List<Card> getBoard() {
-        return board;
-    }
-
-    public void setBoard(List<Card> board) {
-        this.board = board;
-    }
-
-    public boolean isPlayerLeft() {
-        return playerLeft;
-    }
-
-    public void setPlayerLeft(boolean playerLeft) {
-        this.playerLeft = playerLeft;
     }
 
     public void setBoardString(String boardString) {
@@ -139,36 +95,12 @@ public class MultiplayerGame {
         }
     }
 
-    public UUID getWinner() {
-        return winner;
-    }
-
-    public void setWinner(UUID winner) {
-        this.winner = winner;
-    }
-
     public void setWinnerString(String winner) {
         this.winner = UUID.fromString(winner);
     }
 
-    public UUID getBlockedBy() {
-        return blockedBy;
-    }
-
-    public void setBlockedBy(UUID blockedBy) {
-        this.blockedBy = blockedBy;
-    }
-
     public void setBlockedByString(String blockedBy) {
         this.blockedBy = UUID.fromString(blockedBy);
-    }
-
-    public List<Integer> getSelectedCardIndexes() {
-        return selectedCardIndexes;
-    }
-
-    public void setSelectedCardIndexes(List<Integer> selectedCardIndexes) {
-        this.selectedCardIndexes = selectedCardIndexes;
     }
 
     public void setSelectedCardIndexesString(String selectedCardIndexesString) {
@@ -182,14 +114,6 @@ public class MultiplayerGame {
                 selectedCardIndexes.add(Integer.parseInt(cardIndexesString));
             }
         }
-    }
-
-    public Map<UUID, Integer> getPoints() {
-        return points;
-    }
-
-    public void setPoints(Map<UUID, Integer> points) {
-        this.points = points;
     }
 
     public boolean hasSamePoints(Map<UUID, Integer> otherPoints) {

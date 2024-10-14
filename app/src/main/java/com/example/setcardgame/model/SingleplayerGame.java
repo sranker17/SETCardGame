@@ -9,10 +9,10 @@ import com.example.setcardgame.model.card.Card;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SingleplayerGame {
+import lombok.NoArgsConstructor;
 
-    public SingleplayerGame() {
-    }
+@NoArgsConstructor
+public class SingleplayerGame {
 
     public boolean hasSet(List<Card> cards, List<ImageView> board) {
         if (cards.size() >= 3) {
