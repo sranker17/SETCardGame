@@ -58,18 +58,18 @@ public class EndGameScreenActivity extends AppCompatActivity {
         addScoreToDB();
     }
 
-    public void newSingleplayerGame(View v) {
+    public void newSingleplayerGame(View view) {
         Intent sp = new Intent(this, SingleplayerActivity.class);
         sp.putExtra(DIFF_MODE, finalDifficulty);
         startActivity(sp);
     }
 
-    public void backToMenu(View v) {
+    public void backToMenu(View view) {
         Intent m = new Intent(this, MainActivity.class);
         startActivity(m);
     }
 
-    public void switchToScoreboard(View v) {
+    public void switchToScoreboard(View view) {
         Intent sb = new Intent(this, ScoreboardActivity.class);
         startActivity(sb);
     }

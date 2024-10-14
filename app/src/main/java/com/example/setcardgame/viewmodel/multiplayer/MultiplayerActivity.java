@@ -77,114 +77,112 @@ public class MultiplayerActivity extends AppCompatActivity {
                 }
                 Log.d(TAG, msg.toString());
                 if (tempGame.getPlayer1() != null && tempGame.getPlayer2() != null) {
-                    runOnUiThread(new Thread(new Runnable() {
-                        public void run() {
-                            //start game
-                            if (game == null) {
-                                game = new MultiplayerGame(msg);
-                                startGame();
-                                Log.d(TAG, "Game started with id: " + gameId);
-                            } else {
-                                //SET button press
-                                if (tempGame.getBlockedBy() != null && tempGame.getBlockedBy().toString().equals(username) && tempGame.getSelectedCardIndexes().isEmpty()) {
-                                    Log.d(TAG, "my block");
-                                    try {
-                                        game.setBlockedByString(msg.getString("blockedBy"));
-                                        setBtn.setBackgroundTintList(ContextCompat.getColorStateList(MultiplayerActivity.this, R.color.green));
-                                        switchBoardClicks(true);
-                                    } catch (JSONException e) {
-                                        e.getMessage();
-                                    }
-                                } else if (tempGame.getBlockedBy() != null && !tempGame.getBlockedBy().toString().equals(username) && tempGame.getSelectedCardIndexes().isEmpty()) {
-                                    Log.d(TAG, "opponent's block");
-                                    try {
-                                        game.setBlockedByString(msg.getString("blockedBy"));
-                                    } catch (JSONException e) {
-                                        e.getMessage();
-                                    }
-                                    setBtn.setEnabled(false);
-                                    setBtn.setBackgroundTintList(ContextCompat.getColorStateList(MultiplayerActivity.this, R.color.dark_red));
+                    runOnUiThread(() -> {
+                        //start game
+                        if (game == null) {
+                            game = new MultiplayerGame(msg);
+                            startGame();
+                            Log.d(TAG, "Game started with id: " + gameId);
+                        } else {
+                            //SET button press
+                            if (tempGame.getBlockedBy() != null && tempGame.getBlockedBy().toString().equals(username) && tempGame.getSelectedCardIndexes().isEmpty()) {
+                                Log.d(TAG, "my block");
+                                try {
+                                    game.setBlockedByString(msg.getString("blockedBy"));
+                                    setBtn.setBackgroundTintList(ContextCompat.getColorStateList(MultiplayerActivity.this, R.color.green));
+                                    switchBoardClicks(true);
+                                } catch (JSONException e) {
+                                    e.getMessage();
                                 }
-
-                                //opponent is selecting cards
-                                if (tempGame.getBlockedBy() != null && !tempGame.getBlockedBy().toString().equals(username)) {
-                                    game.setSelectedCardIndexes(tempGame.getSelectedCardIndexes());
-                                    setSelectedCardsBackgroundForOpponent(game.getSelectedCardIndexes());
+                            } else if (tempGame.getBlockedBy() != null && !tempGame.getBlockedBy().toString().equals(username) && tempGame.getSelectedCardIndexes().isEmpty()) {
+                                Log.d(TAG, "opponent's block");
+                                try {
+                                    game.setBlockedByString(msg.getString("blockedBy"));
+                                } catch (JSONException e) {
+                                    e.getMessage();
                                 }
+                                setBtn.setEnabled(false);
+                                setBtn.setBackgroundTintList(ContextCompat.getColorStateList(MultiplayerActivity.this, R.color.dark_red));
+                            }
 
-                                //3 cards have been selected
-                                if (tempGame.getSelectedCardIndexes().size() == 3 && tempGame.getBlockedBy() == null) {
-                                    game.setSelectedCardIndexes(tempGame.getSelectedCardIndexes());
-                                    setSelectedCardsBackgroundForOpponent(game.getSelectedCardIndexes());
+                            //opponent is selecting cards
+                            if (tempGame.getBlockedBy() != null && !tempGame.getBlockedBy().toString().equals(username)) {
+                                game.setSelectedCardIndexes(tempGame.getSelectedCardIndexes());
+                                setSelectedCardsBackgroundForOpponent(game.getSelectedCardIndexes());
+                            }
 
-                                    if (game.hasSamePoints(tempGame.getPoints())) {
-                                        //wrong combo
-                                        unCorrectSelectedCards(tempGame.getSelectedCardIndexes());
+                            //3 cards have been selected
+                            if (tempGame.getSelectedCardIndexes().size() == 3 && tempGame.getBlockedBy() == null) {
+                                game.setSelectedCardIndexes(tempGame.getSelectedCardIndexes());
+                                setSelectedCardsBackgroundForOpponent(game.getSelectedCardIndexes());
 
-                                        game.clearSelectedCardIndexes();
-                                        selectedCardIds.clear();
-                                        resetCardBackgrounds();
-                                        resetButtonAndCardClicks();
+                                if (game.hasSamePoints(tempGame.getPoints())) {
+                                    //wrong combo
+                                    unCorrectSelectedCards(tempGame.getSelectedCardIndexes());
 
-                                        if (game.getBlockedBy().toString().equals(username)) {
-                                            resetButtonAndCardClicksOnError();
-                                            punishPlayerError();
-                                            Log.d(TAG, "set not found");
-                                        } else {
-                                            resetButtonAndCardClicks();
-                                        }
-                                        game.setBlockedBy(null);
-                                    } else {
-                                        //right combo, board changed
-                                        Log.d(TAG, "set found");
-                                        correctSelectedCards(tempGame.getSelectedCardIndexes());
-                                        game.setPoints(tempGame.getPoints());
-                                        updatePointTextViews();
-                                        game.setBoard(tempGame.getBoard());
-                                        game.setNullCardIndexes(tempGame.getNullCardIndexes());
-
-                                        for (int i = 0; game.getSelectedCardIndexes().size() > i; i++) {
-                                            if (!game.getNullCardIndexes().isEmpty()) {
-                                                boardIV.get(game.getSelectedCardIndexes().get(i)).setVisibility(View.INVISIBLE);
-                                            } else {
-                                                ImageView img = boardIV.get(game.getSelectedCardIndexes().get(i));
-                                                int resImage = getResources().getIdentifier(game.getBoard().get(game.getSelectedCardIndexes().get(i)).toString(), "drawable", getPackageName());
-                                                img.setImageResource(resImage);
-                                                img.setContentDescription(game.getBoard().get(game.getSelectedCardIndexes().get(i)).toString());
-                                            }
-                                        }
-
-                                        if (tempGame.getWinner() != null) {
-                                            game.setWinner(tempGame.getWinner());
-                                            Log.d(TAG, "Game ended with id: " + gameId);
-                                            endGame();
-                                        }
-
-                                        resetButtonAndCardClicks();
-                                        game.setBlockedBy(null);
-                                        game.clearSelectedCardIndexes();
-                                        selectedCardIds.clear();
-                                        resetCardBackgrounds();
-                                    }
-                                }
-                                //time ran out. button has been reset
-                                if (game.getBlockedBy() != null && tempGame.getSelectedCardIndexes().size() != 3 && tempGame.getBlockedBy() == null) {
                                     game.clearSelectedCardIndexes();
                                     selectedCardIds.clear();
                                     resetCardBackgrounds();
+                                    resetButtonAndCardClicks();
+
                                     if (game.getBlockedBy().toString().equals(username)) {
                                         resetButtonAndCardClicksOnError();
                                         punishPlayerError();
-                                        Log.d(TAG, "punished");
+                                        Log.d(TAG, "set not found");
                                     } else {
                                         resetButtonAndCardClicks();
-                                        Log.d(TAG, "not punished");
                                     }
                                     game.setBlockedBy(null);
+                                } else {
+                                    //right combo, board changed
+                                    Log.d(TAG, "set found");
+                                    correctSelectedCards(tempGame.getSelectedCardIndexes());
+                                    game.setPoints(tempGame.getPoints());
+                                    updatePointTextViews();
+                                    game.setBoard(tempGame.getBoard());
+                                    game.setNullCardIndexes(tempGame.getNullCardIndexes());
+
+                                    for (int i = 0; game.getSelectedCardIndexes().size() > i; i++) {
+                                        if (!game.getNullCardIndexes().isEmpty()) {
+                                            boardIV.get(game.getSelectedCardIndexes().get(i)).setVisibility(View.INVISIBLE);
+                                        } else {
+                                            ImageView img = boardIV.get(game.getSelectedCardIndexes().get(i));
+                                            int resImage = getResources().getIdentifier(game.getBoard().get(game.getSelectedCardIndexes().get(i)).toString(), "drawable", getPackageName());
+                                            img.setImageResource(resImage);
+                                            img.setContentDescription(game.getBoard().get(game.getSelectedCardIndexes().get(i)).toString());
+                                        }
+                                    }
+
+                                    if (tempGame.getWinner() != null) {
+                                        game.setWinner(tempGame.getWinner());
+                                        Log.d(TAG, "Game ended with id: " + gameId);
+                                        endGame();
+                                    }
+
+                                    resetButtonAndCardClicks();
+                                    game.setBlockedBy(null);
+                                    game.clearSelectedCardIndexes();
+                                    selectedCardIds.clear();
+                                    resetCardBackgrounds();
                                 }
                             }
+                            //time ran out. button has been reset
+                            if (game.getBlockedBy() != null && tempGame.getSelectedCardIndexes().size() != 3 && tempGame.getBlockedBy() == null) {
+                                game.clearSelectedCardIndexes();
+                                selectedCardIds.clear();
+                                resetCardBackgrounds();
+                                if (game.getBlockedBy().toString().equals(username)) {
+                                    resetButtonAndCardClicksOnError();
+                                    punishPlayerError();
+                                    Log.d(TAG, "punished");
+                                } else {
+                                    resetButtonAndCardClicks();
+                                    Log.d(TAG, "not punished");
+                                }
+                                game.setBlockedBy(null);
+                            }
                         }
-                    }));
+                    });
                 }
             } catch (JSONException e) {
                 e.getMessage();

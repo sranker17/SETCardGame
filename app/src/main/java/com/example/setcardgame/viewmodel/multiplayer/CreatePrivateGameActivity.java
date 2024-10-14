@@ -42,7 +42,7 @@ public class CreatePrivateGameActivity extends AppCompatActivity {
                     game = new MultiplayerGame(msg);
                     Log.d(TAG, topicMessage.getPayload());
 
-                    runOnUiThread(new Thread(() -> connectionCodeTV.setText(Integer.toString(game.getGameId()))));
+                    runOnUiThread(() -> connectionCodeTV.setText(String.valueOf(game.getGameId())));
 
                     if (!msg.getString("player2").equals("null")) {
                         switchToMultiplayer();
@@ -70,7 +70,7 @@ public class CreatePrivateGameActivity extends AppCompatActivity {
         startActivity(mp);
     }
 
-    public void deleteGame(View v) {
+    public void deleteGame(View view) {
         if (game != null) {
             JSONObject destroyGame = new JSONObject();
             try {

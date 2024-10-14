@@ -6,6 +6,11 @@ import com.example.setcardgame.model.Difficulty;
 
 import java.util.UUID;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 public class Scoreboard {
 
     private UUID playerId;
@@ -19,54 +24,6 @@ public class Scoreboard {
         this.playerId = UUID.fromString(playerId);
         this.difficulty = Difficulty.getDifficultyFromString(difficulty);
         this.score = score;
-        this.time = time;
-    }
-
-    public boolean isMyScore() {
-        return myScore;
-    }
-
-    public void setMyScore(boolean myScore) {
-        this.myScore = myScore;
-    }
-
-    public int getPlacement() {
-        return placement;
-    }
-
-    public void setPlacement(int placement) {
-        this.placement = placement;
-    }
-
-    public UUID getPlayerId() {
-        return playerId;
-    }
-
-    public void setPlayerId(UUID playerId) {
-        this.playerId = playerId;
-    }
-
-    public Difficulty getDifficulty() {
-        return difficulty;
-    }
-
-    public void setDifficulty(Difficulty difficulty) {
-        this.difficulty = difficulty;
-    }
-
-    public int getScore() {
-        return score;
-    }
-
-    public void setScore(int score) {
-        this.score = score;
-    }
-
-    public int getTime() {
-        return time;
-    }
-
-    public void setTime(int time) {
         this.time = time;
     }
 

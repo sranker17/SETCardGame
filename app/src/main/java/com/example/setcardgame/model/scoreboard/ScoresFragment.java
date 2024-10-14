@@ -15,13 +15,12 @@ import com.example.setcardgame.R;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public class ScoresFragment extends Fragment {
 
     private final List<Scoreboard> scoreList;
-
-    public ScoresFragment(List<Scoreboard> scoreList) {
-        this.scoreList = scoreList;
-    }
 
     @Nullable
     @Override
