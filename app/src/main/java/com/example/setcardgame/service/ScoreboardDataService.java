@@ -19,7 +19,7 @@ import java.util.Map;
 
 public class ScoreboardDataService {
 
-    public static final String SCOREBOARD_URL = UrlConstants.URL + "scoreboard/";
+    public static final String SCOREBOARD_URL = UrlConstants.URL + "scoreboard";
     private static final String PLAYER_ID = "playerId";
     private static final String DIFFICULTY = "difficulty";
     private static final String SCORE = "score";
@@ -34,9 +34,9 @@ public class ScoreboardDataService {
         List<Scoreboard> scores = new ArrayList<>();
         String url;
         if (usesUsername) {
-            url = SCOREBOARD_URL + "player/" + username;
+            url = SCOREBOARD_URL + "/player/" + username;
         } else {
-            url = SCOREBOARD_URL + "top";
+            url = SCOREBOARD_URL + "/top";
         }
 
         JsonArrayRequest arrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
