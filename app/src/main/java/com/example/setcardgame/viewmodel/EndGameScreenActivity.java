@@ -74,7 +74,7 @@ public class EndGameScreenActivity extends AppCompatActivity {
         startActivity(sb);
     }
 
-    public void addScoreToDB() {
+    private void addScoreToDB() {
         Scoreboard scoreboardModel = new Scoreboard(username, finalDifficulty, Integer.parseInt(finalScore), finalTime);
         scoreboardDataService.addScore(scoreboardModel, new ScoreboardDataService.ScoreAddedResponseListener() {
             @Override

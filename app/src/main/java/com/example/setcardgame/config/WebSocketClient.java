@@ -4,16 +4,16 @@ import android.util.Log;
 
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.StompClient;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class WebSocketClient {
     public static StompClient mStompClient;
     public static CompositeDisposable compositeDisposable;
     private static final String TAG = "WebSocketClient";
-
-    private WebSocketClient() {
-    }
 
     public static void createWebSocket(String websocketConnectUrl) {
         compositeDisposable = new CompositeDisposable();

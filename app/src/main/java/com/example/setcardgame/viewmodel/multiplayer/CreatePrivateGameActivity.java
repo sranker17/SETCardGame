@@ -23,7 +23,6 @@ public class CreatePrivateGameActivity extends AppCompatActivity {
 
     private final String username = Username.getName();
     private MultiplayerGame game;
-    private TextView connectionCodeTV;
 
     private static final String TAG = "privateGame";
     private static final String GAME_ID = "gameId";
@@ -32,7 +31,7 @@ public class CreatePrivateGameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_private_game);
-        connectionCodeTV = findViewById(R.id.connectionCodeTV);
+        TextView connectionCodeTV = findViewById(R.id.connectionCodeTV);
 
         WebSocketClient.createWebSocket(UrlConstants.WSS_URL + "multiconnect");
         Disposable topic = WebSocketClient.mStompClient.topic("/topic/waiting").subscribe(topicMessage -> {

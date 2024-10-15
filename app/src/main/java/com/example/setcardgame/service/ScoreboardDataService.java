@@ -17,6 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public class ScoreboardDataService {
 
     public static final String SCOREBOARD_URL = UrlConstants.URL + "scoreboard";
@@ -24,11 +27,7 @@ public class ScoreboardDataService {
     private static final String DIFFICULTY = "difficulty";
     private static final String SCORE = "score";
     private static final String TIME = "time";
-    Context context;
-
-    public ScoreboardDataService(Context context) {
-        this.context = context;
-    }
+    private final Context context;
 
     public void getPlayerScores(boolean usesUsername, String username, ScoreboardResponseListener scoreboardResponseListener) {
         List<Scoreboard> scores = new ArrayList<>();
@@ -41,7 +40,6 @@ public class ScoreboardDataService {
 
         JsonArrayRequest arrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
                 response -> {
-
                     try {
                         for (int i = 0; response.length() > i; i++) {
                             JSONObject jsonObject = response.getJSONObject(i);

@@ -16,12 +16,12 @@ public class SelectMultiplayerTypeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_select_multiplayer_type);
     }
 
-    public void switchToPrivateGame(View v) {
+    public void switchToPrivateGame(View view) {
         Intent sb = new Intent(this, PrivateGameActivity.class);
         startActivity(sb);
     }
 
-    public void switchToRandomGame(View v) {
+    public void switchToRandomGame(View view) {
         Intent wfg = new Intent(this, WaitingForGameActivity.class);
         startActivity(wfg);
     }

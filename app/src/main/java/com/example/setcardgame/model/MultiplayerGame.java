@@ -13,10 +13,12 @@ import java.util.Objects;
 import java.util.UUID;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Setter
 @Getter
+@NoArgsConstructor
 public class MultiplayerGame {
     private int gameId;
     private UUID player1;
@@ -31,9 +33,6 @@ public class MultiplayerGame {
 
     public MultiplayerGame(JSONObject game) {
         createMultiplayerGame(game);
-    }
-
-    public MultiplayerGame() {
     }
 
     public void setNullCardIndexesString(String nullCardIndexesString) {
@@ -55,14 +54,6 @@ public class MultiplayerGame {
 
     public void setGameIdString(String gameId) {
         this.gameId = Integer.parseInt(gameId);
-    }
-
-    public void setPlayer1String(String player1) {
-        this.player1 = UUID.fromString(player1);
-    }
-
-    public void setPlayer2String(String player2) {
-        this.player2 = UUID.fromString(player2);
     }
 
     public void setBoardString(String boardString) {
@@ -93,10 +84,6 @@ public class MultiplayerGame {
                 }
             }
         }
-    }
-
-    public void setWinnerString(String winner) {
-        this.winner = UUID.fromString(winner);
     }
 
     public void setBlockedByString(String blockedBy) {
