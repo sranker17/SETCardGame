@@ -8,16 +8,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.setcardgame.R;
-import com.example.setcardgame.model.Difficulty;
 import com.example.setcardgame.model.Username;
-import com.example.setcardgame.model.scoreboard.Scoreboard;
 import com.example.setcardgame.model.scoreboard.ScoresFragment;
+import com.example.setcardgame.model.scoreboard.TopScores;
 import com.example.setcardgame.model.scoreboard.ViewPagerAdapter;
 import com.example.setcardgame.service.ScoreboardDataService;
 import com.google.android.material.tabs.TabLayout;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class PlayerScoresActivity extends AppCompatActivity {
 
@@ -37,35 +33,18 @@ public class PlayerScoresActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.viewPagerPlayer);
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
-        scoreboardDataService.getPlayerScores(true, username, new ScoreboardDataService.ScoreboardResponseListener() {
+        scoreboardDataService.getPlayerScores(true, new ScoreboardDataService.ScoreboardResponseListener() {
             @Override
             public void onError(String message) {
+                Log.e(TAG, message);
                 Toast.makeText(PlayerScoresActivity.this, getString(R.string.cantGetScores), Toast.LENGTH_SHORT).show();
-                Log.d(TAG, getString(R.string.cantGetScores));
             }
 
             @Override
-            public void onResponse(List<Scoreboard> scoreboardModels) {
-                int easyCounter = 0;
-                int normalCounter = 0;
-                List<Scoreboard> easyScoreList = new ArrayList<>();
-                List<Scoreboard> normalScoreList = new ArrayList<>();
-
-                for (Scoreboard score : scoreboardModels) {
-                    if (score.getDifficulty() == Difficulty.EASY && easyCounter < 100) {
-                        easyCounter++;
-                        score.setPlacement(easyCounter);
-                        easyScoreList.add(score);
-                    }
-                    if (score.getDifficulty() == Difficulty.NORMAL && normalCounter < 100) {
-                        normalCounter++;
-                        score.setPlacement(normalCounter);
-                        normalScoreList.add(score);
-                    }
-                }
-
-                adapter.addFragment(new ScoresFragment(easyScoreList), String.format("%s", getString(R.string.easy)));
-                adapter.addFragment(new ScoresFragment(normalScoreList), String.format("%s", getString(R.string.normal)));
+            public void onResponse(TopScores topScores) {
+                Log.i(TAG, "Top user scores received");
+                adapter.addFragment(new ScoresFragment(topScores.getEasyScores()), String.format("%s", getString(R.string.easy)));
+                adapter.addFragment(new ScoresFragment(topScores.getNormalScores()), String.format("%s", getString(R.string.normal)));
 
                 viewPager.setAdapter(adapter);
                 tabLayout.setupWithViewPager(viewPager);

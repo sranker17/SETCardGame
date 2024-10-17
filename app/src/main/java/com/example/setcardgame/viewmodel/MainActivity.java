@@ -3,19 +3,12 @@ package com.example.setcardgame.viewmodel;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.setcardgame.R;
-import com.example.setcardgame.model.UrlConstants;
 import com.example.setcardgame.model.Username;
 import com.example.setcardgame.viewmodel.multiplayer.SelectMultiplayerTypeActivity;
 import com.example.setcardgame.viewmodel.scoreboard.ScoreboardActivity;
@@ -32,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         SharedPreferences sp = getSharedPreferences(USERNAME, MODE_PRIVATE);
+        //TODO use user login
         if ("default".equals(sp.getString(USERNAME, "default"))) {
             SharedPreferences.Editor editor = sp.edit();
             UUID username = UUID.randomUUID();
@@ -39,20 +33,6 @@ public class MainActivity extends AppCompatActivity {
             editor.apply();
         }
         Username.setName(sp.getString(USERNAME, "def"));
-        checkServer();
-    }
-
-    private void checkServer() {
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url = UrlConstants.URL + "available";
-
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                response -> Log.d(TAG, "Server available"), error -> {
-            Log.d(TAG, "Server not available");
-            Toast.makeText(MainActivity.this, getString(R.string.serverUnavailable), Toast.LENGTH_SHORT).show();
-        });
-
-        queue.add(stringRequest);
     }
 
     public void switchToDifficulty(View view) {
