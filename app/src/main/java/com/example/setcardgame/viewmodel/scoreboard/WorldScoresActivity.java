@@ -8,11 +8,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.setcardgame.R;
+import com.example.setcardgame.listener.ScoreboardResponseListener;
 import com.example.setcardgame.model.Username;
 import com.example.setcardgame.model.scoreboard.ScoresFragment;
 import com.example.setcardgame.model.scoreboard.TopScores;
 import com.example.setcardgame.model.scoreboard.ViewPagerAdapter;
-import com.example.setcardgame.service.ScoreboardDataService;
+import com.example.setcardgame.service.ScoreboardService;
 import com.google.android.material.tabs.TabLayout;
 
 public class WorldScoresActivity extends AppCompatActivity {
@@ -21,7 +22,7 @@ public class WorldScoresActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private ViewPagerAdapter adapter;
     private final String username = Username.getName();
-    private final ScoreboardDataService scoreboardDataService = new ScoreboardDataService(WorldScoresActivity.this);
+    private final ScoreboardService scoreboardService = new ScoreboardService(WorldScoresActivity.this);
     private static final String TAG = "World score";
 
     @Override
@@ -33,7 +34,7 @@ public class WorldScoresActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.viewPagerPlayer);
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
-        scoreboardDataService.getPlayerScores(false, new ScoreboardDataService.ScoreboardResponseListener() {
+        scoreboardService.getPlayerScores(false, new ScoreboardResponseListener() {
             @Override
             public void onError(String message) {
                 //TODO if message contains response code 403, show a dialog to ask user to login?

@@ -14,10 +14,8 @@ import com.example.setcardgame.model.Username;
 import com.example.setcardgame.viewmodel.multiplayer.SelectMultiplayerTypeActivity;
 import com.example.setcardgame.viewmodel.scoreboard.ScoreboardActivity;
 
-import java.util.UUID;
-
 public class MainActivity extends AppCompatActivity {
-    private static final String USERNAME = "test";
+    private static final String AUTH = "auth";
     private static final String TAG = "Main activity";
 
     @Override
@@ -26,23 +24,21 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         //TODO add Android Keystore
-        SharedPreferences sp = getSharedPreferences(USERNAME, MODE_PRIVATE);
-        //TODO use user login
-        if (sp.getString(USERNAME, null) == null) {
+        SharedPreferences sp = getSharedPreferences(AUTH, MODE_PRIVATE);
+        //TODO use user login or register activity
+        if (sp.getString("username", null) == null) {
             Log.i(TAG, "Registering new user");
-            switchTRegister();
-
-
-            SharedPreferences.Editor editor = sp.edit();
-            UUID username = UUID.randomUUID();
-            editor.putString(USERNAME, username.toString());
-            editor.apply();
+            switchToLogin();
+        } else {
+            //TODO login with user credentials from sp
+            //TODO if cant login block multiplayer and scoreboard buttons (server probably unavailable)
         }
-        Username.setName(sp.getString(USERNAME, "def"));
+        //TODO remove this and use sp instead everywhere
+        Username.setName(sp.getString("username", null));
     }
 
-    public void switchTRegister() {
-        Intent d = new Intent(this, RegisterActivity.class);
+    public void switchToLogin() {
+        Intent d = new Intent(this, LoginActivity.class);
         startActivity(d);
     }
 

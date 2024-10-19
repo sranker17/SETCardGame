@@ -6,6 +6,8 @@ import android.util.Log;
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.setcardgame.config.RequestQueueSingleton;
+import com.example.setcardgame.listener.ScoreAddedResponseListener;
+import com.example.setcardgame.listener.ScoreboardResponseListener;
 import com.example.setcardgame.model.UrlConstants;
 import com.example.setcardgame.model.scoreboard.Scoreboard;
 import com.example.setcardgame.model.scoreboard.TopScores;
@@ -21,9 +23,8 @@ import java.util.Map;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class ScoreboardDataService {
-
-    public static final String SCOREBOARD_URL = UrlConstants.URL + "scoreboard";
+public class ScoreboardService {
+    private static final String SCOREBOARD_URL = UrlConstants.URL + "scoreboard";
     private static final String DIFFICULTY = "difficulty";
     private static final String SCORE = "score";
     private static final String TIME = "time";
@@ -109,17 +110,5 @@ public class ScoreboardDataService {
         };
 
         RequestQueueSingleton.getInstance(context).addToRequestQueue(request);
-    }
-
-    public interface ScoreboardResponseListener {
-        void onError(String message);
-
-        void onResponse(TopScores topScores);
-    }
-
-    public interface ScoreAddedResponseListener {
-        void onError(String message);
-
-        void onResponse(JSONObject scoreboardModels);
     }
 }

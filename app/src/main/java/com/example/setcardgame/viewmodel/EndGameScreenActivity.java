@@ -10,10 +10,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.setcardgame.R;
+import com.example.setcardgame.listener.ScoreAddedResponseListener;
 import com.example.setcardgame.model.Difficulty;
 import com.example.setcardgame.model.Username;
 import com.example.setcardgame.model.scoreboard.Scoreboard;
-import com.example.setcardgame.service.ScoreboardDataService;
+import com.example.setcardgame.service.ScoreboardService;
 import com.example.setcardgame.viewmodel.scoreboard.ScoreboardActivity;
 
 import org.json.JSONObject;
@@ -25,7 +26,7 @@ public class EndGameScreenActivity extends AppCompatActivity {
     private String finalScore;
     private String finalDifficulty;
     private final String username = Username.getName();
-    private final ScoreboardDataService scoreboardDataService = new ScoreboardDataService(EndGameScreenActivity.this);
+    private final ScoreboardService scoreboardService = new ScoreboardService(EndGameScreenActivity.this);
 
     private static final String SCORE = "score";
     private static final String DIFF = "diff";
@@ -76,7 +77,7 @@ public class EndGameScreenActivity extends AppCompatActivity {
 
     private void addScoreToDB() {
         Scoreboard scoreboardModel = new Scoreboard(username, finalDifficulty, Integer.parseInt(finalScore), finalTime);
-        scoreboardDataService.addScore(scoreboardModel, new ScoreboardDataService.ScoreAddedResponseListener() {
+        scoreboardService.addScore(scoreboardModel, new ScoreAddedResponseListener() {
             @Override
             public void onError(String message) {
                 Toast.makeText(EndGameScreenActivity.this, message, Toast.LENGTH_SHORT).show();

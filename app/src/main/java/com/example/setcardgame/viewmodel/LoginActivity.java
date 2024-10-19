@@ -1,31 +1,96 @@
 package com.example.setcardgame.viewmodel;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.setcardgame.R;
-import com.example.setcardgame.model.Difficulty;
+import com.example.setcardgame.listener.LoginResponseListener;
+import com.example.setcardgame.model.Error;
+import com.example.setcardgame.model.auth.AuthUser;
+import com.example.setcardgame.service.AuthService;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class LoginActivity extends AppCompatActivity {
-
-    private static final String DIFF_MODE = "diffMode";
+    private EditText usernameET;
+    private EditText passwordET;
+    private AuthUser authUser;
+    private final AuthService authService = new AuthService(LoginActivity.this);
+    private static final String LOGIN = "Login";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_difficulty);
+        setContentView(R.layout.activity_login);
+
+        usernameET = findViewById(R.id.usernameInput);
+        passwordET = findViewById(R.id.passwordInput);
     }
 
-    public void switchToSingleplayer(View v) {
-        Intent sp = new Intent(this, SingleplayerActivity.class);
-        if (findViewById(v.getId()) == findViewById(R.id.easyBtn)) {
-            sp.putExtra(DIFF_MODE, Difficulty.EASY.toString());
-        } else {
-            sp.putExtra(DIFF_MODE, Difficulty.NORMAL.toString());
+    public void sendLogin(View view) {
+        if (!usernameET.getText().toString().isEmpty() && !passwordET.getText().toString().isEmpty()) {
+            //TODO add more validation
+            authUser = new AuthUser(usernameET.getText().toString(), passwordET.getText().toString());
+            authService.login(authUser, new LoginResponseListener() {
+                @Override
+                public void onError(Error errorResponse) {
+                    Log.e(LOGIN, errorResponse.toString());
+                    String toastMessage;
+                    switch (errorResponse.getStatus()) {
+                        case 400:
+                            toastMessage = getString(R.string.invalidParameters);
+                            break;
+                        case 401:
+                            toastMessage = getString(R.string.badCredentials);
+                            break;
+                        case 403:
+                            toastMessage = getString(R.string.accountError);
+                            break;
+                        case 500:
+                            toastMessage = getString(R.string.internalServerError);
+                            break;
+                        default:
+                            toastMessage = errorResponse.getDescription();
+                    }
+                    Toast.makeText(LoginActivity.this, toastMessage, Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onResponse(JSONObject loginResponse) {
+                    Log.i(LOGIN, loginResponse.toString());
+                    try {
+                        String token = loginResponse.getString("token");
+                        long expiresIn = loginResponse.getLong("expiresIn");
+
+                        SharedPreferences sp = getSharedPreferences("auth", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sp.edit();
+                        editor.putString("token", token);
+                        editor.putLong("expiresIn", expiresIn);
+                        editor.putString("username", authUser.getUsername());
+                        editor.putString("password", authUser.getPassword());
+                        editor.apply();
+
+                        Log.i(LOGIN, "Token stored successfully: " + token);
+                    } catch (JSONException e) {
+                        Log.e(LOGIN, "Error parsing login response", e);
+                        throw new RuntimeException(e);
+                    }
+                    switchToMain();
+                }
+            });
         }
-        startActivity(sp);
+    }
+
+    public void switchToMain() {
+        Intent d = new Intent(this, MainActivity.class);
+        startActivity(d);
     }
 }

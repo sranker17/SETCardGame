@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".viewmodel.DifficultyActivity"
-    android:background="@drawable/set_background">
+    android:background="@drawable/set_background"
+    tools:context=".viewmodel.LoginActivity">
 
     <TextView
-        android:id="@+id/difficultyTV"
+        android:id="@+id/registerTV"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:fontFamily="@font/archivo_black"
@@ -17,7 +17,7 @@
         android:shadowDx="8"
         android:shadowDy="8"
         android:shadowRadius="2"
-        android:text="@string/difficulty"
+        android:text="@string/loginText"
         android:textColor="@color/blue"
         android:textSize="45sp"
         app:layout_constraintBottom_toTopOf="@+id/view"
@@ -29,43 +29,83 @@
 
     <View
         android:id="@+id/view"
-        android:layout_width="262dp"
-        android:layout_height="237dp"
+        android:layout_width="263dp"
+        android:layout_height="374dp"
         android:background="@drawable/radius"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.544" />
+        app:layout_constraintVertical_bias="0.618" />
+
+    <EditText
+        android:id="@+id/usernameInput"
+        android:layout_width="215dp"
+        android:layout_height="60dp"
+        android:ems="10"
+        android:inputType="text"
+        app:layout_constraintBottom_toBottomOf="@+id/view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/usernameText"
+        app:layout_constraintVertical_bias="0.067" />
+
+    <EditText
+        android:id="@+id/passwordInput"
+        android:layout_width="215dp"
+        android:layout_height="60dp"
+        android:ems="10"
+        android:inputType="textPassword"
+        app:layout_constraintBottom_toBottomOf="@+id/view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/passwordText"
+        app:layout_constraintVertical_bias="0.151" />
 
     <Button
-        android:id="@+id/easyBtn"
+        android:id="@+id/RegisterBtn"
         android:layout_width="170dp"
         android:layout_height="60dp"
-        android:backgroundTint="@color/blue"
+        android:onClick="sendLogin"
+        android:text="@string/loginText"
+        app:layout_constraintBottom_toBottomOf="@+id/view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/passwordInput"
+        app:layout_constraintVertical_bias="0.692" />
+
+    <TextView
+        android:id="@+id/usernameText"
+        android:layout_width="200dp"
+        android:layout_height="30dp"
+        android:fontFamily="@font/archivo_black"
         android:gravity="center"
-        android:onClick="switchToSingleplayer"
-        android:text="@string/easy"
+        android:text="@string/usernameText"
+        android:textColor="@color/blue"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/view"
-        app:layout_constraintVertical_bias="0.225" />
+        app:layout_constraintVertical_bias="0.046" />
 
-    <Button
-        android:id="@+id/normalBtn"
-        android:layout_width="170dp"
-        android:layout_height="60dp"
-        android:backgroundTint="@color/blue"
+    <TextView
+        android:id="@+id/passwordText"
+        android:layout_width="200dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="28dp"
+        android:fontFamily="@font/archivo_black"
         android:gravity="center"
-        android:onClick="switchToSingleplayer"
-        android:text="@string/normal"
+        android:text="@string/passwordText"
+        android:textColor="@color/blue"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/easyBtn"
-        app:layout_constraintVertical_bias="0.506" />
+        app:layout_constraintTop_toBottomOf="@+id/usernameInput"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
