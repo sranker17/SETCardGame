@@ -28,13 +28,18 @@ public class MainActivity extends AppCompatActivity {
         //TODO use user login or register activity
         if (sp.getString("username", null) == null) {
             Log.i(TAG, "Registering new user");
-            switchToLogin();
+            switchToRegister();
         } else {
             //TODO login with user credentials from sp
             //TODO if cant login block multiplayer and scoreboard buttons (server probably unavailable)
         }
         //TODO remove this and use sp instead everywhere
         Username.setName(sp.getString("username", null));
+    }
+
+    public void switchToRegister() {
+        Intent d = new Intent(this, RegisterActivity.class);
+        startActivity(d);
     }
 
     public void switchToLogin() {

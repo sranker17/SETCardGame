@@ -30,7 +30,7 @@ public class RecyclerViewScoreAdapter extends RecyclerView.Adapter<RecyclerViewS
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewScoreAdapter.ViewHolder holder, int position) {
-        String placementContent = list.get(position).getPlacement() + ".";
+        String placementContent = position + 1 + ".";
         String pointsContent = String.format("%s: %d", context.getString(R.string.pointsText), list.get(position).getScore());
 
         int time = list.get(position).getTime();
@@ -39,7 +39,7 @@ public class RecyclerViewScoreAdapter extends RecyclerView.Adapter<RecyclerViewS
         String timeContent = String.format("%s: %d:%02d", context.getString(R.string.timeText), minutes, seconds);
 
         String myScoreContent = "";
-        if (list.get(position).isMyScore()) {
+        if (list.get(position).getUserScore()) {
             myScoreContent = String.format("(%s)", context.getString(R.string.ownText));
         }
 

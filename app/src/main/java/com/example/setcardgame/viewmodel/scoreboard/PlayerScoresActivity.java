@@ -12,6 +12,7 @@ import com.example.setcardgame.listener.ScoreboardResponseListener;
 import com.example.setcardgame.model.scoreboard.ScoresFragment;
 import com.example.setcardgame.model.scoreboard.TopScores;
 import com.example.setcardgame.model.scoreboard.ViewPagerAdapter;
+import com.example.setcardgame.service.AuthService;
 import com.example.setcardgame.service.ScoreboardService;
 import com.google.android.material.tabs.TabLayout;
 
@@ -20,7 +21,7 @@ public class PlayerScoresActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private ViewPagerAdapter adapter;
-    private final ScoreboardService scoreboardService = new ScoreboardService(PlayerScoresActivity.this);
+    private final ScoreboardService scoreboardService = new ScoreboardService(new AuthService(PlayerScoresActivity.this), PlayerScoresActivity.this);
     private static final String TAG = "Player score";
 
     @Override

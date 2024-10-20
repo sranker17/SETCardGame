@@ -11,7 +11,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.setcardgame.R;
-import com.example.setcardgame.listener.LoginResponseListener;
+import com.example.setcardgame.listener.AuthResponseListener;
 import com.example.setcardgame.model.Error;
 import com.example.setcardgame.model.auth.AuthUser;
 import com.example.setcardgame.service.AuthService;
@@ -22,9 +22,10 @@ import org.json.JSONObject;
 public class LoginActivity extends AppCompatActivity {
     private EditText usernameET;
     private EditText passwordET;
-    private AuthUser authUser;
     private final AuthService authService = new AuthService(LoginActivity.this);
-    private static final String LOGIN = "Login";
+    private static final String LOGIN = "LOGIN";
+    private static final String TOKEN = "token";
+    private static final String EXPIRES_IN = "expiresIn";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +39,8 @@ public class LoginActivity extends AppCompatActivity {
     public void sendLogin(View view) {
         if (!usernameET.getText().toString().isEmpty() && !passwordET.getText().toString().isEmpty()) {
             //TODO add more validation
-            authUser = new AuthUser(usernameET.getText().toString(), passwordET.getText().toString());
-            authService.login(authUser, new LoginResponseListener() {
+            AuthUser authUser = new AuthUser(usernameET.getText().toString(), passwordET.getText().toString());
+            authService.login(authUser, new AuthResponseListener() {
                 @Override
                 public void onError(Error errorResponse) {
                     Log.e(LOGIN, errorResponse.toString());
@@ -67,15 +68,13 @@ public class LoginActivity extends AppCompatActivity {
                 public void onResponse(JSONObject loginResponse) {
                     Log.i(LOGIN, loginResponse.toString());
                     try {
-                        String token = loginResponse.getString("token");
-                        long expiresIn = loginResponse.getLong("expiresIn");
+                        String token = loginResponse.getString(TOKEN);
+                        long expiresIn = loginResponse.getLong(EXPIRES_IN);
 
                         SharedPreferences sp = getSharedPreferences("auth", MODE_PRIVATE);
                         SharedPreferences.Editor editor = sp.edit();
-                        editor.putString("token", token);
-                        editor.putLong("expiresIn", expiresIn);
-                        editor.putString("username", authUser.getUsername());
-                        editor.putString("password", authUser.getPassword());
+                        editor.putString(TOKEN, token);
+                        editor.putLong(EXPIRES_IN, expiresIn);
                         editor.apply();
 
                         Log.i(LOGIN, "Token stored successfully: " + token);

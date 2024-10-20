@@ -95,14 +95,14 @@
         <activity
             android:name=".viewmodel.RegisterActivity"
             android:exported="false"
-            android:label="@string/singleplayerText"
-            android:parentActivityName=".viewmodel.RegisterActivity"
+            android:label="@string/registerText"
+            android:parentActivityName=".viewmodel.MainActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".viewmodel.LoginActivity"
             android:exported="false"
-            android:label="@string/singleplayerText"
-            android:parentActivityName=".viewmodel.LoginActivity"
+            android:label="@string/loginText"
+            android:parentActivityName=".viewmodel.MainActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".viewmodel.MainActivity"

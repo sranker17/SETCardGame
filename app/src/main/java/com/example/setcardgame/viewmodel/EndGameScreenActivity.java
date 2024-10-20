@@ -14,6 +14,7 @@ import com.example.setcardgame.listener.ScoreAddedResponseListener;
 import com.example.setcardgame.model.Difficulty;
 import com.example.setcardgame.model.Username;
 import com.example.setcardgame.model.scoreboard.Scoreboard;
+import com.example.setcardgame.service.AuthService;
 import com.example.setcardgame.service.ScoreboardService;
 import com.example.setcardgame.viewmodel.scoreboard.ScoreboardActivity;
 
@@ -26,7 +27,7 @@ public class EndGameScreenActivity extends AppCompatActivity {
     private String finalScore;
     private String finalDifficulty;
     private final String username = Username.getName();
-    private final ScoreboardService scoreboardService = new ScoreboardService(EndGameScreenActivity.this);
+    private final ScoreboardService scoreboardService = new ScoreboardService(new AuthService(EndGameScreenActivity.this), EndGameScreenActivity.this);
 
     private static final String SCORE = "score";
     private static final String DIFF = "diff";
@@ -76,7 +77,8 @@ public class EndGameScreenActivity extends AppCompatActivity {
     }
 
     private void addScoreToDB() {
-        Scoreboard scoreboardModel = new Scoreboard(username, finalDifficulty, Integer.parseInt(finalScore), finalTime);
+        //TODO add auth
+        Scoreboard scoreboardModel = new Scoreboard(username, finalDifficulty, Integer.parseInt(finalScore), finalTime, null);
         scoreboardService.addScore(scoreboardModel, new ScoreAddedResponseListener() {
             @Override
             public void onError(String message) {

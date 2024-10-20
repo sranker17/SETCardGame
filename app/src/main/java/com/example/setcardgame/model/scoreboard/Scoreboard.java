@@ -14,14 +14,18 @@ public class Scoreboard {
     private Difficulty difficulty;
     private int score;
     private int time;
-    private int placement;
-    private boolean myScore = false;
+    private Boolean userScore;
 
-    public Scoreboard(String username, String difficulty, int score, int time) {
+    public Scoreboard(String username, String difficulty, int score, int time, Boolean userScore) {
         this.username = username;
         this.difficulty = Difficulty.getDifficultyFromString(difficulty);
         this.score = score;
         this.time = time;
+        if (userScore == null) {
+            this.userScore = false;
+        } else {
+            this.userScore = userScore;
+        }
     }
 
     @NonNull

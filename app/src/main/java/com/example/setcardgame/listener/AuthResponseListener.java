@@ -4,7 +4,7 @@ import com.example.setcardgame.model.Error;
 
 import org.json.JSONObject;
 
-public interface LoginResponseListener {
+public interface AuthResponseListener {
     void onError(Error errorResponse);
     void onResponse(JSONObject loginResponse);
 }
