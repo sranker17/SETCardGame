@@ -26,6 +26,9 @@ public class LoginActivity extends AppCompatActivity {
     private static final String LOGIN = "LOGIN";
     private static final String TOKEN = "token";
     private static final String EXPIRES_IN = "expiresIn";
+    private static final String AUTH = "auth";
+    private static final String USERNAME = "username";
+    private static final String PASSWORD = "password";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,10 +74,12 @@ public class LoginActivity extends AppCompatActivity {
                         String token = loginResponse.getString(TOKEN);
                         long expiresIn = loginResponse.getLong(EXPIRES_IN);
 
-                        SharedPreferences sp = getSharedPreferences("auth", MODE_PRIVATE);
+                        SharedPreferences sp = getSharedPreferences(AUTH, MODE_PRIVATE);
                         SharedPreferences.Editor editor = sp.edit();
                         editor.putString(TOKEN, token);
                         editor.putLong(EXPIRES_IN, expiresIn);
+                        editor.putString(USERNAME, authUser.getUsername());
+                        editor.putString(PASSWORD, authUser.getPassword());
                         editor.apply();
 
                         Log.i(LOGIN, "Token stored successfully: " + token);

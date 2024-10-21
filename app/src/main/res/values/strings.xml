@@ -55,4 +55,6 @@
     <string name="accountError">Login failed</string>
     <string name="internalServerError">Internal server error</string>
     <string name="invalidParameters">Invalid parameters</string>
+    <string name="authentication">Authentication</string>
+    <string name="takenUsername">Username is already taken</string>
 </resources>

@@ -56,4 +56,6 @@
     <string name="accountError">Nem sikerült a bejelentkezés</string>
     <string name="internalServerError">Belső szerverhiba</string>
     <string name="invalidParameters">Hibás adatok</string>
+    <string name="authentication">Hitelesítés</string>
+    <string name="takenUsername">A felhasználónév már foglalt</string>
 </resources>

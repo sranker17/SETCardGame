@@ -25,6 +25,9 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText passwordET;
     private final AuthService authService = new AuthService(RegisterActivity.this);
     private static final String REGISTER = "REGISTER";
+    private static final String AUTH = "auth";
+    private static final String USERNAME = "username";
+    private static final String PASSWORD = "password";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,13 +57,15 @@ public class RegisterActivity extends AppCompatActivity {
                         case 403:
                             toastMessage = getString(R.string.accountError);
                             break;
+                        case 409:
+                            toastMessage = getString(R.string.takenUsername);
+                            break;
                         case 500:
                             toastMessage = getString(R.string.internalServerError);
                             break;
                         default:
                             toastMessage = errorResponse.getDescription();
                     }
-                    //TODO handle already used username
                     Toast.makeText(RegisterActivity.this, toastMessage, Toast.LENGTH_SHORT).show();
                 }
 
@@ -68,14 +73,14 @@ public class RegisterActivity extends AppCompatActivity {
                 public void onResponse(JSONObject loginResponse) {
                     Log.i(REGISTER, loginResponse.toString());
                     try {
-                        String username = loginResponse.getString("username");
+                        String username = loginResponse.getString(USERNAME);
                         JSONObject roleObject = loginResponse.getJSONObject("role");
                         String roleName = roleObject.getString("name");
 
-                        SharedPreferences sp = getSharedPreferences("auth", MODE_PRIVATE);
+                        SharedPreferences sp = getSharedPreferences(AUTH, MODE_PRIVATE);
                         SharedPreferences.Editor editor = sp.edit();
-                        editor.putString("username", authUser.getUsername());
-                        editor.putString("password", authUser.getPassword());
+                        editor.putString(USERNAME, authUser.getUsername());
+                        editor.putString(PASSWORD, authUser.getPassword());
                         editor.apply();
 
                         Log.d(REGISTER, "Successfully registered user: " + username + " with role: " + roleName);
