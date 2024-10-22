@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.setcardgame.R;
 import com.example.setcardgame.listener.AuthResponseListener;
 import com.example.setcardgame.model.Error;
+import com.example.setcardgame.model.ServerStatus;
 import com.example.setcardgame.model.auth.AuthUser;
 import com.example.setcardgame.service.AuthService;
 
@@ -25,10 +26,12 @@ public class LoginActivity extends AppCompatActivity {
     private final AuthService authService = new AuthService(LoginActivity.this);
     private static final String LOGIN = "LOGIN";
     private static final String TOKEN = "token";
+    private static final String TOKEN_GENERATION_DATE = "tokenGenerationDate";
     private static final String EXPIRES_IN = "expiresIn";
     private static final String AUTH = "auth";
     private static final String USERNAME = "username";
     private static final String PASSWORD = "password";
+    private static final String SERVER_STATUS = "SERVER_STATUS";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +64,16 @@ public class LoginActivity extends AppCompatActivity {
                         case 500:
                             toastMessage = getString(R.string.internalServerError);
                             break;
+                        case 503:
+                            toastMessage = getString(R.string.serverUnavailable);
+
+                            SharedPreferences sp = getSharedPreferences(AUTH, MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sp.edit();
+                            editor.putString(SERVER_STATUS, ServerStatus.OFFLINE.name());
+                            editor.apply();
+                            
+                            switchToMain();
+                            break;
                         default:
                             toastMessage = errorResponse.getDescription();
                     }
@@ -78,8 +91,10 @@ public class LoginActivity extends AppCompatActivity {
                         SharedPreferences.Editor editor = sp.edit();
                         editor.putString(TOKEN, token);
                         editor.putLong(EXPIRES_IN, expiresIn);
+                        editor.putLong(TOKEN_GENERATION_DATE, System.currentTimeMillis());
                         editor.putString(USERNAME, authUser.getUsername());
                         editor.putString(PASSWORD, authUser.getPassword());
+                        editor.putString(SERVER_STATUS, ServerStatus.ONLINE.name());
                         editor.apply();
 
                         Log.i(LOGIN, "Token stored successfully: " + token);

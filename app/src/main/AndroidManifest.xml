@@ -111,6 +111,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".viewmodel.MainActivity"
+            android:launchMode="singleTop"
             android:exported="true"
             android:label="@string/setCardGameText"
             android:screenOrientation="portrait">

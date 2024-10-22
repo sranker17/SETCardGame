@@ -35,7 +35,7 @@ public class WorldScoresActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.viewPagerPlayer);
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
-        scoreboardService.getPlayerScores(false, new ScoreboardResponseListener() {
+        scoreboardService.getPlayerScores("/top", new ScoreboardResponseListener() {
             @Override
             public void onError(String message) {
                 //TODO if message contains response code 403, show a dialog to ask user to login?

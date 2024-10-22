@@ -28,7 +28,8 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class ScoreboardService {
     private AuthService authService;
-    private static final String SCOREBOARD_URL = UrlConstants.URL + "scoreboard";
+    private static final String SCOREBOARD = "scoreboard";
+    private static final String SCOREBOARD_URL = UrlConstants.URL + SCOREBOARD;
     private static final String DIFFICULTY = "difficulty";
     private static final String SCORE = "score";
     private static final String TIME = "time";
@@ -36,15 +37,8 @@ public class ScoreboardService {
     private static final String USER_SCORE = "userScore";
     private final Context context;
 
-    public void getPlayerScores(boolean usesUsername, ScoreboardResponseListener scoreboardResponseListener) {
-        String url;
-        if (usesUsername) {
-            url = SCOREBOARD_URL + "/user";
-        } else {
-            url = SCOREBOARD_URL + "/top";
-        }
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+    public void getPlayerScores(String endpoint, ScoreboardResponseListener scoreboardResponseListener) {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, SCOREBOARD_URL + endpoint, null,
                 response -> {
                     try {
                         TopScores topScores = new TopScores();
@@ -88,7 +82,7 @@ public class ScoreboardService {
                 String token = sp.getString("token", null);
                 if (token == null) {
                     Log.d("Scoreboard", "Refreshing token");
-                    token = authService.refreshToken();
+                    authService.refreshToken();
                 }
                 HashMap<String, String> params = new HashMap<>();
                 params.put("Authorization", "Bearer " + token);
@@ -108,7 +102,7 @@ public class ScoreboardService {
             postObj.put(TIME, scoreboardModel.getTime());
 
         } catch (JSONException e) {
-            e.getMessage();
+            Log.e(SCOREBOARD,e.getMessage());
         }
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, SCOREBOARD_URL, postObj,

@@ -14,6 +14,7 @@ import com.example.setcardgame.R;
 import com.example.setcardgame.exception.RefreshException;
 import com.example.setcardgame.listener.AuthResponseListener;
 import com.example.setcardgame.model.Error;
+import com.example.setcardgame.model.ServerStatus;
 import com.example.setcardgame.model.auth.AuthUser;
 import com.example.setcardgame.service.AuthService;
 
@@ -28,6 +29,7 @@ public class RegisterActivity extends AppCompatActivity {
     private static final String AUTH = "auth";
     private static final String USERNAME = "username";
     private static final String PASSWORD = "password";
+    private static final String SERVER_STATUS = "SERVER_STATUS";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +65,16 @@ public class RegisterActivity extends AppCompatActivity {
                         case 500:
                             toastMessage = getString(R.string.internalServerError);
                             break;
+                        case 503:
+                            toastMessage = getString(R.string.serverUnavailable);
+
+                            SharedPreferences sp = getSharedPreferences(AUTH, MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sp.edit();
+                            editor.putString(SERVER_STATUS, ServerStatus.OFFLINE.name());
+                            editor.apply();
+
+                            switchToMain();
+                            break;
                         default:
                             toastMessage = errorResponse.getDescription();
                     }
@@ -79,8 +91,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                         SharedPreferences sp = getSharedPreferences(AUTH, MODE_PRIVATE);
                         SharedPreferences.Editor editor = sp.edit();
-                        editor.putString(USERNAME, authUser.getUsername());
-                        editor.putString(PASSWORD, authUser.getPassword());
+                        editor.putString(SERVER_STATUS, ServerStatus.ONLINE.name());
                         editor.apply();
 
                         Log.d(REGISTER, "Successfully registered user: " + username + " with role: " + roleName);

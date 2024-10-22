@@ -33,7 +33,7 @@ public class PlayerScoresActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.viewPagerPlayer);
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
-        scoreboardService.getPlayerScores(true, new ScoreboardResponseListener() {
+        scoreboardService.getPlayerScores("/user", new ScoreboardResponseListener() {
             @Override
             public void onError(String message) {
                 Log.e(TAG, message);
