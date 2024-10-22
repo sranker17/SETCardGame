@@ -1,11 +1,16 @@
 package com.example.setcardgame.service;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.setcardgame.config.RequestQueueSingleton;
+import com.example.setcardgame.listener.ScoreAddedResponseListener;
+import com.example.setcardgame.listener.ScoreboardResponseListener;
 import com.example.setcardgame.model.UrlConstants;
 import com.example.setcardgame.model.scoreboard.Scoreboard;
 import com.example.setcardgame.model.scoreboard.TopScores;
@@ -21,13 +26,14 @@ import java.util.Map;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class ScoreboardDataService {
-
-    public static final String SCOREBOARD_URL = UrlConstants.URL + "scoreboard";
+public class ScoreboardService {
+    private AuthService authService;
+    private static final String SCOREBOARD_URL = UrlConstants.URL + "scoreboard";
     private static final String DIFFICULTY = "difficulty";
     private static final String SCORE = "score";
     private static final String TIME = "time";
     private static final String USERNAME = "username";
+    private static final String USER_SCORE = "userScore";
     private final Context context;
 
     public void getPlayerScores(boolean usesUsername, ScoreboardResponseListener scoreboardResponseListener) {
@@ -55,7 +61,8 @@ public class ScoreboardDataService {
                                     easyScore.getString(USERNAME),
                                     easyScore.getString(DIFFICULTY),
                                     easyScore.getInt(SCORE),
-                                    easyScore.getInt(TIME));
+                                    easyScore.getInt(TIME),
+                                    easyScore.getBoolean(USER_SCORE));
                             topScores.getEasyScores().add(score);
                         }
 
@@ -65,7 +72,8 @@ public class ScoreboardDataService {
                                     normalScore.getString(USERNAME),
                                     normalScore.getString(DIFFICULTY),
                                     normalScore.getInt(SCORE),
-                                    normalScore.getInt(TIME));
+                                    normalScore.getInt(TIME),
+                                    normalScore.getBoolean(USER_SCORE));
                             topScores.getNormalScores().add(score);
                         }
 
@@ -76,9 +84,14 @@ public class ScoreboardDataService {
                 }, error -> scoreboardResponseListener.onError("Did not get score")) {
             @Override
             public Map<String, String> getHeaders() {
+                SharedPreferences sp = context.getSharedPreferences("auth", MODE_PRIVATE);
+                String token = sp.getString("token", null);
+                if (token == null) {
+                    Log.d("Scoreboard", "Refreshing token");
+                    token = authService.refreshToken();
+                }
                 HashMap<String, String> params = new HashMap<>();
-                //TODO get token from login
-                params.put("Authorization", "Bearer " + "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcl9hZG1pbiIsImlhdCI6MTcyOTE5ODQ3NiwiZXhwIjoxNzI5MjAyMDc2fQ.tXLY4dBWvuRYrreI6des21J0SIkMegpcvxUODwXG7p4");
+                params.put("Authorization", "Bearer " + token);
                 return params;
             }
         };
@@ -109,17 +122,5 @@ public class ScoreboardDataService {
         };
 
         RequestQueueSingleton.getInstance(context).addToRequestQueue(request);
-    }
-
-    public interface ScoreboardResponseListener {
-        void onError(String message);
-
-        void onResponse(TopScores topScores);
-    }
-
-    public interface ScoreAddedResponseListener {
-        void onError(String message);
-
-        void onResponse(JSONObject scoreboardModels);
     }
 }

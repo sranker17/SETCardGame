@@ -93,6 +93,23 @@
             android:parentActivityName=".viewmodel.MainActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".viewmodel.RegisterActivity"
+            android:exported="false"
+            android:label="@string/registerText"
+            android:parentActivityName=".viewmodel.AuthenticationActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".viewmodel.LoginActivity"
+            android:exported="false"
+            android:label="@string/loginText"
+            android:parentActivityName=".viewmodel.AuthenticationActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".viewmodel.AuthenticationActivity"
+            android:exported="false"
+            android:label="@string/authentication"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".viewmodel.MainActivity"
             android:exported="true"
             android:label="@string/setCardGameText"

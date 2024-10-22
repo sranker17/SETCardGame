@@ -8,11 +8,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.setcardgame.R;
-import com.example.setcardgame.model.Username;
+import com.example.setcardgame.listener.ScoreboardResponseListener;
 import com.example.setcardgame.model.scoreboard.ScoresFragment;
 import com.example.setcardgame.model.scoreboard.TopScores;
 import com.example.setcardgame.model.scoreboard.ViewPagerAdapter;
-import com.example.setcardgame.service.ScoreboardDataService;
+import com.example.setcardgame.service.AuthService;
+import com.example.setcardgame.service.ScoreboardService;
 import com.google.android.material.tabs.TabLayout;
 
 public class PlayerScoresActivity extends AppCompatActivity {
@@ -20,8 +21,7 @@ public class PlayerScoresActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private ViewPagerAdapter adapter;
-    private final String username = Username.getName();
-    private final ScoreboardDataService scoreboardDataService = new ScoreboardDataService(PlayerScoresActivity.this);
+    private final ScoreboardService scoreboardService = new ScoreboardService(new AuthService(PlayerScoresActivity.this), PlayerScoresActivity.this);
     private static final String TAG = "Player score";
 
     @Override
@@ -33,7 +33,7 @@ public class PlayerScoresActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.viewPagerPlayer);
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
-        scoreboardDataService.getPlayerScores(true, new ScoreboardDataService.ScoreboardResponseListener() {
+        scoreboardService.getPlayerScores(true, new ScoreboardResponseListener() {
             @Override
             public void onError(String message) {
                 Log.e(TAG, message);

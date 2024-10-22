@@ -6,6 +6,8 @@
     <string name="scoreboardText">Eredmények</string>
     <string name="singleplayerText">Egyjátékos</string>
     <string name="multiplayerText">Többjátékos</string>
+    <string name="registerText">Regisztrálás</string>
+    <string name="loginText">Bejelentkezés</string>
     <string name="timerTextView">0:00</string>
     <string name="pointTextView">0</string>
     <string name="scoreTextView">EREDMÉNY</string>
@@ -48,4 +50,12 @@
     <string name="cantGetScores">Nem sikerült lekérni az eredményeket.</string>
     <string name="serverUnavailable">A szerver nem érhető el.</string>
     <string name="loading">Töltés</string>
+    <string name="usernameText">Felhasználónév</string>
+    <string name="passwordText">Jelszó</string>
+    <string name="badCredentials">Helytelen felhasználónév vagy jelszó</string>
+    <string name="accountError">Nem sikerült a bejelentkezés</string>
+    <string name="internalServerError">Belső szerverhiba</string>
+    <string name="invalidParameters">Hibás adatok</string>
+    <string name="authentication">Hitelesítés</string>
+    <string name="takenUsername">A felhasználónév már foglalt</string>
 </resources>
