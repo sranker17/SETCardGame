@@ -1,6 +1,7 @@
 package com.example.setcardgame.viewmodel.multiplayer;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -16,7 +17,6 @@ import androidx.core.content.ContextCompat;
 import com.example.setcardgame.R;
 import com.example.setcardgame.config.WebSocketClient;
 import com.example.setcardgame.model.MultiplayerGame;
-import com.example.setcardgame.model.Username;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,18 +30,19 @@ import java.util.TimerTask;
 import io.reactivex.disposables.Disposable;
 
 public class MultiplayerActivity extends AppCompatActivity {
-
     private static final String TAG = "Multiplayer";
     private static final String PLAYER_ID = "playerId";
     private static final String GAME_ID = "gameId";
     private static final String SELECTED_CARD_INDEX = "selectedCardIndex";
     private static final String SELECT = "select";
+    private static final String AUTH = "auth";
+    private static final String USERNAME = "username";
     private final List<ImageView> boardIV = new ArrayList<>();
     private final List<Integer> selectedCardIds = new ArrayList<>();
     private TextView opponentPointTextView;
     private TextView ownPointTextView;
     private Button setBtn;
-    private final String username = Username.getName();
+    private String foundUsername;
     private int gameId;
     private MultiplayerGame game;
     private final Timer resetBackgroundTimer = new Timer();
@@ -58,6 +59,14 @@ public class MultiplayerActivity extends AppCompatActivity {
         gameId = Integer.parseInt(Objects.requireNonNull(mp.getStringExtra(GAME_ID)));
         setBtn = findViewById(R.id.callSETBtn);
 
+        SharedPreferences sp = getSharedPreferences(AUTH, MODE_PRIVATE);
+        foundUsername = sp.getString(USERNAME, null);
+
+        if (foundUsername == null) {
+            Log.e(TAG, "Username not found");
+            return;
+        }
+
         JSONObject jsonGameId = new JSONObject();
         try {
             jsonGameId.put(GAME_ID, gameId);
@@ -65,6 +74,7 @@ public class MultiplayerActivity extends AppCompatActivity {
             e.getMessage();
         }
 
+        //TODO add jwt to okhttp
         Disposable topic = WebSocketClient.mStompClient.topic("/topic/game-progress/" + gameId).subscribe(topicMessage -> {
             try {
                 JSONObject msg = new JSONObject(topicMessage.getPayload());
@@ -85,7 +95,7 @@ public class MultiplayerActivity extends AppCompatActivity {
                             Log.d(TAG, "Game started with id: " + gameId);
                         } else {
                             //SET button press
-                            if (tempGame.getBlockedBy() != null && tempGame.getBlockedBy().toString().equals(username) && tempGame.getSelectedCardIndexes().isEmpty()) {
+                            if (tempGame.getBlockedBy() != null && tempGame.getBlockedBy().toString().equals(foundUsername) && tempGame.getSelectedCardIndexes().isEmpty()) {
                                 Log.d(TAG, "my block");
                                 try {
                                     game.setBlockedByString(msg.getString("blockedBy"));
@@ -94,7 +104,7 @@ public class MultiplayerActivity extends AppCompatActivity {
                                 } catch (JSONException e) {
                                     e.getMessage();
                                 }
-                            } else if (tempGame.getBlockedBy() != null && !tempGame.getBlockedBy().toString().equals(username) && tempGame.getSelectedCardIndexes().isEmpty()) {
+                            } else if (tempGame.getBlockedBy() != null && !tempGame.getBlockedBy().toString().equals(foundUsername) && tempGame.getSelectedCardIndexes().isEmpty()) {
                                 Log.d(TAG, "opponent's block");
                                 try {
                                     game.setBlockedByString(msg.getString("blockedBy"));
@@ -106,7 +116,7 @@ public class MultiplayerActivity extends AppCompatActivity {
                             }
 
                             //opponent is selecting cards
-                            if (tempGame.getBlockedBy() != null && !tempGame.getBlockedBy().toString().equals(username)) {
+                            if (tempGame.getBlockedBy() != null && !tempGame.getBlockedBy().toString().equals(foundUsername)) {
                                 game.setSelectedCardIndexes(tempGame.getSelectedCardIndexes());
                                 setSelectedCardsBackgroundForOpponent(game.getSelectedCardIndexes());
                             }
@@ -125,7 +135,7 @@ public class MultiplayerActivity extends AppCompatActivity {
                                     resetCardBackgrounds();
                                     resetButtonAndCardClicks();
 
-                                    if (game.getBlockedBy().toString().equals(username)) {
+                                    if (game.getBlockedBy().toString().equals(foundUsername)) {
                                         resetButtonAndCardClicksOnError();
                                         punishPlayerError();
                                         Log.d(TAG, "set not found");
@@ -171,7 +181,7 @@ public class MultiplayerActivity extends AppCompatActivity {
                                 game.clearSelectedCardIndexes();
                                 selectedCardIds.clear();
                                 resetCardBackgrounds();
-                                if (game.getBlockedBy().toString().equals(username)) {
+                                if (game.getBlockedBy().toString().equals(foundUsername)) {
                                     resetButtonAndCardClicksOnError();
                                     punishPlayerError();
                                     Log.d(TAG, "punished");
@@ -229,7 +239,7 @@ public class MultiplayerActivity extends AppCompatActivity {
         JSONObject buttonPressJson = new JSONObject();
         try {
             buttonPressJson.put(GAME_ID, gameId);
-            buttonPressJson.put(PLAYER_ID, username);
+            buttonPressJson.put(PLAYER_ID, foundUsername);
         } catch (JSONException e) {
             e.getMessage();
         }
@@ -277,7 +287,7 @@ public class MultiplayerActivity extends AppCompatActivity {
     }
 
     private void updatePointTextViews() {
-        if (game.getPlayer1().toString().equals(username)) {
+        if (game.getPlayer1().toString().equals(foundUsername)) {
             ownPointTextView.setText(String.valueOf(game.getPoints().get(game.getPlayer1())));
             opponentPointTextView.setText(String.valueOf(game.getPoints().get(game.getPlayer2())));
         } else {
@@ -287,7 +297,7 @@ public class MultiplayerActivity extends AppCompatActivity {
     }
 
     public void onCardClick(View view) {
-        if (game.getBlockedBy().toString().equals(username) && selectedCardIds.size() < 3) {
+        if (game.getBlockedBy().toString().equals(foundUsername) && selectedCardIds.size() < 3) {
             if (!selectedCardIds.contains(view.getId())) {
                 resetInt++;
                 if (resetInt == 3) {
@@ -306,7 +316,7 @@ public class MultiplayerActivity extends AppCompatActivity {
                         JSONObject gameplayJson = new JSONObject();
                         try {
                             gameplayJson.put(GAME_ID, gameId);
-                            gameplayJson.put(PLAYER_ID, username);
+                            gameplayJson.put(PLAYER_ID, foundUsername);
                             gameplayJson.put(SELECT, true);
                             gameplayJson.put(SELECTED_CARD_INDEX, counter);
                         } catch (JSONException e) {
@@ -326,7 +336,7 @@ public class MultiplayerActivity extends AppCompatActivity {
                         JSONObject gameplayJson = new JSONObject();
                         try {
                             gameplayJson.put(GAME_ID, gameId);
-                            gameplayJson.put(PLAYER_ID, username);
+                            gameplayJson.put(PLAYER_ID, foundUsername);
                             gameplayJson.put(SELECT, false);
                             gameplayJson.put(SELECTED_CARD_INDEX, i);
                         } catch (JSONException e) {
@@ -398,7 +408,7 @@ public class MultiplayerActivity extends AppCompatActivity {
         mpes.putExtra("ownScore", ownPointTextView.getText());
         mpes.putExtra("winner", game.getWinner().toString());
         if (game.getPlayer1() != null && game.getPlayer2() != null) {
-            if (game.getPlayer1().toString().equals(username)) {
+            if (game.getPlayer1().toString().equals(foundUsername)) {
                 mpes.putExtra("opponent", game.getPlayer2().toString());
             } else {
                 mpes.putExtra("opponent", game.getPlayer1().toString());

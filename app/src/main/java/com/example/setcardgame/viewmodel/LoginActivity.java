@@ -20,11 +20,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class LoginActivity extends AppCompatActivity {
+    private final AuthService authService = new AuthService(LoginActivity.this);
     private EditText usernameET;
     private EditText passwordET;
-    private final AuthService authService = new AuthService(LoginActivity.this);
     private static final String LOGIN = "LOGIN";
     private static final String TOKEN = "token";
+    private static final String TOKEN_GENERATION_DATE = "tokenGenerationDate";
     private static final String EXPIRES_IN = "expiresIn";
     private static final String AUTH = "auth";
     private static final String USERNAME = "username";
@@ -61,6 +62,10 @@ public class LoginActivity extends AppCompatActivity {
                         case 500:
                             toastMessage = getString(R.string.internalServerError);
                             break;
+                        case 503:
+                            toastMessage = getString(R.string.serverUnavailable);
+                            switchToMain();
+                            break;
                         default:
                             toastMessage = errorResponse.getDescription();
                     }
@@ -78,6 +83,7 @@ public class LoginActivity extends AppCompatActivity {
                         SharedPreferences.Editor editor = sp.edit();
                         editor.putString(TOKEN, token);
                         editor.putLong(EXPIRES_IN, expiresIn);
+                        editor.putLong(TOKEN_GENERATION_DATE, System.currentTimeMillis());
                         editor.putString(USERNAME, authUser.getUsername());
                         editor.putString(PASSWORD, authUser.getPassword());
                         editor.apply();

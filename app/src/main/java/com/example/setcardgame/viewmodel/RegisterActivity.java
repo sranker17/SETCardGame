@@ -1,7 +1,6 @@
 package com.example.setcardgame.viewmodel;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,13 +20,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class RegisterActivity extends AppCompatActivity {
+    private final AuthService authService = new AuthService(RegisterActivity.this);
     private EditText usernameET;
     private EditText passwordET;
-    private final AuthService authService = new AuthService(RegisterActivity.this);
     private static final String REGISTER = "REGISTER";
-    private static final String AUTH = "auth";
     private static final String USERNAME = "username";
-    private static final String PASSWORD = "password";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +60,10 @@ public class RegisterActivity extends AppCompatActivity {
                         case 500:
                             toastMessage = getString(R.string.internalServerError);
                             break;
+                        case 503:
+                            toastMessage = getString(R.string.serverUnavailable);
+                            switchToMain();
+                            break;
                         default:
                             toastMessage = errorResponse.getDescription();
                     }
@@ -76,20 +77,16 @@ public class RegisterActivity extends AppCompatActivity {
                         String username = loginResponse.getString(USERNAME);
                         JSONObject roleObject = loginResponse.getJSONObject("role");
                         String roleName = roleObject.getString("name");
-
-                        SharedPreferences sp = getSharedPreferences(AUTH, MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sp.edit();
-                        editor.putString(USERNAME, authUser.getUsername());
-                        editor.putString(PASSWORD, authUser.getPassword());
-                        editor.apply();
-
                         Log.d(REGISTER, "Successfully registered user: " + username + " with role: " + roleName);
                     } catch (JSONException e) {
                         Log.e(REGISTER, "Error parsing login response", e);
                         throw new RuntimeException(e);
                     }
                     try {
-                        authService.refreshToken();
+                        authService.refreshToken(isOnline -> {
+                            Log.i(REGISTER, "Server status online: " + isOnline);
+                            switchToMain();
+                        });
                         switchToMain();
                     } catch (RefreshException e) {
                         Log.e(REGISTER, "Error refreshing token", e);

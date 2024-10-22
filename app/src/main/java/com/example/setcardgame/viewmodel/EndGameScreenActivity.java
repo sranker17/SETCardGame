@@ -1,6 +1,7 @@
 package com.example.setcardgame.viewmodel;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.setcardgame.R;
 import com.example.setcardgame.listener.ScoreAddedResponseListener;
 import com.example.setcardgame.model.Difficulty;
-import com.example.setcardgame.model.Username;
+import com.example.setcardgame.model.Error;
 import com.example.setcardgame.model.scoreboard.Scoreboard;
 import com.example.setcardgame.service.AuthService;
 import com.example.setcardgame.service.ScoreboardService;
@@ -23,12 +24,14 @@ import org.json.JSONObject;
 import java.util.Objects;
 
 public class EndGameScreenActivity extends AppCompatActivity {
+    private final AuthService authService = new AuthService(EndGameScreenActivity.this);
+    private final ScoreboardService scoreboardService = new ScoreboardService(EndGameScreenActivity.this);
     private int finalTime;
     private String finalScore;
     private String finalDifficulty;
-    private final String username = Username.getName();
-    private final ScoreboardService scoreboardService = new ScoreboardService(new AuthService(EndGameScreenActivity.this), EndGameScreenActivity.this);
-
+    private static final String AUTH = "auth";
+    private static final String USERNAME = "username";
+    private static final String END_GAME_SCREEN = "EndGameScreen";
     private static final String SCORE = "score";
     private static final String DIFF = "diff";
     private static final String DIFF_MODE = "diffMode";
@@ -57,7 +60,19 @@ public class EndGameScreenActivity extends AppCompatActivity {
             finalDifficultyTextView.setText(String.format("%s", getString(R.string.normal)));
         }
 
-        addScoreToDB();
+        if (authService.isTokenExpired()) {
+            authService.refreshToken(isOnline -> {
+                if (isOnline) {
+                    Log.i(END_GAME_SCREEN, "Saving score with refreshed token");
+                    saveScore();
+                } else {
+                    Log.e(END_GAME_SCREEN, "Server offline");
+                }
+            });
+        } else {
+            Log.i(END_GAME_SCREEN, "Saving score with current token");
+            saveScore();
+        }
     }
 
     public void newSingleplayerGame(View view) {
@@ -76,19 +91,43 @@ public class EndGameScreenActivity extends AppCompatActivity {
         startActivity(sb);
     }
 
-    private void addScoreToDB() {
-        //TODO add auth
+    private void saveScore() {
+        SharedPreferences sp = getSharedPreferences(AUTH, MODE_PRIVATE);
+        String username = sp.getString(USERNAME, null);
         Scoreboard scoreboardModel = new Scoreboard(username, finalDifficulty, Integer.parseInt(finalScore), finalTime, null);
         scoreboardService.addScore(scoreboardModel, new ScoreAddedResponseListener() {
             @Override
-            public void onError(String message) {
-                Toast.makeText(EndGameScreenActivity.this, message, Toast.LENGTH_SHORT).show();
-                Log.d(SCORE, message);
+            public void onError(Error errorResponse) {
+                Log.e(END_GAME_SCREEN, errorResponse.toString());
+                String toastMessage;
+                switch (errorResponse.getStatus()) {
+                    case 400:
+                        toastMessage = getString(R.string.invalidParameters);
+                        break;
+                    case 401:
+                        toastMessage = getString(R.string.badCredentials);
+                        break;
+                    case 403:
+                        toastMessage = getString(R.string.accountError);
+                        break;
+                    case 409:
+                        toastMessage = getString(R.string.takenUsername);
+                        break;
+                    case 500:
+                        toastMessage = getString(R.string.internalServerError);
+                        break;
+                    case 503:
+                        toastMessage = getString(R.string.serverUnavailable);
+                        break;
+                    default:
+                        toastMessage = errorResponse.getDescription();
+                }
+                Toast.makeText(EndGameScreenActivity.this, toastMessage, Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void onResponse(JSONObject scoreboardModel) {
-                Log.d(SCORE, scoreboardModel.toString());
+            public void onResponse(JSONObject scoreboardResponse) {
+                Log.d(SCORE, scoreboardResponse.toString());
             }
         });
     }
