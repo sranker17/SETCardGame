@@ -1,6 +1,7 @@
 package com.example.setcardgame.service;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.example.setcardgame.service.ErrorHandlerService.handleErrorResponse;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -27,7 +28,6 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class ScoreboardService {
-    private AuthService authService;
     private static final String SCOREBOARD = "scoreboard";
     private static final String SCOREBOARD_URL = UrlConstants.URL + SCOREBOARD;
     private static final String DIFFICULTY = "difficulty";
@@ -35,6 +35,7 @@ public class ScoreboardService {
     private static final String TIME = "time";
     private static final String USERNAME = "username";
     private static final String USER_SCORE = "userScore";
+    private static final String AUTH = "auth";
     private final Context context;
 
     public void getPlayerScores(String endpoint, ScoreboardResponseListener scoreboardResponseListener) {
@@ -44,7 +45,7 @@ public class ScoreboardService {
                         TopScores topScores = new TopScores();
                         topScores.setEasyScores(new ArrayList<>());
                         topScores.setNormalScores(new ArrayList<>());
-                        Log.i("Response", String.valueOf(response));
+                        Log.d(SCOREBOARD, "Response in scoreboard: " + response);
 
                         JSONArray easyScores = response.getJSONArray("easyScores");
                         JSONArray normalScores = response.getJSONArray("normalScores");
@@ -78,12 +79,8 @@ public class ScoreboardService {
                 }, error -> scoreboardResponseListener.onError("Did not get score")) {
             @Override
             public Map<String, String> getHeaders() {
-                SharedPreferences sp = context.getSharedPreferences("auth", MODE_PRIVATE);
+                SharedPreferences sp = context.getSharedPreferences(AUTH, MODE_PRIVATE);
                 String token = sp.getString("token", null);
-                if (token == null) {
-                    Log.d("Scoreboard", "Refreshing token");
-                    authService.refreshToken();
-                }
                 HashMap<String, String> params = new HashMap<>();
                 params.put("Authorization", "Bearer " + token);
                 return params;
@@ -102,14 +99,17 @@ public class ScoreboardService {
             postObj.put(TIME, scoreboardModel.getTime());
 
         } catch (JSONException e) {
-            Log.e(SCOREBOARD,e.getMessage());
+            Log.e(SCOREBOARD, e.toString());
         }
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, SCOREBOARD_URL, postObj,
-                scoreAddedResponseListener::onResponse, error -> scoreAddedResponseListener.onError(error.getMessage())) {
+                scoreAddedResponseListener::onResponse, error -> handleErrorResponse(error, scoreAddedResponseListener, context)) {
             @Override
             public Map<String, String> getHeaders() {
+                SharedPreferences sp = context.getSharedPreferences(AUTH, MODE_PRIVATE);
+                String token = sp.getString("token", null);
                 HashMap<String, String> params = new HashMap<>();
+                params.put("Authorization", "Bearer " + token);
                 params.put("Content-Type", "application/json; charset=utf-8");
                 return params;
             }

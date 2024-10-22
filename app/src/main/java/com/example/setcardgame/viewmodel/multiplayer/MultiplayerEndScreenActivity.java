@@ -1,20 +1,22 @@
 package com.example.setcardgame.viewmodel.multiplayer;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.setcardgame.R;
-import com.example.setcardgame.model.Username;
 import com.example.setcardgame.viewmodel.MainActivity;
 
 public class MultiplayerEndScreenActivity extends AppCompatActivity {
-
-    private final String username = Username.getName();
+    private static final String AUTH = "auth";
+    private static final String USERNAME = "username";
+    private static final String TAG = "multiplayerEndScreen";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +35,14 @@ public class MultiplayerEndScreenActivity extends AppCompatActivity {
 
         if (winner == null) {
             throw new IllegalArgumentException("Winner cannot be null");
+        }
+
+        SharedPreferences sp = getSharedPreferences(AUTH, MODE_PRIVATE);
+        String username = sp.getString(USERNAME, null);
+
+        if (username == null) {
+            Log.e(TAG, "Username not found");
+            return;
         }
 
         if (username.equals(winner)) {

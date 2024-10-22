@@ -17,12 +17,12 @@ import com.example.setcardgame.service.ScoreboardService;
 import com.google.android.material.tabs.TabLayout;
 
 public class PlayerScoresActivity extends AppCompatActivity {
-
+    private final AuthService authService = new AuthService(PlayerScoresActivity.this);
+    private final ScoreboardService scoreboardService = new ScoreboardService(PlayerScoresActivity.this);
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private ViewPagerAdapter adapter;
-    private final ScoreboardService scoreboardService = new ScoreboardService(new AuthService(PlayerScoresActivity.this), PlayerScoresActivity.this);
-    private static final String TAG = "Player score";
+    private static final String TAG = "userScores";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,9 +33,26 @@ public class PlayerScoresActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.viewPagerPlayer);
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
+        if (authService.isTokenExpired()) {
+            authService.refreshToken(isOnline -> {
+                if (isOnline) {
+                    Log.i(TAG, "Getting player scores without refreshed token");
+                    getPlayerScores();
+                } else {
+                    Log.e(TAG, "Server offline");
+                }
+            });
+        } else {
+            Log.i(TAG, "Getting player scores with current token");
+            getPlayerScores();
+        }
+    }
+
+    private void getPlayerScores() {
         scoreboardService.getPlayerScores("/user", new ScoreboardResponseListener() {
             @Override
             public void onError(String message) {
+                //TODO handle error
                 Log.e(TAG, message);
                 Toast.makeText(PlayerScoresActivity.this, getString(R.string.cantGetScores), Toast.LENGTH_SHORT).show();
             }

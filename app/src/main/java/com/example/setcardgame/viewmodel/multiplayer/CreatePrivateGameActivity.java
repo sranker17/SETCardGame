@@ -1,6 +1,7 @@
 package com.example.setcardgame.viewmodel.multiplayer;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,7 +13,6 @@ import com.example.setcardgame.R;
 import com.example.setcardgame.config.WebSocketClient;
 import com.example.setcardgame.model.MultiplayerGame;
 import com.example.setcardgame.model.UrlConstants;
-import com.example.setcardgame.model.Username;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,18 +20,26 @@ import org.json.JSONObject;
 import io.reactivex.disposables.Disposable;
 
 public class CreatePrivateGameActivity extends AppCompatActivity {
-
-    private final String username = Username.getName();
     private MultiplayerGame game;
-
     private static final String TAG = "privateGame";
     private static final String GAME_ID = "gameId";
+    private static final String AUTH = "auth";
+    private static final String USERNAME = "username";
+    private static final String DESTROY_GAME_TOPIC = "/app/game/destroy";
+    private static final String CREATE_GAME_TOPIC = "/app/create";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_private_game);
         TextView connectionCodeTV = findViewById(R.id.connectionCodeTV);
+
+        SharedPreferences sp = getSharedPreferences(AUTH, MODE_PRIVATE);
+        String username = sp.getString(USERNAME, null);
+        if (username == null) {
+            Log.e(TAG, "Username not found");
+            return;
+        }
 
         WebSocketClient.createWebSocket(UrlConstants.WSS_URL + "multiconnect");
         Disposable topic = WebSocketClient.mStompClient.topic("/topic/waiting").subscribe(topicMessage -> {
@@ -55,12 +63,12 @@ public class CreatePrivateGameActivity extends AppCompatActivity {
 
         JSONObject jsonPlayer = new JSONObject();
         try {
-            jsonPlayer.put("username", username);
+            jsonPlayer.put(USERNAME, username);
         } catch (JSONException e) {
             e.getMessage();
         }
 
-        WebSocketClient.mStompClient.send("/app/create", jsonPlayer.toString()).subscribe();
+        WebSocketClient.mStompClient.send(CREATE_GAME_TOPIC, jsonPlayer.toString()).subscribe();
     }
 
     public void switchToMultiplayer() {
@@ -78,7 +86,7 @@ public class CreatePrivateGameActivity extends AppCompatActivity {
                 e.getMessage();
             }
 
-            WebSocketClient.mStompClient.send("/app/game/destroy", destroyGame.toString()).subscribe();
+            WebSocketClient.mStompClient.send(DESTROY_GAME_TOPIC, destroyGame.toString()).subscribe();
 
             Log.d(TAG, "Game destroyed");
 
@@ -101,7 +109,7 @@ public class CreatePrivateGameActivity extends AppCompatActivity {
                 e.getMessage();
             }
 
-            WebSocketClient.mStompClient.send("/app/game/destroy", destroyGame.toString()).subscribe();
+            WebSocketClient.mStompClient.send(DESTROY_GAME_TOPIC, destroyGame.toString()).subscribe();
 
             Log.d(TAG, "Game destroyed");
         }

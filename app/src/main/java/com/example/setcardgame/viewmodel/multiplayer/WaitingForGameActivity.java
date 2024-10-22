@@ -1,6 +1,7 @@
 package com.example.setcardgame.viewmodel.multiplayer;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,7 +12,6 @@ import com.example.setcardgame.R;
 import com.example.setcardgame.config.WebSocketClient;
 import com.example.setcardgame.model.MultiplayerGame;
 import com.example.setcardgame.model.UrlConstants;
-import com.example.setcardgame.model.Username;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,16 +19,24 @@ import org.json.JSONObject;
 import io.reactivex.disposables.Disposable;
 
 public class WaitingForGameActivity extends AppCompatActivity {
-
+    private MultiplayerGame game;
     private static final String TAG = "waiting";
     private static final String GAME_ID = "gameId";
-    private MultiplayerGame game;
-    private final String username = Username.getName();
+    private static final String AUTH = "auth";
+    private static final String USERNAME = "username";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_waiting_for_game);
+
+        SharedPreferences sp = getSharedPreferences(AUTH, MODE_PRIVATE);
+        String username = sp.getString(USERNAME, null);
+
+        if (username == null) {
+            Log.e(TAG, "Username not found");
+            return;
+        }
 
         WebSocketClient.createWebSocket(UrlConstants.WSS_URL + "multiconnect");
         Disposable topic = WebSocketClient.mStompClient.topic("/topic/waiting").subscribe(topicMessage -> {
@@ -53,7 +61,7 @@ public class WaitingForGameActivity extends AppCompatActivity {
 
         JSONObject jsonPlayer = new JSONObject();
         try {
-            jsonPlayer.put("username", username);
+            jsonPlayer.put(USERNAME, username);
         } catch (JSONException e) {
             e.getMessage();
         }
