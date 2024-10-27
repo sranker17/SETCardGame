@@ -12,6 +12,7 @@ import com.example.setcardgame.R;
 import com.example.setcardgame.config.WebSocketClient;
 import com.example.setcardgame.model.MultiplayerGame;
 import com.example.setcardgame.model.UrlConstants;
+import com.example.setcardgame.service.AuthService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,11 +20,13 @@ import org.json.JSONObject;
 import io.reactivex.disposables.Disposable;
 
 public class WaitingForGameActivity extends AppCompatActivity {
+    private final AuthService authService = new AuthService(this);
     private MultiplayerGame game;
     private static final String TAG = "waiting";
     private static final String GAME_ID = "gameId";
     private static final String AUTH = "auth";
     private static final String USERNAME = "username";
+    private static final String TOKEN = "token";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,36 +40,12 @@ public class WaitingForGameActivity extends AppCompatActivity {
             Log.e(TAG, "Username not found");
             return;
         }
-
-        WebSocketClient.createWebSocket(UrlConstants.WSS_URL + "multiconnect");
-        Disposable topic = WebSocketClient.mStompClient.topic("/topic/waiting").subscribe(topicMessage -> {
-            try {
-                JSONObject msg = new JSONObject(topicMessage.getPayload());
-                if (username.equals(msg.getString("player1"))) {
-                    game = new MultiplayerGame(msg);
-                    Log.d(TAG, game.getGameId() + "");
-                    if (!msg.getString("player2").equals("null")) {
-                        switchToMultiplayer();
-                    }
-                }
-                if (username.equals(msg.getString("player2")) && !msg.getString("player1").equals("null")) {
-                    game = new MultiplayerGame(msg);
-                    switchToMultiplayer();
-                }
-            } catch (JSONException e) {
-                e.getMessage();
+        authService.refreshToken(isOnline -> {
+            if (isOnline) {
+                String token = sp.getString(TOKEN, null);
+                createWebSocket(username, token);
             }
-        }, throwable -> Log.d(TAG, "error at subscribing"));
-        WebSocketClient.compositeDisposable.add(topic);
-
-        JSONObject jsonPlayer = new JSONObject();
-        try {
-            jsonPlayer.put(USERNAME, username);
-        } catch (JSONException e) {
-            e.getMessage();
-        }
-
-        WebSocketClient.mStompClient.send("/app/connect/random", jsonPlayer.toString()).subscribe();
+        });
     }
 
     public void switchToMultiplayer() {
@@ -112,5 +91,37 @@ public class WaitingForGameActivity extends AppCompatActivity {
         }
         WebSocketClient.disconnectWebSocket();
         game = null;
+    }
+
+    private void createWebSocket(String username, String token) {
+        WebSocketClient.createWebSocket(UrlConstants.WSS_URL + "multiconnect", token);
+        Disposable topic = WebSocketClient.mStompClient.topic("/topic/waiting").subscribe(topicMessage -> {
+            try {
+                JSONObject msg = new JSONObject(topicMessage.getPayload());
+                if (username.equals(msg.getString("player1"))) {
+                    game = new MultiplayerGame(msg);
+                    Log.d(TAG, game.getGameId() + "");
+                    if (!msg.getString("player2").equals("null")) {
+                        switchToMultiplayer();
+                    }
+                }
+                if (username.equals(msg.getString("player2")) && !msg.getString("player1").equals("null")) {
+                    game = new MultiplayerGame(msg);
+                    switchToMultiplayer();
+                }
+            } catch (JSONException e) {
+                e.getMessage();
+            }
+        }, throwable -> Log.d(TAG, "error at subscribing"));
+        WebSocketClient.compositeDisposable.add(topic);
+
+        JSONObject jsonPlayer = new JSONObject();
+        try {
+            jsonPlayer.put(USERNAME, username);
+        } catch (JSONException e) {
+            e.getMessage();
+        }
+
+        WebSocketClient.mStompClient.send("/app/connect/random", jsonPlayer.toString()).subscribe();
     }
 }
