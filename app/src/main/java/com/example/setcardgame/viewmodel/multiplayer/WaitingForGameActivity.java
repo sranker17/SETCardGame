@@ -60,7 +60,7 @@ public class WaitingForGameActivity extends AppCompatActivity {
             try {
                 destroyGame.put(GAME_ID, game.getGameId());
             } catch (JSONException e) {
-                Log.e(TAG, e.getMessage());
+                Log.e(TAG, "switchBackToSelectMultiplayerType: " + e.getMessage());
                 throw new JSONParsingException(e.getMessage());
             }
 
@@ -84,7 +84,7 @@ public class WaitingForGameActivity extends AppCompatActivity {
             try {
                 destroyGame.put(GAME_ID, game.getGameId());
             } catch (JSONException e) {
-                Log.e(TAG, e.getMessage());
+                Log.e(TAG, "onDestroy: " + e.getMessage());
                 throw new JSONParsingException(e.getMessage());
             }
 
@@ -112,7 +112,7 @@ public class WaitingForGameActivity extends AppCompatActivity {
                     switchToMultiplayer();
                 }
             } catch (JSONException e) {
-                Log.e(TAG, e.getMessage());
+                Log.e(TAG, "createWebSocket, topicMessage: " + e.getMessage());
                 throw new JSONParsingException(e.getMessage());
             }
         }, throwable -> Log.d(TAG, "error at subscribing"));
@@ -122,7 +122,7 @@ public class WaitingForGameActivity extends AppCompatActivity {
         try {
             jsonPlayer.put(USERNAME, username);
         } catch (JSONException e) {
-            Log.e(TAG, e.getMessage());
+            Log.e(TAG, "createWebSocket, jsonPlayer: " + e.getMessage());
             throw new JSONParsingException(e.getMessage());
         }
 

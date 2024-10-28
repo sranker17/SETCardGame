@@ -60,7 +60,7 @@ public class JoinGameActivity extends AppCompatActivity {
                 jsonConnect.put(GAME_ID, connectionCodeET.getText());
                 jsonConnect.put(PLAYER_ID, foundUsername);
             } catch (JSONException e) {
-                Log.e(TAG, e.getMessage());
+                Log.e(TAG, "joinGame: " + e.getMessage());
                 throw new JSONParsingException(e.getMessage());
             }
             WebSocketClient.mStompClient.send("/app/connect", jsonConnect.toString()).subscribe();
@@ -83,7 +83,7 @@ public class JoinGameActivity extends AppCompatActivity {
                     switchToMultiplayer();
                 }
             } catch (JSONException e) {
-                Log.e(TAG, e.getMessage());
+                Log.e(TAG, "createWebSocket: " + e.getMessage());
                 throw new JSONParsingException(e.getMessage());
             }
         }, throwable -> Log.d(TAG, "error at subscribing"));

@@ -65,7 +65,7 @@ public class CreatePrivateGameActivity extends AppCompatActivity {
             try {
                 destroyGame.put(GAME_ID, game.getGameId());
             } catch (JSONException e) {
-                Log.e(TAG, e.getMessage());
+                Log.e(TAG, "deleteGame: " + e.getMessage());
                 throw new JSONParsingException(e.getMessage());
             }
 
@@ -89,7 +89,7 @@ public class CreatePrivateGameActivity extends AppCompatActivity {
             try {
                 destroyGame.put(GAME_ID, game.getGameId());
             } catch (JSONException e) {
-                Log.e(TAG, e.getMessage());
+                Log.e(TAG, "onDestroy: " + e.getMessage());
                 throw new JSONParsingException(e.getMessage());
             }
 
@@ -117,7 +117,7 @@ public class CreatePrivateGameActivity extends AppCompatActivity {
                     }
                 }
             } catch (JSONException e) {
-                Log.e(TAG, e.getMessage());
+                Log.e(TAG, "createWebSocket response: " + e.getMessage());
                 throw new JSONParsingException(e.getMessage());
             }
         }, throwable -> Log.d(TAG, "error at subscribing"));
@@ -127,7 +127,7 @@ public class CreatePrivateGameActivity extends AppCompatActivity {
         try {
             jsonPlayer.put(USERNAME, username);
         } catch (JSONException e) {
-            Log.e(TAG, e.getMessage());
+            Log.e(TAG, "createWebSocket jsonPlayer: " + e.getMessage());
             throw new JSONParsingException(e.getMessage());
         }
 

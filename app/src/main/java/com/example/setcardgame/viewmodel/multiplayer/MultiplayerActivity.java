@@ -73,7 +73,7 @@ public class MultiplayerActivity extends AppCompatActivity {
         try {
             jsonGameId.put(GAME_ID, gameId);
         } catch (JSONException e) {
-            Log.e(TAG, e.getMessage());
+            Log.e(TAG, "jsonGameId: " + e.getMessage());
             throw new JSONParsingException(e.getMessage());
         }
 
@@ -104,7 +104,7 @@ public class MultiplayerActivity extends AppCompatActivity {
                                     setBtn.setBackgroundTintList(ContextCompat.getColorStateList(MultiplayerActivity.this, R.color.green));
                                     switchBoardClicks(true);
                                 } catch (JSONException e) {
-                                    Log.e(TAG, e.getMessage());
+                                    Log.e(TAG, "my block, blockedBy: " + e.getMessage());
                                     throw new JSONParsingException(e.getMessage());
                                 }
                             } else if (tempGame.getBlockedBy() != null && !tempGame.getBlockedBy().equals(foundUsername) && tempGame.getSelectedCardIndexes().isEmpty()) {
@@ -112,7 +112,7 @@ public class MultiplayerActivity extends AppCompatActivity {
                                 try {
                                     game.setBlockedByString(msg.getString("blockedBy"));
                                 } catch (JSONException e) {
-                                    Log.e(TAG, e.getMessage());
+                                    Log.e(TAG, "opponent's block, blockedBy: " + e.getMessage());
                                     throw new JSONParsingException(e.getMessage());
                                 }
                                 setBtn.setEnabled(false);
@@ -199,7 +199,7 @@ public class MultiplayerActivity extends AppCompatActivity {
                     });
                 }
             } catch (JSONException e) {
-                Log.e(TAG, e.getMessage());
+                Log.e(TAG, "topicMessage: " + e.getMessage());
                 throw new JSONParsingException(e.getMessage());
             }
         }, throwable -> Log.d(TAG, "cannot create websocket"));
@@ -246,7 +246,7 @@ public class MultiplayerActivity extends AppCompatActivity {
             buttonPressJson.put(GAME_ID, gameId);
             buttonPressJson.put(PLAYER_ID, foundUsername);
         } catch (JSONException e) {
-            Log.e(TAG, e.getMessage());
+            Log.e(TAG, "onSETBtnClick: " + e.getMessage());
             throw new JSONParsingException(e.getMessage());
         }
 
@@ -326,7 +326,7 @@ public class MultiplayerActivity extends AppCompatActivity {
                             gameplayJson.put(SELECT, true);
                             gameplayJson.put(SELECTED_CARD_INDEX, counter);
                         } catch (JSONException e) {
-                            Log.e(TAG, e.getMessage());
+                            Log.e(TAG, "onCardClick, select: " + e.getMessage());
                             throw new JSONParsingException(e.getMessage());
                         }
 
@@ -347,7 +347,7 @@ public class MultiplayerActivity extends AppCompatActivity {
                             gameplayJson.put(SELECT, false);
                             gameplayJson.put(SELECTED_CARD_INDEX, i);
                         } catch (JSONException e) {
-                            Log.e(TAG, e.getMessage());
+                            Log.e(TAG, "onCardClick, unselect: " + e.getMessage());
                             throw new JSONParsingException(e.getMessage());
                         }
 
@@ -392,7 +392,7 @@ public class MultiplayerActivity extends AppCompatActivity {
                 }
                 stopUserInteractions = false;
             }
-        }, 300);
+        }, 100);
     }
 
     @Override

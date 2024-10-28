@@ -39,7 +39,7 @@ public class RecyclerViewScoreAdapter extends RecyclerView.Adapter<RecyclerViewS
         String timeContent = String.format("%s: %d:%02d", context.getString(R.string.timeText), minutes, seconds);
 
         String myScoreContent = "";
-        if (list.get(position).getUserScore()) {
+        if (Boolean.TRUE.equals(list.get(position).getUserScore())) {
             myScoreContent = String.format("(%s)", context.getString(R.string.ownText));
         }
 

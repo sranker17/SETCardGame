@@ -159,7 +159,7 @@ public class MultiplayerGame {
             setSelectedCardIndexesString(game.getString("selectedCardIndexes"));
             setPointsString(game.getString("points"));
         } catch (JSONException e) {
-            Log.e("MultiplayerGame", e.getMessage());
+            Log.e("MultiplayerGame", "createMultiplayerGame: " + e.getMessage());
             throw new JSONParsingException(e.getMessage());
         }
     }
