@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.UUID;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,13 +20,13 @@ import lombok.Setter;
 @NoArgsConstructor
 public class MultiplayerGame {
     private int gameId;
-    private UUID player1;
-    private UUID player2;
+    private String player1;
+    private String player2;
     private List<Card> board = new ArrayList<>();
-    private UUID winner;
-    private UUID blockedBy;
+    private String winner;
+    private String blockedBy;
     private List<Integer> selectedCardIndexes = new ArrayList<>();
-    private Map<UUID, Integer> points = new HashMap<>();
+    private Map<String, Integer> points = new HashMap<>();
     private List<Integer> nullCardIndexes = new ArrayList<>();
     private boolean playerLeft;
 
@@ -87,7 +86,7 @@ public class MultiplayerGame {
     }
 
     public void setBlockedByString(String blockedBy) {
-        this.blockedBy = UUID.fromString(blockedBy);
+        this.blockedBy = blockedBy;
     }
 
     public void setSelectedCardIndexesString(String selectedCardIndexesString) {
@@ -103,7 +102,7 @@ public class MultiplayerGame {
         }
     }
 
-    public boolean hasSamePoints(Map<UUID, Integer> otherPoints) {
+    public boolean hasSamePoints(Map<String, Integer> otherPoints) {
         boolean same = Objects.equals(points.get(player1), otherPoints.get(player1));
         if (!Objects.equals(points.get(player2), otherPoints.get(player2))) {
             same = false;
@@ -126,7 +125,7 @@ public class MultiplayerGame {
 
             int i = 0;
             while (pointWords.length > i) {
-                points.put(UUID.fromString(pointWords[i++]), Integer.parseInt(pointWords[i++]));
+                points.put(pointWords[i++], Integer.parseInt(pointWords[i++]));
             }
         }
     }
@@ -138,19 +137,19 @@ public class MultiplayerGame {
                 setPlayerLeft(game.getBoolean("playerLeft"));
             }
             if (!game.getString("player1").equals("null")) {
-                this.player1 = UUID.fromString(game.getString("player1"));
+                this.player1 = game.getString("player1");
             }
 
             if (!game.getString("player2").equals("null")) {
-                this.player2 = UUID.fromString(game.getString("player2"));
+                this.player2 = game.getString("player2");
             }
             if (!game.getString("blockedBy").equals("null")) {
-                this.blockedBy = UUID.fromString(game.getString("blockedBy"));
+                this.blockedBy = game.getString("blockedBy");
             } else {
                 this.blockedBy = null;
             }
             if (!game.getString("winner").equals("null")) {
-                this.winner = UUID.fromString(game.getString("winner"));
+                this.winner = game.getString("winner");
             }
             setNullCardIndexesString(game.getString("nullCardIndexes"));
             setBoardString(game.getString("board"));

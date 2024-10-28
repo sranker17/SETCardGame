@@ -4,8 +4,6 @@ import static com.google.common.truth.Truth.assertThat;
 
 import org.junit.Test;
 
-import java.util.UUID;
-
 public class MultiplayerGameTest {
     MultiplayerGame game = new MultiplayerGame();
 
@@ -47,8 +45,8 @@ public class MultiplayerGameTest {
 
     @Test
     public void setPointsStringWithArrayStringReturnsNotEmpty() {
-        game.setPlayer1(UUID.randomUUID());
-        game.setPlayer2(UUID.randomUUID());
+        game.setPlayer1("player1");
+        game.setPlayer2("player2");
         game.setPointsString("{\"88f19a5a-134b-450b-a894-21abbb2ad664\":0,\"7d6e1f60-9a15-4228-bd07-ca3b5c272045\":0}");
         assertThat(game.getPoints()).isNotEmpty();
     }
