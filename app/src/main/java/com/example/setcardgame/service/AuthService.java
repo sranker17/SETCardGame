@@ -1,15 +1,19 @@
 package com.example.setcardgame.service;
 
-import static android.content.Context.MODE_PRIVATE;
 import static com.example.setcardgame.service.ErrorHandlerService.handleErrorResponse;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import androidx.security.crypto.EncryptedSharedPreferences;
+import androidx.security.crypto.MasterKey;
+
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.setcardgame.config.RequestQueueSingleton;
+import com.example.setcardgame.exception.EncryptException;
+import com.example.setcardgame.exception.JSONParsingException;
 import com.example.setcardgame.exception.RefreshException;
 import com.example.setcardgame.listener.AuthResponseListener;
 import com.example.setcardgame.listener.ServerStatusListener;
@@ -45,6 +49,7 @@ public class AuthService {
             postObj.put(PASSWORD, authUser.getPassword());
         } catch (JSONException e) {
             Log.e(AUTH_SERVICE, e.toString());
+            throw new JSONParsingException(e.getMessage());
         }
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, AUTH_URL + "/login", postObj,
@@ -68,6 +73,7 @@ public class AuthService {
 
         } catch (JSONException e) {
             Log.e(AUTH_SERVICE, e.toString());
+            throw new JSONParsingException(e.getMessage());
         }
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, AUTH_URL + "/signup", postObj,
@@ -88,7 +94,7 @@ public class AuthService {
     }
 
     public boolean isTokenExpired() {
-        SharedPreferences sp = context.getSharedPreferences(AUTH, MODE_PRIVATE);
+        SharedPreferences sp = getEncryptedSharedPreferences();
         long expiresIn = sp.getLong(EXPIRES_IN, 0);
         long tokenGenerationDate = sp.getLong(TOKEN_GENERATION_DATE, 0);
         long currentTime = System.currentTimeMillis();
@@ -96,7 +102,7 @@ public class AuthService {
     }
 
     public void refreshToken(ServerStatusListener serverStatusListener) {
-        SharedPreferences sp = context.getSharedPreferences(AUTH, MODE_PRIVATE);
+        SharedPreferences sp = getEncryptedSharedPreferences();
         String username = sp.getString(USERNAME, null);
         String password = sp.getString(PASSWORD, null);
         if (username == null || password == null) {
@@ -119,7 +125,7 @@ public class AuthService {
                     String returnedToken = loginResponse.getString(TOKEN_TAG);
                     long expiresIn = loginResponse.getLong(EXPIRES_IN);
 
-                    SharedPreferences sp = context.getSharedPreferences(AUTH, MODE_PRIVATE);
+                    SharedPreferences sp = getEncryptedSharedPreferences();
                     SharedPreferences.Editor editor = sp.edit();
                     editor.putString(TOKEN_TAG, returnedToken);
                     editor.putLong(TOKEN_GENERATION_DATE, System.currentTimeMillis());
@@ -130,9 +136,28 @@ public class AuthService {
                     Log.i(AUTH_SERVICE, "Token stored successfully: " + returnedToken);
                 } catch (JSONException e) {
                     Log.e(AUTH_SERVICE, "Error parsing login response in refreshToken", e);
-                    throw new RuntimeException(e);
+                    throw new JSONParsingException(e.getMessage());
                 }
             }
         });
+    }
+
+    public SharedPreferences getEncryptedSharedPreferences() {
+        try {
+            MasterKey masterKey = new MasterKey.Builder(context)
+                    .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+                    .build();
+
+            return EncryptedSharedPreferences.create(
+                    context,
+                    AUTH,
+                    masterKey,
+                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            );
+        } catch (Exception e) {
+            Log.e(AUTH_SERVICE, "getEncryptedSharedPreferences: " + e);
+            throw new EncryptException(e.getMessage());
+        }
     }
 }

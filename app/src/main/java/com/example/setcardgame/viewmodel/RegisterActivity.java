@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.setcardgame.R;
+import com.example.setcardgame.exception.JSONParsingException;
 import com.example.setcardgame.exception.RefreshException;
 import com.example.setcardgame.listener.AuthResponseListener;
 import com.example.setcardgame.model.Error;
@@ -80,7 +81,7 @@ public class RegisterActivity extends AppCompatActivity {
                         Log.d(REGISTER, "Successfully registered user: " + username + " with role: " + roleName);
                     } catch (JSONException e) {
                         Log.e(REGISTER, "Error parsing login response", e);
-                        throw new RuntimeException(e);
+                        throw new JSONParsingException(e.getMessage());
                     }
                     try {
                         authService.refreshToken(isOnline -> {

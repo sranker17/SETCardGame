@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.setcardgame.R;
 import com.example.setcardgame.config.WebSocketClient;
+import com.example.setcardgame.exception.JSONParsingException;
 import com.example.setcardgame.model.MultiplayerGame;
 import com.example.setcardgame.model.UrlConstants;
 import com.example.setcardgame.service.AuthService;
@@ -21,14 +22,13 @@ import org.json.JSONObject;
 import io.reactivex.disposables.Disposable;
 
 public class JoinGameActivity extends AppCompatActivity {
-    private final AuthService authService = new AuthService(this);
+    private final AuthService authService = new AuthService(JoinGameActivity.this);
     private EditText connectionCodeET;
     private MultiplayerGame game;
     private String foundUsername;
     private static final String TAG = "joinGame";
     private static final String GAME_ID = "gameId";
     private static final String PLAYER_ID = "playerId";
-    private static final String AUTH = "auth";
     private static final String USERNAME = "username";
     private static final String TOKEN = "token";
 
@@ -38,7 +38,7 @@ public class JoinGameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_join_game);
         connectionCodeET = findViewById(R.id.connectionCodeET);
 
-        SharedPreferences sp = getSharedPreferences(AUTH, MODE_PRIVATE);
+        SharedPreferences sp = authService.getEncryptedSharedPreferences();
         foundUsername = sp.getString(USERNAME, null);
 
         if (foundUsername == null) {
@@ -60,7 +60,8 @@ public class JoinGameActivity extends AppCompatActivity {
                 jsonConnect.put(GAME_ID, connectionCodeET.getText());
                 jsonConnect.put(PLAYER_ID, foundUsername);
             } catch (JSONException e) {
-                e.getMessage();
+                Log.e(TAG, e.getMessage());
+                throw new JSONParsingException(e.getMessage());
             }
             WebSocketClient.mStompClient.send("/app/connect", jsonConnect.toString()).subscribe();
         }
@@ -82,7 +83,8 @@ public class JoinGameActivity extends AppCompatActivity {
                     switchToMultiplayer();
                 }
             } catch (JSONException e) {
-                e.getMessage();
+                Log.e(TAG, e.getMessage());
+                throw new JSONParsingException(e.getMessage());
             }
         }, throwable -> Log.d(TAG, "error at subscribing"));
         WebSocketClient.compositeDisposable.add(topic);

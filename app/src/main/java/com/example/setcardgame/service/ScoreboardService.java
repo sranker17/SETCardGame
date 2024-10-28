@@ -1,6 +1,5 @@
 package com.example.setcardgame.service;
 
-import static android.content.Context.MODE_PRIVATE;
 import static com.example.setcardgame.service.ErrorHandlerService.handleErrorResponse;
 
 import android.content.Context;
@@ -10,6 +9,7 @@ import android.util.Log;
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.setcardgame.config.RequestQueueSingleton;
+import com.example.setcardgame.exception.JSONParsingException;
 import com.example.setcardgame.listener.ScoreAddedResponseListener;
 import com.example.setcardgame.listener.ScoreboardResponseListener;
 import com.example.setcardgame.model.UrlConstants;
@@ -24,10 +24,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import lombok.AllArgsConstructor;
-
-@AllArgsConstructor
 public class ScoreboardService {
+    private final AuthService authService;
     private static final String SCOREBOARD = "scoreboard";
     private static final String SCOREBOARD_URL = UrlConstants.URL + SCOREBOARD;
     private static final String DIFFICULTY = "difficulty";
@@ -35,8 +33,12 @@ public class ScoreboardService {
     private static final String TIME = "time";
     private static final String USERNAME = "username";
     private static final String USER_SCORE = "userScore";
-    private static final String AUTH = "auth";
     private final Context context;
+
+    public ScoreboardService(Context context) {
+        this.context = context;
+        this.authService = new AuthService(context);
+    }
 
     public void getPlayerScores(String endpoint, ScoreboardResponseListener scoreboardResponseListener) {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, SCOREBOARD_URL + endpoint, null,
@@ -79,7 +81,7 @@ public class ScoreboardService {
                 }, error -> scoreboardResponseListener.onError("Did not get score")) {
             @Override
             public Map<String, String> getHeaders() {
-                SharedPreferences sp = context.getSharedPreferences(AUTH, MODE_PRIVATE);
+                SharedPreferences sp = authService.getEncryptedSharedPreferences();
                 String token = sp.getString("token", null);
                 HashMap<String, String> params = new HashMap<>();
                 params.put("Authorization", "Bearer " + token);
@@ -100,13 +102,14 @@ public class ScoreboardService {
 
         } catch (JSONException e) {
             Log.e(SCOREBOARD, e.toString());
+            throw new JSONParsingException(e.getMessage());
         }
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, SCOREBOARD_URL, postObj,
                 scoreAddedResponseListener::onResponse, error -> handleErrorResponse(error, scoreAddedResponseListener, context)) {
             @Override
             public Map<String, String> getHeaders() {
-                SharedPreferences sp = context.getSharedPreferences(AUTH, MODE_PRIVATE);
+                SharedPreferences sp = authService.getEncryptedSharedPreferences();
                 String token = sp.getString("token", null);
                 HashMap<String, String> params = new HashMap<>();
                 params.put("Authorization", "Bearer " + token);
