@@ -16,3 +16,4 @@
 local.properties
 /.idea/sonarlint/
 /app/release/
+/app/src/main/assets/application.properties

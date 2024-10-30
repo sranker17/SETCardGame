@@ -11,6 +11,7 @@ import androidx.security.crypto.MasterKey;
 
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.setcardgame.config.PropertyReader;
 import com.example.setcardgame.config.RequestQueueSingleton;
 import com.example.setcardgame.exception.EncryptException;
 import com.example.setcardgame.exception.JSONParsingException;
@@ -18,7 +19,6 @@ import com.example.setcardgame.exception.RefreshException;
 import com.example.setcardgame.listener.AuthResponseListener;
 import com.example.setcardgame.listener.ServerStatusListener;
 import com.example.setcardgame.model.Error;
-import com.example.setcardgame.model.UrlConstants;
 import com.example.setcardgame.model.auth.AuthUser;
 
 import org.json.JSONException;
@@ -26,10 +26,10 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 public class AuthService {
     private static final String AUTH = "auth";
-    private static final String AUTH_URL = UrlConstants.URL + AUTH;
     private static final String PASSWORD = "password";
     private static final String USERNAME = "username";
     private static final String AUTH_SERVICE = "AUTH_SERVICE";
@@ -52,7 +52,9 @@ public class AuthService {
             throw new JSONParsingException(e.getMessage());
         }
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, AUTH_URL + "/login", postObj,
+        Properties properties = PropertyReader.getInstance(context).getProperties("application.properties");
+        String url = properties.getProperty("url");
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url + AUTH + "/login", postObj,
                 authResponseListener::onResponse, error -> handleErrorResponse(error, authResponseListener, context)) {
             @Override
             public Map<String, String> getHeaders() {
@@ -76,7 +78,9 @@ public class AuthService {
             throw new JSONParsingException(e.getMessage());
         }
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, AUTH_URL + "/signup", postObj,
+        Properties properties = PropertyReader.getInstance(context).getProperties("application.properties");
+        String url = properties.getProperty("url");
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url + AUTH + "/signup", postObj,
                 authResponseListener::onResponse, error -> handleErrorResponse(error, authResponseListener, context)) {
             @Override
             public Map<String, String> getHeaders() {
