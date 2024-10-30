@@ -8,11 +8,11 @@ import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.setcardgame.config.PropertyReader;
 import com.example.setcardgame.config.RequestQueueSingleton;
 import com.example.setcardgame.exception.JSONParsingException;
 import com.example.setcardgame.listener.ScoreAddedResponseListener;
 import com.example.setcardgame.listener.ScoreboardResponseListener;
-import com.example.setcardgame.model.UrlConstants;
 import com.example.setcardgame.model.scoreboard.Scoreboard;
 import com.example.setcardgame.model.scoreboard.TopScores;
 
@@ -23,11 +23,11 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 public class ScoreboardService {
     private final AuthService authService;
     private static final String SCOREBOARD = "scoreboard";
-    private static final String SCOREBOARD_URL = UrlConstants.URL + SCOREBOARD;
     private static final String DIFFICULTY = "difficulty";
     private static final String SCORE = "score";
     private static final String TIME = "time";
@@ -41,7 +41,9 @@ public class ScoreboardService {
     }
 
     public void getPlayerScores(String endpoint, ScoreboardResponseListener scoreboardResponseListener) {
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, SCOREBOARD_URL + endpoint, null,
+        Properties properties = PropertyReader.getInstance(context).getProperties("application.properties");
+        String url = properties.getProperty("url");
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url + SCOREBOARD + endpoint, null,
                 response -> {
                     try {
                         TopScores topScores = new TopScores();
@@ -105,7 +107,9 @@ public class ScoreboardService {
             throw new JSONParsingException(e.getMessage());
         }
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, SCOREBOARD_URL, postObj,
+        Properties properties = PropertyReader.getInstance(context).getProperties("application.properties");
+        String url = properties.getProperty("url");
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url + SCOREBOARD, postObj,
                 scoreAddedResponseListener::onResponse, error -> handleErrorResponse(error, scoreAddedResponseListener, context)) {
             @Override
             public Map<String, String> getHeaders() {

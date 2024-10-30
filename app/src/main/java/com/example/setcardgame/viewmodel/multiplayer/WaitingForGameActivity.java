@@ -9,14 +9,16 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.setcardgame.R;
+import com.example.setcardgame.config.PropertyReader;
 import com.example.setcardgame.config.WebSocketClient;
 import com.example.setcardgame.exception.JSONParsingException;
 import com.example.setcardgame.model.MultiplayerGame;
-import com.example.setcardgame.model.UrlConstants;
 import com.example.setcardgame.service.AuthService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Properties;
 
 import io.reactivex.disposables.Disposable;
 
@@ -96,7 +98,9 @@ public class WaitingForGameActivity extends AppCompatActivity {
     }
 
     private void createWebSocket(String username, String token) {
-        WebSocketClient.createWebSocket(UrlConstants.WSS_URL + "multiconnect", token);
+        Properties properties = PropertyReader.getInstance(this).getProperties("application.properties");
+        String wss = properties.getProperty("wss");
+        WebSocketClient.createWebSocket(wss + "multiconnect", token);
         Disposable topic = WebSocketClient.mStompClient.topic("/topic/waiting").subscribe(topicMessage -> {
             try {
                 JSONObject msg = new JSONObject(topicMessage.getPayload());
