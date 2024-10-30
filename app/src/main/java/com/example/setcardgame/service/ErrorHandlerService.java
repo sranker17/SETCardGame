@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.android.volley.VolleyError;
 import com.example.setcardgame.R;
+import com.example.setcardgame.exception.JSONParsingException;
 import com.example.setcardgame.listener.BaseListener;
 import com.example.setcardgame.model.Error;
 
@@ -39,6 +40,7 @@ public class ErrorHandlerService {
 
             } catch (JSONException e) {
                 Log.e(ERROR_HANDLER, "Error parsing error response in handleErrorResponse", e);
+                throw new JSONParsingException(e.getMessage());
             }
         }
 

@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.setcardgame.R;
+import com.example.setcardgame.exception.JSONParsingException;
 import com.example.setcardgame.listener.AuthResponseListener;
 import com.example.setcardgame.model.Error;
 import com.example.setcardgame.model.auth.AuthUser;
@@ -27,7 +28,6 @@ public class LoginActivity extends AppCompatActivity {
     private static final String TOKEN = "token";
     private static final String TOKEN_GENERATION_DATE = "tokenGenerationDate";
     private static final String EXPIRES_IN = "expiresIn";
-    private static final String AUTH = "auth";
     private static final String USERNAME = "username";
     private static final String PASSWORD = "password";
 
@@ -79,7 +79,7 @@ public class LoginActivity extends AppCompatActivity {
                         String token = loginResponse.getString(TOKEN);
                         long expiresIn = loginResponse.getLong(EXPIRES_IN);
 
-                        SharedPreferences sp = getSharedPreferences(AUTH, MODE_PRIVATE);
+                        SharedPreferences sp = authService.getEncryptedSharedPreferences();
                         SharedPreferences.Editor editor = sp.edit();
                         editor.putString(TOKEN, token);
                         editor.putLong(EXPIRES_IN, expiresIn);
@@ -91,7 +91,7 @@ public class LoginActivity extends AppCompatActivity {
                         Log.i(LOGIN, "Token stored successfully: " + token);
                     } catch (JSONException e) {
                         Log.e(LOGIN, "Error parsing login response", e);
-                        throw new RuntimeException(e);
+                        throw new JSONParsingException(e.getMessage());
                     }
                     switchToMain();
                 }

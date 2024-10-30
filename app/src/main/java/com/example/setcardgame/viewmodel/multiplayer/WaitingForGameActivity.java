@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.setcardgame.R;
 import com.example.setcardgame.config.WebSocketClient;
+import com.example.setcardgame.exception.JSONParsingException;
 import com.example.setcardgame.model.MultiplayerGame;
 import com.example.setcardgame.model.UrlConstants;
 import com.example.setcardgame.service.AuthService;
@@ -20,11 +21,10 @@ import org.json.JSONObject;
 import io.reactivex.disposables.Disposable;
 
 public class WaitingForGameActivity extends AppCompatActivity {
-    private final AuthService authService = new AuthService(this);
+    private final AuthService authService = new AuthService(WaitingForGameActivity.this);
     private MultiplayerGame game;
     private static final String TAG = "waiting";
     private static final String GAME_ID = "gameId";
-    private static final String AUTH = "auth";
     private static final String USERNAME = "username";
     private static final String TOKEN = "token";
 
@@ -33,7 +33,7 @@ public class WaitingForGameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_waiting_for_game);
 
-        SharedPreferences sp = getSharedPreferences(AUTH, MODE_PRIVATE);
+        SharedPreferences sp = authService.getEncryptedSharedPreferences();
         String username = sp.getString(USERNAME, null);
 
         if (username == null) {
@@ -60,7 +60,8 @@ public class WaitingForGameActivity extends AppCompatActivity {
             try {
                 destroyGame.put(GAME_ID, game.getGameId());
             } catch (JSONException e) {
-                e.getMessage();
+                Log.e(TAG, "switchBackToSelectMultiplayerType: " + e.getMessage());
+                throw new JSONParsingException(e.getMessage());
             }
 
             WebSocketClient.mStompClient.send("/app/game/destroy", destroyGame.toString()).subscribe();
@@ -83,7 +84,8 @@ public class WaitingForGameActivity extends AppCompatActivity {
             try {
                 destroyGame.put(GAME_ID, game.getGameId());
             } catch (JSONException e) {
-                e.getMessage();
+                Log.e(TAG, "onDestroy: " + e.getMessage());
+                throw new JSONParsingException(e.getMessage());
             }
 
             WebSocketClient.mStompClient.send("/app/game/destroy", destroyGame.toString()).subscribe();
@@ -110,7 +112,8 @@ public class WaitingForGameActivity extends AppCompatActivity {
                     switchToMultiplayer();
                 }
             } catch (JSONException e) {
-                e.getMessage();
+                Log.e(TAG, "createWebSocket, topicMessage: " + e.getMessage());
+                throw new JSONParsingException(e.getMessage());
             }
         }, throwable -> Log.d(TAG, "error at subscribing"));
         WebSocketClient.compositeDisposable.add(topic);
@@ -119,7 +122,8 @@ public class WaitingForGameActivity extends AppCompatActivity {
         try {
             jsonPlayer.put(USERNAME, username);
         } catch (JSONException e) {
-            e.getMessage();
+            Log.e(TAG, "createWebSocket, jsonPlayer: " + e.getMessage());
+            throw new JSONParsingException(e.getMessage());
         }
 
         WebSocketClient.mStompClient.send("/app/connect/random", jsonPlayer.toString()).subscribe();

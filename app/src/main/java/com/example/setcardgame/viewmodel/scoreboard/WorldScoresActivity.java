@@ -24,7 +24,6 @@ public class WorldScoresActivity extends AppCompatActivity {
     private final AuthService authService = new AuthService(WorldScoresActivity.this);
     private final ScoreboardService scoreboardService = new ScoreboardService(WorldScoresActivity.this);
     private static final String TAG = "worldScores";
-    private static final String AUTH = "auth";
     private static final String USERNAME = "username";
 
     @Override
@@ -63,7 +62,7 @@ public class WorldScoresActivity extends AppCompatActivity {
             @Override
             public void onResponse(TopScores topScores) {
                 Log.i(TAG, "Top scores received");
-                SharedPreferences sp = getSharedPreferences(AUTH, MODE_PRIVATE);
+                SharedPreferences sp = authService.getEncryptedSharedPreferences();
                 String username = sp.getString(USERNAME, null);
 
                 topScores.getEasyScores().forEach(score -> {

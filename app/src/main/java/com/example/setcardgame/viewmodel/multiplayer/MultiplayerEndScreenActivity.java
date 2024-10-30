@@ -11,10 +11,11 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.setcardgame.R;
+import com.example.setcardgame.service.AuthService;
 import com.example.setcardgame.viewmodel.MainActivity;
 
 public class MultiplayerEndScreenActivity extends AppCompatActivity {
-    private static final String AUTH = "auth";
+    private final AuthService authService = new AuthService(MultiplayerEndScreenActivity.this);
     private static final String USERNAME = "username";
     private static final String TAG = "multiplayerEndScreen";
 
@@ -37,7 +38,7 @@ public class MultiplayerEndScreenActivity extends AppCompatActivity {
             throw new IllegalArgumentException("Winner cannot be null");
         }
 
-        SharedPreferences sp = getSharedPreferences(AUTH, MODE_PRIVATE);
+        SharedPreferences sp = authService.getEncryptedSharedPreferences();
         String username = sp.getString(USERNAME, null);
 
         if (username == null) {

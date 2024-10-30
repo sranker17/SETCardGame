@@ -29,7 +29,6 @@ public class EndGameScreenActivity extends AppCompatActivity {
     private int finalTime;
     private String finalScore;
     private String finalDifficulty;
-    private static final String AUTH = "auth";
     private static final String USERNAME = "username";
     private static final String END_GAME_SCREEN = "EndGameScreen";
     private static final String SCORE = "score";
@@ -92,7 +91,7 @@ public class EndGameScreenActivity extends AppCompatActivity {
     }
 
     private void saveScore() {
-        SharedPreferences sp = getSharedPreferences(AUTH, MODE_PRIVATE);
+        SharedPreferences sp = authService.getEncryptedSharedPreferences();
         String username = sp.getString(USERNAME, null);
         Scoreboard scoreboardModel = new Scoreboard(username, finalDifficulty, Integer.parseInt(finalScore), finalTime, null);
         scoreboardService.addScore(scoreboardModel, new ScoreAddedResponseListener() {

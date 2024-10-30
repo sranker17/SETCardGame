@@ -20,7 +20,6 @@ public class MainActivity extends AppCompatActivity implements ServerStatusListe
     private final AuthService authService = new AuthService(MainActivity.this);
     private Button multiBtn;
     private Button scoreboardBtn;
-    private static final String AUTH = "auth";
     private static final String USERNAME = "username";
     private static final String TAG = "Main activity";
 
@@ -98,10 +97,7 @@ public class MainActivity extends AppCompatActivity implements ServerStatusListe
     }
 
     private void handleLogin() {
-        //TODO add Android Keystore
-        SharedPreferences sp = getSharedPreferences(AUTH, MODE_PRIVATE);
-//        ServerStatus serverStatus = ServerStatus.valueOf(sp.getString(SERVER_STATUS, ServerStatus.ONLINE.name()));
-//        if (ServerStatus.ONLINE.equals(serverStatus)) {
+        SharedPreferences sp = authService.getEncryptedSharedPreferences();
         if (sp.getString(USERNAME, null) == null) {
             Log.i(TAG, "Switching to authentication page");
             switchToAuthentication();
@@ -109,13 +105,9 @@ public class MainActivity extends AppCompatActivity implements ServerStatusListe
             if (authService.isTokenExpired()) {
                 Log.i(TAG, "Token expired, refreshing");
                 authService.refreshToken(this);
-//                    blockOnlineFeatures();
             } else {
                 Log.i(TAG, "Token is still valid");
             }
         }
-//        } else {
-//            blockOnlineFeatures();
-//        }
     }
 }

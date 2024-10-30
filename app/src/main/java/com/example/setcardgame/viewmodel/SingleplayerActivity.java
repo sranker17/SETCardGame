@@ -29,7 +29,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class SingleplayerActivity extends AppCompatActivity {
-
     private final List<ImageView> board = new ArrayList<>();
     private final List<Card> cards = new ArrayList<>();
     private final List<Card> boardCards = new ArrayList<>();
@@ -75,7 +74,7 @@ public class SingleplayerActivity extends AppCompatActivity {
                 });
             }
         };
-        timer.scheduleAtFixedRate(timerTask, 0, 1000);
+        timer.schedule(timerTask, 0, 1000);
     }
 
     private int getTimer() {
