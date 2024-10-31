@@ -16,7 +16,7 @@ import androidx.core.content.ContextCompat;
 
 import com.example.setcardgame.R;
 import com.example.setcardgame.config.WebSocketClient;
-import com.example.setcardgame.exception.JSONParsingException;
+import com.example.setcardgame.exception.JsonParsingException;
 import com.example.setcardgame.model.MultiplayerGame;
 import com.example.setcardgame.service.AuthService;
 
@@ -74,7 +74,7 @@ public class MultiplayerActivity extends AppCompatActivity {
             jsonGameId.put(GAME_ID, gameId);
         } catch (JSONException e) {
             Log.e(TAG, "jsonGameId: " + e.getMessage());
-            throw new JSONParsingException(e.getMessage());
+            throw new JsonParsingException(e.getMessage());
         }
 
         Disposable topic = WebSocketClient.mStompClient.topic("/topic/game-progress/" + gameId).subscribe(topicMessage -> {
@@ -105,7 +105,7 @@ public class MultiplayerActivity extends AppCompatActivity {
                                     switchBoardClicks(true);
                                 } catch (JSONException e) {
                                     Log.e(TAG, "my block, blockedBy: " + e.getMessage());
-                                    throw new JSONParsingException(e.getMessage());
+                                    throw new JsonParsingException(e.getMessage());
                                 }
                             } else if (tempGame.getBlockedBy() != null && !tempGame.getBlockedBy().equals(foundUsername) && tempGame.getSelectedCardIndexes().isEmpty()) {
                                 Log.d(TAG, "opponent's block");
@@ -113,7 +113,7 @@ public class MultiplayerActivity extends AppCompatActivity {
                                     game.setBlockedByString(msg.getString("blockedBy"));
                                 } catch (JSONException e) {
                                     Log.e(TAG, "opponent's block, blockedBy: " + e.getMessage());
-                                    throw new JSONParsingException(e.getMessage());
+                                    throw new JsonParsingException(e.getMessage());
                                 }
                                 setBtn.setEnabled(false);
                                 setBtn.setBackgroundTintList(ContextCompat.getColorStateList(MultiplayerActivity.this, R.color.dark_red));
@@ -200,7 +200,7 @@ public class MultiplayerActivity extends AppCompatActivity {
                 }
             } catch (JSONException e) {
                 Log.e(TAG, "topicMessage: " + e.getMessage());
-                throw new JSONParsingException(e.getMessage());
+                throw new JsonParsingException(e.getMessage());
             }
         }, throwable -> Log.d(TAG, "cannot create websocket"));
         WebSocketClient.compositeDisposable.add(topic);
@@ -247,7 +247,7 @@ public class MultiplayerActivity extends AppCompatActivity {
             buttonPressJson.put(PLAYER_ID, foundUsername);
         } catch (JSONException e) {
             Log.e(TAG, "onSETBtnClick: " + e.getMessage());
-            throw new JSONParsingException(e.getMessage());
+            throw new JsonParsingException(e.getMessage());
         }
 
         WebSocketClient.mStompClient.send("/app/gameplay/button", buttonPressJson.toString()).subscribe();
@@ -327,7 +327,7 @@ public class MultiplayerActivity extends AppCompatActivity {
                             gameplayJson.put(SELECTED_CARD_INDEX, counter);
                         } catch (JSONException e) {
                             Log.e(TAG, "onCardClick, select: " + e.getMessage());
-                            throw new JSONParsingException(e.getMessage());
+                            throw new JsonParsingException(e.getMessage());
                         }
 
                         WebSocketClient.mStompClient.send("/app/gameplay", gameplayJson.toString()).subscribe();
@@ -348,7 +348,7 @@ public class MultiplayerActivity extends AppCompatActivity {
                             gameplayJson.put(SELECTED_CARD_INDEX, i);
                         } catch (JSONException e) {
                             Log.e(TAG, "onCardClick, unselect: " + e.getMessage());
-                            throw new JSONParsingException(e.getMessage());
+                            throw new JsonParsingException(e.getMessage());
                         }
 
                         WebSocketClient.mStompClient.send("/app/gameplay", gameplayJson.toString()).subscribe();

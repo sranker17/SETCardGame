@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.setcardgame.R;
 import com.example.setcardgame.config.PropertyReader;
 import com.example.setcardgame.config.WebSocketClient;
-import com.example.setcardgame.exception.JSONParsingException;
+import com.example.setcardgame.exception.JsonParsingException;
 import com.example.setcardgame.model.MultiplayerGame;
 import com.example.setcardgame.service.AuthService;
 
@@ -32,6 +32,7 @@ public class CreatePrivateGameActivity extends AppCompatActivity {
     private static final String DESTROY_GAME_TOPIC = "/app/game/destroy";
     private static final String CREATE_GAME_TOPIC = "/app/create";
     private static final String TOKEN = "token";
+    private static final String WSS = "wss";
     private TextView connectionCodeTV;
 
     @Override
@@ -68,7 +69,7 @@ public class CreatePrivateGameActivity extends AppCompatActivity {
                 destroyGame.put(GAME_ID, game.getGameId());
             } catch (JSONException e) {
                 Log.e(TAG, "deleteGame: " + e.getMessage());
-                throw new JSONParsingException(e.getMessage());
+                throw new JsonParsingException(e.getMessage());
             }
 
             WebSocketClient.mStompClient.send(DESTROY_GAME_TOPIC, destroyGame.toString()).subscribe();
@@ -92,7 +93,7 @@ public class CreatePrivateGameActivity extends AppCompatActivity {
                 destroyGame.put(GAME_ID, game.getGameId());
             } catch (JSONException e) {
                 Log.e(TAG, "onDestroy: " + e.getMessage());
-                throw new JSONParsingException(e.getMessage());
+                throw new JsonParsingException(e.getMessage());
             }
 
             WebSocketClient.mStompClient.send(DESTROY_GAME_TOPIC, destroyGame.toString()).subscribe();
@@ -105,7 +106,7 @@ public class CreatePrivateGameActivity extends AppCompatActivity {
 
     private void createWebSocket(String username, String token) {
         Properties properties = PropertyReader.getInstance(this).getProperties("application.properties");
-        String wss = properties.getProperty("wss");
+        String wss = properties.getProperty(WSS);
         WebSocketClient.createWebSocket(wss + "multiconnect", token);
         Disposable topic = WebSocketClient.mStompClient.topic("/topic/waiting").subscribe(topicMessage -> {
             try {
@@ -122,7 +123,7 @@ public class CreatePrivateGameActivity extends AppCompatActivity {
                 }
             } catch (JSONException e) {
                 Log.e(TAG, "createWebSocket response: " + e.getMessage());
-                throw new JSONParsingException(e.getMessage());
+                throw new JsonParsingException(e.getMessage());
             }
         }, throwable -> Log.d(TAG, "error at subscribing"));
         WebSocketClient.compositeDisposable.add(topic);
@@ -132,7 +133,7 @@ public class CreatePrivateGameActivity extends AppCompatActivity {
             jsonPlayer.put(USERNAME, username);
         } catch (JSONException e) {
             Log.e(TAG, "createWebSocket jsonPlayer: " + e.getMessage());
-            throw new JSONParsingException(e.getMessage());
+            throw new JsonParsingException(e.getMessage());
         }
 
         WebSocketClient.mStompClient.send(CREATE_GAME_TOPIC, jsonPlayer.toString()).subscribe();

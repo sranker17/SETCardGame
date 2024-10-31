@@ -1,4 +1,4 @@
-package com.example.setcardgame.viewmodel;
+package com.example.setcardgame.viewmodel.singleplayer;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,6 +17,7 @@ import com.example.setcardgame.model.Error;
 import com.example.setcardgame.model.scoreboard.Scoreboard;
 import com.example.setcardgame.service.AuthService;
 import com.example.setcardgame.service.ScoreboardService;
+import com.example.setcardgame.viewmodel.MainActivity;
 import com.example.setcardgame.viewmodel.scoreboard.ScoreboardActivity;
 
 import org.json.JSONObject;

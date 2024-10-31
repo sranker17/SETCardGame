@@ -2,7 +2,7 @@ package com.example.setcardgame.model;
 
 import android.util.Log;
 
-import com.example.setcardgame.exception.JSONParsingException;
+import com.example.setcardgame.exception.JsonParsingException;
 import com.example.setcardgame.model.card.Card;
 
 import org.json.JSONException;
@@ -160,7 +160,7 @@ public class MultiplayerGame {
             setPointsString(game.getString("points"));
         } catch (JSONException e) {
             Log.e("MultiplayerGame", "createMultiplayerGame: " + e.getMessage());
-            throw new JSONParsingException(e.getMessage());
+            throw new JsonParsingException(e.getMessage());
         }
     }
 }

@@ -13,8 +13,10 @@ import androidx.appcompat.app.AppCompatDelegate;
 import com.example.setcardgame.R;
 import com.example.setcardgame.listener.ServerStatusListener;
 import com.example.setcardgame.service.AuthService;
+import com.example.setcardgame.viewmodel.auth.AuthenticationActivity;
 import com.example.setcardgame.viewmodel.multiplayer.SelectMultiplayerTypeActivity;
 import com.example.setcardgame.viewmodel.scoreboard.ScoreboardActivity;
+import com.example.setcardgame.viewmodel.singleplayer.DifficultyActivity;
 
 public class MainActivity extends AppCompatActivity implements ServerStatusListener {
     private final AuthService authService = new AuthService(MainActivity.this);

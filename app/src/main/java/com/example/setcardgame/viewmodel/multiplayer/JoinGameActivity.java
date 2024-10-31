@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.setcardgame.R;
 import com.example.setcardgame.config.PropertyReader;
 import com.example.setcardgame.config.WebSocketClient;
-import com.example.setcardgame.exception.JSONParsingException;
+import com.example.setcardgame.exception.JsonParsingException;
 import com.example.setcardgame.model.MultiplayerGame;
 import com.example.setcardgame.service.AuthService;
 
@@ -33,6 +33,7 @@ public class JoinGameActivity extends AppCompatActivity {
     private static final String PLAYER_ID = "playerId";
     private static final String USERNAME = "username";
     private static final String TOKEN = "token";
+    private static final String WSS = "wss";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +64,7 @@ public class JoinGameActivity extends AppCompatActivity {
                 jsonConnect.put(PLAYER_ID, foundUsername);
             } catch (JSONException e) {
                 Log.e(TAG, "joinGame: " + e.getMessage());
-                throw new JSONParsingException(e.getMessage());
+                throw new JsonParsingException(e.getMessage());
             }
             WebSocketClient.mStompClient.send("/app/connect", jsonConnect.toString()).subscribe();
         }
@@ -77,7 +78,7 @@ public class JoinGameActivity extends AppCompatActivity {
 
     private void createWebSocket(String token) {
         Properties properties = PropertyReader.getInstance(this).getProperties("application.properties");
-        String wss = properties.getProperty("wss");
+        String wss = properties.getProperty(WSS);
         WebSocketClient.createWebSocket(wss + "multiconnect", token);
         Disposable topic = WebSocketClient.mStompClient.topic("/topic/waiting").subscribe(topicMessage -> {
             try {
@@ -88,7 +89,7 @@ public class JoinGameActivity extends AppCompatActivity {
                 }
             } catch (JSONException e) {
                 Log.e(TAG, "createWebSocket: " + e.getMessage());
-                throw new JSONParsingException(e.getMessage());
+                throw new JsonParsingException(e.getMessage());
             }
         }, throwable -> Log.d(TAG, "error at subscribing"));
         WebSocketClient.compositeDisposable.add(topic);

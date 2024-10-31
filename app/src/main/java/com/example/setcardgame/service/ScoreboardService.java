@@ -10,7 +10,7 @@ import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.setcardgame.config.PropertyReader;
 import com.example.setcardgame.config.RequestQueueSingleton;
-import com.example.setcardgame.exception.JSONParsingException;
+import com.example.setcardgame.exception.JsonParsingException;
 import com.example.setcardgame.listener.ScoreAddedResponseListener;
 import com.example.setcardgame.listener.ScoreboardResponseListener;
 import com.example.setcardgame.model.scoreboard.Scoreboard;
@@ -33,6 +33,7 @@ public class ScoreboardService {
     private static final String TIME = "time";
     private static final String USERNAME = "username";
     private static final String USER_SCORE = "userScore";
+    private static final String URL = "url";
     private final Context context;
 
     public ScoreboardService(Context context) {
@@ -42,7 +43,7 @@ public class ScoreboardService {
 
     public void getPlayerScores(String endpoint, ScoreboardResponseListener scoreboardResponseListener) {
         Properties properties = PropertyReader.getInstance(context).getProperties("application.properties");
-        String url = properties.getProperty("url");
+        String url = properties.getProperty(URL);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url + SCOREBOARD + endpoint, null,
                 response -> {
                     try {
@@ -78,9 +79,10 @@ public class ScoreboardService {
 
                         scoreboardResponseListener.onResponse(topScores);
                     } catch (JSONException e) {
-                        scoreboardResponseListener.onError("Failed to parse scores");
+                        Log.e(SCOREBOARD, "Error parsing error response in getPlayerScores", e);
+                        throw new JsonParsingException(e.getMessage());
                     }
-                }, error -> scoreboardResponseListener.onError("Did not get score")) {
+                }, error -> handleErrorResponse(error, scoreboardResponseListener, context)) {
             @Override
             public Map<String, String> getHeaders() {
                 SharedPreferences sp = authService.getEncryptedSharedPreferences();
@@ -104,11 +106,11 @@ public class ScoreboardService {
 
         } catch (JSONException e) {
             Log.e(SCOREBOARD, e.toString());
-            throw new JSONParsingException(e.getMessage());
+            throw new JsonParsingException(e.getMessage());
         }
 
         Properties properties = PropertyReader.getInstance(context).getProperties("application.properties");
-        String url = properties.getProperty("url");
+        String url = properties.getProperty(URL);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url + SCOREBOARD, postObj,
                 scoreAddedResponseListener::onResponse, error -> handleErrorResponse(error, scoreAddedResponseListener, context)) {
             @Override

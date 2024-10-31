@@ -1,4 +1,4 @@
-package com.example.setcardgame.viewmodel;
+package com.example.setcardgame.viewmodel.singleplayer;
 
 import android.content.Intent;
 import android.os.Bundle;

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/set_background"
-    tools:context=".viewmodel.LoginActivity">
+    tools:context=".viewmodel.auth.LoginActivity">
 
     <TextView
         android:id="@+id/registerTV"

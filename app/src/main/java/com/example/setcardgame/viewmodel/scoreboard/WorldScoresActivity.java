@@ -10,6 +10,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.setcardgame.R;
 import com.example.setcardgame.listener.ScoreboardResponseListener;
+import com.example.setcardgame.model.Error;
 import com.example.setcardgame.model.scoreboard.ScoresFragment;
 import com.example.setcardgame.model.scoreboard.TopScores;
 import com.example.setcardgame.model.scoreboard.ViewPagerAdapter;
@@ -53,10 +54,32 @@ public class WorldScoresActivity extends AppCompatActivity {
     private void getPlayerScores() {
         scoreboardService.getPlayerScores("/top", new ScoreboardResponseListener() {
             @Override
-            public void onError(String message) {
-                //TODO handle error
-                Log.e(TAG, message);
-                Toast.makeText(WorldScoresActivity.this, getString(R.string.cantGetScores), Toast.LENGTH_SHORT).show();
+            public void onError(Error errorResponse) {
+                Log.e(TAG, errorResponse.toString());
+                String toastMessage;
+                switch (errorResponse.getStatus()) {
+                    case 400:
+                        toastMessage = getString(R.string.invalidParameters);
+                        break;
+                    case 401:
+                        toastMessage = getString(R.string.badCredentials);
+                        break;
+                    case 403:
+                        toastMessage = getString(R.string.accountError);
+                        break;
+                    case 409:
+                        toastMessage = getString(R.string.takenUsername);
+                        break;
+                    case 500:
+                        toastMessage = getString(R.string.internalServerError);
+                        break;
+                    case 503:
+                        toastMessage = getString(R.string.serverUnavailable);
+                        break;
+                    default:
+                        toastMessage = errorResponse.getDescription();
+                }
+                Toast.makeText(WorldScoresActivity.this, toastMessage, Toast.LENGTH_SHORT).show();
             }
 
             @Override

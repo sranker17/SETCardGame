@@ -1,7 +1,6 @@
-package com.example.setcardgame.viewmodel;
+package com.example.setcardgame.viewmodel.auth;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,43 +10,41 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.setcardgame.R;
-import com.example.setcardgame.exception.JSONParsingException;
+import com.example.setcardgame.exception.JsonParsingException;
+import com.example.setcardgame.exception.RefreshException;
 import com.example.setcardgame.listener.AuthResponseListener;
 import com.example.setcardgame.model.Error;
 import com.example.setcardgame.model.auth.AuthUser;
 import com.example.setcardgame.service.AuthService;
+import com.example.setcardgame.viewmodel.MainActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class LoginActivity extends AppCompatActivity {
-    private final AuthService authService = new AuthService(LoginActivity.this);
+public class RegisterActivity extends AppCompatActivity {
+    private final AuthService authService = new AuthService(RegisterActivity.this);
     private EditText usernameET;
     private EditText passwordET;
-    private static final String LOGIN = "LOGIN";
-    private static final String TOKEN = "token";
-    private static final String TOKEN_GENERATION_DATE = "tokenGenerationDate";
-    private static final String EXPIRES_IN = "expiresIn";
+    private static final String REGISTER = "REGISTER";
     private static final String USERNAME = "username";
-    private static final String PASSWORD = "password";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_register);
 
         usernameET = findViewById(R.id.usernameInput);
         passwordET = findViewById(R.id.passwordInput);
     }
 
-    public void sendLogin(View view) {
+    public void sendRegister(View view) {
         if (!usernameET.getText().toString().isEmpty() && !passwordET.getText().toString().isEmpty()) {
             //TODO add more validation
             AuthUser authUser = new AuthUser(usernameET.getText().toString(), passwordET.getText().toString());
-            authService.login(authUser, new AuthResponseListener() {
+            authService.register(authUser, new AuthResponseListener() {
                 @Override
                 public void onError(Error errorResponse) {
-                    Log.e(LOGIN, errorResponse.toString());
+                    Log.e(REGISTER, errorResponse.toString());
                     String toastMessage;
                     switch (errorResponse.getStatus()) {
                         case 400:
@@ -59,6 +56,9 @@ public class LoginActivity extends AppCompatActivity {
                         case 403:
                             toastMessage = getString(R.string.accountError);
                             break;
+                        case 409:
+                            toastMessage = getString(R.string.takenUsername);
+                            break;
                         case 500:
                             toastMessage = getString(R.string.internalServerError);
                             break;
@@ -69,31 +69,30 @@ public class LoginActivity extends AppCompatActivity {
                         default:
                             toastMessage = errorResponse.getDescription();
                     }
-                    Toast.makeText(LoginActivity.this, toastMessage, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, toastMessage, Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onResponse(JSONObject loginResponse) {
-                    Log.i(LOGIN, loginResponse.toString());
+                    Log.i(REGISTER, loginResponse.toString());
                     try {
-                        String token = loginResponse.getString(TOKEN);
-                        long expiresIn = loginResponse.getLong(EXPIRES_IN);
-
-                        SharedPreferences sp = authService.getEncryptedSharedPreferences();
-                        SharedPreferences.Editor editor = sp.edit();
-                        editor.putString(TOKEN, token);
-                        editor.putLong(EXPIRES_IN, expiresIn);
-                        editor.putLong(TOKEN_GENERATION_DATE, System.currentTimeMillis());
-                        editor.putString(USERNAME, authUser.getUsername());
-                        editor.putString(PASSWORD, authUser.getPassword());
-                        editor.apply();
-
-                        Log.i(LOGIN, "Token stored successfully: " + token);
+                        String username = loginResponse.getString(USERNAME);
+                        JSONObject roleObject = loginResponse.getJSONObject("role");
+                        String roleName = roleObject.getString("name");
+                        Log.d(REGISTER, "Successfully registered user: " + username + " with role: " + roleName);
                     } catch (JSONException e) {
-                        Log.e(LOGIN, "Error parsing login response", e);
-                        throw new JSONParsingException(e.getMessage());
+                        Log.e(REGISTER, "Error parsing login response", e);
+                        throw new JsonParsingException(e.getMessage());
                     }
-                    switchToMain();
+                    try {
+                        authService.refreshToken(isOnline -> {
+                            Log.i(REGISTER, "Server status online: " + isOnline);
+                            switchToMain();
+                        });
+                        switchToMain();
+                    } catch (RefreshException e) {
+                        Log.e(REGISTER, "Error refreshing token", e);
+                    }
                 }
             });
         }

@@ -14,7 +14,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.setcardgame.config.PropertyReader;
 import com.example.setcardgame.config.RequestQueueSingleton;
 import com.example.setcardgame.exception.EncryptException;
-import com.example.setcardgame.exception.JSONParsingException;
+import com.example.setcardgame.exception.JsonParsingException;
 import com.example.setcardgame.exception.RefreshException;
 import com.example.setcardgame.listener.AuthResponseListener;
 import com.example.setcardgame.listener.ServerStatusListener;
@@ -36,6 +36,7 @@ public class AuthService {
     private static final String TOKEN_TAG = "token";
     private static final String TOKEN_GENERATION_DATE = "tokenGenerationDate";
     private static final String EXPIRES_IN = "expiresIn";
+    private static final String URL = "url";
     private final Context context;
 
     public AuthService(Context context) {
@@ -49,11 +50,11 @@ public class AuthService {
             postObj.put(PASSWORD, authUser.getPassword());
         } catch (JSONException e) {
             Log.e(AUTH_SERVICE, e.toString());
-            throw new JSONParsingException(e.getMessage());
+            throw new JsonParsingException(e.getMessage());
         }
 
         Properties properties = PropertyReader.getInstance(context).getProperties("application.properties");
-        String url = properties.getProperty("url");
+        String url = properties.getProperty(URL);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url + AUTH + "/login", postObj,
                 authResponseListener::onResponse, error -> handleErrorResponse(error, authResponseListener, context)) {
             @Override
@@ -75,11 +76,11 @@ public class AuthService {
 
         } catch (JSONException e) {
             Log.e(AUTH_SERVICE, e.toString());
-            throw new JSONParsingException(e.getMessage());
+            throw new JsonParsingException(e.getMessage());
         }
 
         Properties properties = PropertyReader.getInstance(context).getProperties("application.properties");
-        String url = properties.getProperty("url");
+        String url = properties.getProperty(URL);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url + AUTH + "/signup", postObj,
                 authResponseListener::onResponse, error -> handleErrorResponse(error, authResponseListener, context)) {
             @Override
@@ -140,7 +141,7 @@ public class AuthService {
                     Log.i(AUTH_SERVICE, "Token stored successfully: " + returnedToken);
                 } catch (JSONException e) {
                     Log.e(AUTH_SERVICE, "Error parsing login response in refreshToken", e);
-                    throw new JSONParsingException(e.getMessage());
+                    throw new JsonParsingException(e.getMessage());
                 }
             }
         });

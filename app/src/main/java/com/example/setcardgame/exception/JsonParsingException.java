@@ -3,10 +3,10 @@ package com.example.setcardgame.exception;
 import lombok.Getter;
 
 @Getter
-public class JSONParsingException extends RuntimeException {
+public class JsonParsingException extends RuntimeException {
     private final String message;
 
-    public JSONParsingException(String message) {
+    public JsonParsingException(String message) {
         this.message = message;
     }
 }
