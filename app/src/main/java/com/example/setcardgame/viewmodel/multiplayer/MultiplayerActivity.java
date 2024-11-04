@@ -1,6 +1,7 @@
 package com.example.setcardgame.viewmodel.multiplayer;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -15,8 +16,9 @@ import androidx.core.content.ContextCompat;
 
 import com.example.setcardgame.R;
 import com.example.setcardgame.config.WebSocketClient;
+import com.example.setcardgame.exception.JsonParsingException;
 import com.example.setcardgame.model.MultiplayerGame;
-import com.example.setcardgame.model.Username;
+import com.example.setcardgame.service.AuthService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,18 +32,19 @@ import java.util.TimerTask;
 import io.reactivex.disposables.Disposable;
 
 public class MultiplayerActivity extends AppCompatActivity {
-
+    private final AuthService authService = new AuthService(MultiplayerActivity.this);
     private static final String TAG = "Multiplayer";
     private static final String PLAYER_ID = "playerId";
     private static final String GAME_ID = "gameId";
     private static final String SELECTED_CARD_INDEX = "selectedCardIndex";
     private static final String SELECT = "select";
+    private static final String USERNAME = "username";
     private final List<ImageView> boardIV = new ArrayList<>();
     private final List<Integer> selectedCardIds = new ArrayList<>();
     private TextView opponentPointTextView;
     private TextView ownPointTextView;
     private Button setBtn;
-    private final String username = Username.getName();
+    private String foundUsername;
     private int gameId;
     private MultiplayerGame game;
     private final Timer resetBackgroundTimer = new Timer();
@@ -58,11 +61,20 @@ public class MultiplayerActivity extends AppCompatActivity {
         gameId = Integer.parseInt(Objects.requireNonNull(mp.getStringExtra(GAME_ID)));
         setBtn = findViewById(R.id.callSETBtn);
 
+        SharedPreferences sp = authService.getEncryptedSharedPreferences();
+        foundUsername = sp.getString(USERNAME, null);
+
+        if (foundUsername == null) {
+            Log.e(TAG, "Username not found");
+            return;
+        }
+
         JSONObject jsonGameId = new JSONObject();
         try {
             jsonGameId.put(GAME_ID, gameId);
         } catch (JSONException e) {
-            e.getMessage();
+            Log.e(TAG, "jsonGameId: " + e.getMessage());
+            throw new JsonParsingException(e.getMessage());
         }
 
         Disposable topic = WebSocketClient.mStompClient.topic("/topic/game-progress/" + gameId).subscribe(topicMessage -> {
@@ -85,28 +97,30 @@ public class MultiplayerActivity extends AppCompatActivity {
                             Log.d(TAG, "Game started with id: " + gameId);
                         } else {
                             //SET button press
-                            if (tempGame.getBlockedBy() != null && tempGame.getBlockedBy().toString().equals(username) && tempGame.getSelectedCardIndexes().isEmpty()) {
+                            if (tempGame.getBlockedBy() != null && tempGame.getBlockedBy().equals(foundUsername) && tempGame.getSelectedCardIndexes().isEmpty()) {
                                 Log.d(TAG, "my block");
                                 try {
                                     game.setBlockedByString(msg.getString("blockedBy"));
                                     setBtn.setBackgroundTintList(ContextCompat.getColorStateList(MultiplayerActivity.this, R.color.green));
                                     switchBoardClicks(true);
                                 } catch (JSONException e) {
-                                    e.getMessage();
+                                    Log.e(TAG, "my block, blockedBy: " + e.getMessage());
+                                    throw new JsonParsingException(e.getMessage());
                                 }
-                            } else if (tempGame.getBlockedBy() != null && !tempGame.getBlockedBy().toString().equals(username) && tempGame.getSelectedCardIndexes().isEmpty()) {
+                            } else if (tempGame.getBlockedBy() != null && !tempGame.getBlockedBy().equals(foundUsername) && tempGame.getSelectedCardIndexes().isEmpty()) {
                                 Log.d(TAG, "opponent's block");
                                 try {
                                     game.setBlockedByString(msg.getString("blockedBy"));
                                 } catch (JSONException e) {
-                                    e.getMessage();
+                                    Log.e(TAG, "opponent's block, blockedBy: " + e.getMessage());
+                                    throw new JsonParsingException(e.getMessage());
                                 }
                                 setBtn.setEnabled(false);
                                 setBtn.setBackgroundTintList(ContextCompat.getColorStateList(MultiplayerActivity.this, R.color.dark_red));
                             }
 
                             //opponent is selecting cards
-                            if (tempGame.getBlockedBy() != null && !tempGame.getBlockedBy().toString().equals(username)) {
+                            if (tempGame.getBlockedBy() != null && !tempGame.getBlockedBy().equals(foundUsername)) {
                                 game.setSelectedCardIndexes(tempGame.getSelectedCardIndexes());
                                 setSelectedCardsBackgroundForOpponent(game.getSelectedCardIndexes());
                             }
@@ -125,7 +139,7 @@ public class MultiplayerActivity extends AppCompatActivity {
                                     resetCardBackgrounds();
                                     resetButtonAndCardClicks();
 
-                                    if (game.getBlockedBy().toString().equals(username)) {
+                                    if (game.getBlockedBy().equals(foundUsername)) {
                                         resetButtonAndCardClicksOnError();
                                         punishPlayerError();
                                         Log.d(TAG, "set not found");
@@ -171,7 +185,7 @@ public class MultiplayerActivity extends AppCompatActivity {
                                 game.clearSelectedCardIndexes();
                                 selectedCardIds.clear();
                                 resetCardBackgrounds();
-                                if (game.getBlockedBy().toString().equals(username)) {
+                                if (game.getBlockedBy().equals(foundUsername)) {
                                     resetButtonAndCardClicksOnError();
                                     punishPlayerError();
                                     Log.d(TAG, "punished");
@@ -185,7 +199,8 @@ public class MultiplayerActivity extends AppCompatActivity {
                     });
                 }
             } catch (JSONException e) {
-                e.getMessage();
+                Log.e(TAG, "topicMessage: " + e.getMessage());
+                throw new JsonParsingException(e.getMessage());
             }
         }, throwable -> Log.d(TAG, "cannot create websocket"));
         WebSocketClient.compositeDisposable.add(topic);
@@ -229,9 +244,10 @@ public class MultiplayerActivity extends AppCompatActivity {
         JSONObject buttonPressJson = new JSONObject();
         try {
             buttonPressJson.put(GAME_ID, gameId);
-            buttonPressJson.put(PLAYER_ID, username);
+            buttonPressJson.put(PLAYER_ID, foundUsername);
         } catch (JSONException e) {
-            e.getMessage();
+            Log.e(TAG, "onSETBtnClick: " + e.getMessage());
+            throw new JsonParsingException(e.getMessage());
         }
 
         WebSocketClient.mStompClient.send("/app/gameplay/button", buttonPressJson.toString()).subscribe();
@@ -277,7 +293,7 @@ public class MultiplayerActivity extends AppCompatActivity {
     }
 
     private void updatePointTextViews() {
-        if (game.getPlayer1().toString().equals(username)) {
+        if (game.getPlayer1().equals(foundUsername)) {
             ownPointTextView.setText(String.valueOf(game.getPoints().get(game.getPlayer1())));
             opponentPointTextView.setText(String.valueOf(game.getPoints().get(game.getPlayer2())));
         } else {
@@ -287,7 +303,7 @@ public class MultiplayerActivity extends AppCompatActivity {
     }
 
     public void onCardClick(View view) {
-        if (game.getBlockedBy().toString().equals(username) && selectedCardIds.size() < 3) {
+        if (game.getBlockedBy().equals(foundUsername) && selectedCardIds.size() < 3) {
             if (!selectedCardIds.contains(view.getId())) {
                 resetInt++;
                 if (resetInt == 3) {
@@ -306,11 +322,12 @@ public class MultiplayerActivity extends AppCompatActivity {
                         JSONObject gameplayJson = new JSONObject();
                         try {
                             gameplayJson.put(GAME_ID, gameId);
-                            gameplayJson.put(PLAYER_ID, username);
+                            gameplayJson.put(PLAYER_ID, foundUsername);
                             gameplayJson.put(SELECT, true);
                             gameplayJson.put(SELECTED_CARD_INDEX, counter);
                         } catch (JSONException e) {
-                            e.getMessage();
+                            Log.e(TAG, "onCardClick, select: " + e.getMessage());
+                            throw new JsonParsingException(e.getMessage());
                         }
 
                         WebSocketClient.mStompClient.send("/app/gameplay", gameplayJson.toString()).subscribe();
@@ -326,11 +343,12 @@ public class MultiplayerActivity extends AppCompatActivity {
                         JSONObject gameplayJson = new JSONObject();
                         try {
                             gameplayJson.put(GAME_ID, gameId);
-                            gameplayJson.put(PLAYER_ID, username);
+                            gameplayJson.put(PLAYER_ID, foundUsername);
                             gameplayJson.put(SELECT, false);
                             gameplayJson.put(SELECTED_CARD_INDEX, i);
                         } catch (JSONException e) {
-                            e.getMessage();
+                            Log.e(TAG, "onCardClick, unselect: " + e.getMessage());
+                            throw new JsonParsingException(e.getMessage());
                         }
 
                         WebSocketClient.mStompClient.send("/app/gameplay", gameplayJson.toString()).subscribe();
@@ -374,7 +392,7 @@ public class MultiplayerActivity extends AppCompatActivity {
                 }
                 stopUserInteractions = false;
             }
-        }, 300);
+        }, 100);
     }
 
     @Override
@@ -396,12 +414,12 @@ public class MultiplayerActivity extends AppCompatActivity {
         Intent mpes = new Intent(this, MultiplayerEndScreenActivity.class);
         mpes.putExtra("opponentScore", opponentPointTextView.getText());
         mpes.putExtra("ownScore", ownPointTextView.getText());
-        mpes.putExtra("winner", game.getWinner().toString());
+        mpes.putExtra("winner", game.getWinner());
         if (game.getPlayer1() != null && game.getPlayer2() != null) {
-            if (game.getPlayer1().toString().equals(username)) {
-                mpes.putExtra("opponent", game.getPlayer2().toString());
+            if (game.getPlayer1().equals(foundUsername)) {
+                mpes.putExtra("opponent", game.getPlayer2());
             } else {
-                mpes.putExtra("opponent", game.getPlayer1().toString());
+                mpes.putExtra("opponent", game.getPlayer1());
             }
         }
 

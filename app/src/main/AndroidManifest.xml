@@ -57,7 +57,7 @@
             android:parentActivityName=".viewmodel.MainActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".viewmodel.DifficultyActivity"
+            android:name=".viewmodel.singleplayer.DifficultyActivity"
             android:exported="false"
             android:label="@string/difficulty"
             android:parentActivityName=".viewmodel.MainActivity"
@@ -69,7 +69,7 @@
             android:parentActivityName=".viewmodel.MainActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".viewmodel.EndGameScreenActivity"
+            android:name=".viewmodel.singleplayer.EndGameScreenActivity"
             android:exported="false"
             android:label="@string/scoreText"
             android:parentActivityName=".viewmodel.MainActivity"
@@ -87,13 +87,31 @@
             android:parentActivityName=".viewmodel.MainActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".viewmodel.SingleplayerActivity"
+            android:name=".viewmodel.singleplayer.SingleplayerActivity"
             android:exported="false"
             android:label="@string/singleplayerText"
             android:parentActivityName=".viewmodel.MainActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".viewmodel.auth.RegisterActivity"
+            android:exported="false"
+            android:label="@string/registerText"
+            android:parentActivityName=".viewmodel.auth.AuthenticationActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".viewmodel.auth.LoginActivity"
+            android:exported="false"
+            android:label="@string/loginText"
+            android:parentActivityName=".viewmodel.auth.AuthenticationActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".viewmodel.auth.AuthenticationActivity"
+            android:exported="false"
+            android:label="@string/authentication"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".viewmodel.MainActivity"
+            android:launchMode="singleTop"
             android:exported="true"
             android:label="@string/setCardGameText"
             android:screenOrientation="portrait">

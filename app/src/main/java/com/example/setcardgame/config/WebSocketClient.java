@@ -2,6 +2,8 @@ package com.example.setcardgame.config;
 
 import android.util.Log;
 
+import java.util.HashMap;
+
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import lombok.AccessLevel;
@@ -15,9 +17,11 @@ public class WebSocketClient {
     public static CompositeDisposable compositeDisposable;
     private static final String TAG = "WebSocketClient";
 
-    public static void createWebSocket(String websocketConnectUrl) {
+    public static void createWebSocket(String websocketConnectUrl, String token) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("Authorization", "Bearer " + token);
         compositeDisposable = new CompositeDisposable();
-        mStompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, websocketConnectUrl);
+        mStompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, websocketConnectUrl, params);
         Disposable lifecycle = mStompClient.lifecycle().subscribe(lifecycleEvent -> {
             switch (lifecycleEvent.getType()) {
                 case OPENED:

@@ -5,24 +5,23 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.setcardgame.R;
-import com.example.setcardgame.model.UrlConstants;
-import com.example.setcardgame.model.Username;
+import com.example.setcardgame.listener.ServerStatusListener;
+import com.example.setcardgame.service.AuthService;
+import com.example.setcardgame.viewmodel.auth.AuthenticationActivity;
 import com.example.setcardgame.viewmodel.multiplayer.SelectMultiplayerTypeActivity;
 import com.example.setcardgame.viewmodel.scoreboard.ScoreboardActivity;
+import com.example.setcardgame.viewmodel.singleplayer.DifficultyActivity;
 
-import java.util.UUID;
-
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ServerStatusListener {
+    private final AuthService authService = new AuthService(MainActivity.this);
+    private Button multiBtn;
+    private Button scoreboardBtn;
     private static final String USERNAME = "username";
     private static final String TAG = "Main activity";
 
@@ -31,28 +30,36 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        SharedPreferences sp = getSharedPreferences(USERNAME, MODE_PRIVATE);
-        if ("default".equals(sp.getString(USERNAME, "default"))) {
-            SharedPreferences.Editor editor = sp.edit();
-            UUID username = UUID.randomUUID();
-            editor.putString(USERNAME, username.toString());
-            editor.apply();
-        }
-        Username.setName(sp.getString(USERNAME, "def"));
-        checkServer();
+
+        multiBtn = findViewById(R.id.multiplayerBtn);
+        scoreboardBtn = findViewById(R.id.scoreboardBtn);
+
+        Log.d(TAG, "start handleLogin in onCreate");
+        handleLogin();
     }
 
-    private void checkServer() {
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url = UrlConstants.URL + "available";
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        Log.d(TAG, "start handleLogin in onNewIntent");
+        handleLogin();
+    }
 
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                response -> Log.d(TAG, "Server available"), error -> {
-            Log.d(TAG, "Server not available");
-            Toast.makeText(MainActivity.this, getString(R.string.serverUnavailable), Toast.LENGTH_SHORT).show();
-        });
+    @Override
+    public void onServerStatusChecked(boolean isOnline) {
+        if (isOnline) {
+            Log.i(TAG, "Server is online");
+            unblockOnlineFeatures();
+        } else {
+            Log.i(TAG, "Server is offline");
+            blockOnlineFeatures();
+        }
+    }
 
-        queue.add(stringRequest);
+    public void switchToAuthentication() {
+        Intent a = new Intent(this, AuthenticationActivity.class);
+        startActivity(a);
     }
 
     public void switchToDifficulty(View view) {
@@ -73,5 +80,36 @@ public class MainActivity extends AppCompatActivity {
     public void switchToHowToPage(View view) {
         Intent htp = new Intent(this, HowToPageActivity.class);
         startActivity(htp);
+    }
+
+    private void blockOnlineFeatures() {
+        Log.i(TAG, "Blocking online features");
+        multiBtn.setEnabled(false);
+        multiBtn.setTooltipText(getString(R.string.serverUnavailable));
+        scoreboardBtn.setEnabled(false);
+        scoreboardBtn.setTooltipText(getString(R.string.serverUnavailable));
+    }
+
+    private void unblockOnlineFeatures() {
+        Log.i(TAG, "Unblocking online features");
+        multiBtn.setEnabled(true);
+        multiBtn.setTooltipText(null);
+        scoreboardBtn.setEnabled(true);
+        scoreboardBtn.setTooltipText(null);
+    }
+
+    private void handleLogin() {
+        SharedPreferences sp = authService.getEncryptedSharedPreferences();
+        if (sp.getString(USERNAME, null) == null) {
+            Log.i(TAG, "Switching to authentication page");
+            switchToAuthentication();
+        } else {
+            if (authService.isTokenExpired()) {
+                Log.i(TAG, "Token expired, refreshing");
+                authService.refreshToken(this);
+            } else {
+                Log.i(TAG, "Token is still valid");
+            }
+        }
     }
 }
