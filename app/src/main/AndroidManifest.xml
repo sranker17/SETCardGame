@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.setcardgame">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -10,7 +9,8 @@
         android:label="@string/appName"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.SETCardGame">
+        android:theme="@style/Theme.SETCardGame"
+        android:usesCleartextTraffic="true">
         <activity
             android:name=".viewmodel.scoreboard.WorldScoresActivity"
             android:parentActivityName=".viewmodel.scoreboard.ScoreboardActivity"

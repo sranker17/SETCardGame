@@ -85,17 +85,17 @@ public class MainActivity extends AppCompatActivity implements ServerStatusListe
     private void blockOnlineFeatures() {
         Log.i(TAG, "Blocking online features");
         multiBtn.setEnabled(false);
-        multiBtn.setTooltipText(getString(R.string.serverUnavailable));
+        multiBtn.setContentDescription(getString(R.string.serverUnavailable));
         scoreboardBtn.setEnabled(false);
-        scoreboardBtn.setTooltipText(getString(R.string.serverUnavailable));
+        scoreboardBtn.setContentDescription(getString(R.string.serverUnavailable));
     }
 
     private void unblockOnlineFeatures() {
         Log.i(TAG, "Unblocking online features");
         multiBtn.setEnabled(true);
-        multiBtn.setTooltipText(null);
+        multiBtn.setContentDescription(null);
         scoreboardBtn.setEnabled(true);
-        scoreboardBtn.setTooltipText(null);
+        scoreboardBtn.setContentDescription(null);
     }
 
     private void handleLogin() {
