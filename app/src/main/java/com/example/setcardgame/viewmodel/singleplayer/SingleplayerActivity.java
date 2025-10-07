@@ -24,6 +24,7 @@ import com.example.setcardgame.model.card.Shape;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -36,7 +37,6 @@ public class SingleplayerActivity extends AppCompatActivity {
     private final List<Integer> selectedCardIds = new ArrayList<>();
     private final Timer resetBackgroundTimer = new Timer();
     private TextView pointTextView;
-    private TextView timerTextView;
     private Difficulty difficulty = Difficulty.NORMAL;
     private Timer timer;
     private TimerTask timerTask;
@@ -70,7 +70,8 @@ public class SingleplayerActivity extends AppCompatActivity {
                     int timeInInt = getTimer();
                     int seconds = timeInInt % 60;
                     int minutes = timeInInt / 60;
-                    timerTextView.setText(String.format("%d:%02d", minutes, seconds));
+                    TextView timerTextView = findViewById(R.id.timerTextView);
+                    timerTextView.setText(String.format(Locale.US, "%d:%02d", minutes, seconds));
                 });
             }
         };
@@ -147,7 +148,7 @@ public class SingleplayerActivity extends AppCompatActivity {
         } while (!game.hasSet(boardCards, board));
 
         pointTextView = findViewById(R.id.opponentPointTextView);
-        timerTextView = findViewById(R.id.timerTextView);
+        TextView timerTextView = findViewById(R.id.timerTextView);
         pointTextView.setText("0");
         timerTextView.setText("0:00");
     }
@@ -261,7 +262,18 @@ public class SingleplayerActivity extends AppCompatActivity {
 
     private double getScreenSizeInInches() {
         DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+            // Use modern API for Android 11+
+            android.graphics.Rect bounds = getWindowManager().getCurrentWindowMetrics().getBounds();
+            dm.widthPixels = bounds.width();
+            dm.heightPixels = bounds.height();
+            DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+            dm.xdpi = displayMetrics.xdpi;
+            dm.ydpi = displayMetrics.ydpi;
+        } else {
+            // Use legacy API for older versions
+            getWindowManager().getDefaultDisplay().getMetrics(dm);
+        }
         double mWidthPixels = dm.widthPixels;
         double mHeightPixels = dm.heightPixels;
         double x = Math.pow(mWidthPixels / dm.xdpi, 2);
