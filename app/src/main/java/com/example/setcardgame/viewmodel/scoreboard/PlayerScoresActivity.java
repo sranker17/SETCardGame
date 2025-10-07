@@ -17,6 +17,8 @@ import com.example.setcardgame.service.AuthService;
 import com.example.setcardgame.service.ScoreboardService;
 import com.google.android.material.tabs.TabLayout;
 
+import java.util.Locale;
+
 public class PlayerScoresActivity extends AppCompatActivity {
     private final AuthService authService = new AuthService(PlayerScoresActivity.this);
     private final ScoreboardService scoreboardService = new ScoreboardService(PlayerScoresActivity.this);
@@ -83,8 +85,8 @@ public class PlayerScoresActivity extends AppCompatActivity {
             @Override
             public void onResponse(TopScores topScores) {
                 Log.i(TAG, "Top user scores received");
-                adapter.addFragment(new ScoresFragment(topScores.getEasyScores()), String.format("%s", getString(R.string.easy)));
-                adapter.addFragment(new ScoresFragment(topScores.getNormalScores()), String.format("%s", getString(R.string.normal)));
+                adapter.addFragment(new ScoresFragment(topScores.getEasyScores()), String.format(Locale.US, "%s", getString(R.string.easy)));
+                adapter.addFragment(new ScoresFragment(topScores.getNormalScores()), String.format(Locale.US, "%s", getString(R.string.normal)));
 
                 viewPager.setAdapter(adapter);
                 tabLayout.setupWithViewPager(viewPager);

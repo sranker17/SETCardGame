@@ -18,6 +18,8 @@ import com.example.setcardgame.service.AuthService;
 import com.example.setcardgame.service.ScoreboardService;
 import com.google.android.material.tabs.TabLayout;
 
+import java.util.Locale;
+
 public class WorldScoresActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -99,8 +101,8 @@ public class WorldScoresActivity extends AppCompatActivity {
                     }
                 });
 
-                adapter.addFragment(new ScoresFragment(topScores.getEasyScores()), String.format("%s", getString(R.string.easy)));
-                adapter.addFragment(new ScoresFragment(topScores.getNormalScores()), String.format("%s", getString(R.string.normal)));
+                adapter.addFragment(new ScoresFragment(topScores.getEasyScores()), String.format(Locale.US, "%s", getString(R.string.easy)));
+                adapter.addFragment(new ScoresFragment(topScores.getNormalScores()), String.format(Locale.US, "%s", getString(R.string.normal)));
 
                 viewPager.setAdapter(adapter);
                 tabLayout.setupWithViewPager(viewPager);
