@@ -22,6 +22,7 @@ import com.example.setcardgame.viewmodel.scoreboard.ScoreboardActivity;
 
 import org.json.JSONObject;
 
+import java.util.Locale;
 import java.util.Objects;
 
 public class EndGameScreenActivity extends AppCompatActivity {
@@ -52,12 +53,12 @@ public class EndGameScreenActivity extends AppCompatActivity {
         TextView finalScoreTextView = findViewById(R.id.finalPointTextView);
         TextView finalDifficultyTextView = findViewById(R.id.difficultyTextView);
 
-        finalTimeTextView.setText(String.format("%s: %d:%02d", getString(R.string.timeText), minutes, seconds));
-        finalScoreTextView.setText(String.format("%s: %s", getString(R.string.pointsText), finalScore));
+        finalTimeTextView.setText(String.format(Locale.US, "%s: %d:%02d", getString(R.string.timeText), minutes, seconds));
+        finalScoreTextView.setText(String.format(Locale.US, "%s: %s", getString(R.string.pointsText), finalScore));
         if (finalDifficulty.equals(Difficulty.EASY.toString())) {
-            finalDifficultyTextView.setText(String.format("%s", getString(R.string.easy)));
+            finalDifficultyTextView.setText(String.format(Locale.US, "%s", getString(R.string.easy)));
         } else {
-            finalDifficultyTextView.setText(String.format("%s", getString(R.string.normal)));
+            finalDifficultyTextView.setText(String.format(Locale.US, "%s", getString(R.string.normal)));
         }
 
         if (authService.isTokenExpired()) {

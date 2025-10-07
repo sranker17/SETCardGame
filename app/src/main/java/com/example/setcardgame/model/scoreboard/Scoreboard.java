@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 
 import com.example.setcardgame.model.Difficulty;
 
+import java.util.Locale;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -33,6 +35,6 @@ public class Scoreboard {
     public String toString() {
         int minutes = time / 60;
         int seconds = time % 60;
-        return difficulty + ", " + score + " points, " + String.format("%d:%02d", minutes, seconds);
+        return difficulty + ", " + score + " points, " + String.format(Locale.US, "%d:%02d", minutes, seconds);
     }
 }
