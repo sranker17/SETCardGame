@@ -21,7 +21,7 @@
     <string name="contentDescriptionForCards">card</string>
     <string name="newGameBtn">Új Játék</string>
     <string name="backToMenuBtn">Menü</string>
-    <string name="howToText">Egy SET három kártyából áll, amiben minden tulajdonságot külön-külön megvizsgálva, vagy egyeznie vagy különböznie kell. Ennek a szabálynak MINDEN tulajdonság esetén meg kell felelnie a kiválasztott három lapnak. Más szavakkal: a forma vagy azononos mindhárom kártyán, vagy mindegyiken más; a szín vagy azonos mindhárom kártyán, vagy mindegyiken különböző; legvégül a darabszámnak vagy egyeznie kell mindegyiken vagy különböznie.</string>
+    <string name="howToText">A SET játék célja: 3 kártyát kell találni, amelyek együtt alkotnak egy SET-et.\n\nA SET szabálya:\n• Minden tulajdonság (alak, szín, szám) vagy azonos legyen mind a 3 kártyán, vagy mind különböző legyen.\n\nPéldák:\n• 3 kártya ugyanolyan alakú, de különböző színű és különböző számú\n• 3 kártya különböző alakú, különböző színű és különböző számú\n• 3 kártya ugyanolyan alakú, ugyanolyan színű, de különböző számú\n\nA játék: Keress 3 kártyát, amelyek együtt SET-et alkotnak!</string>
     <string name="howToTitle">Hogyan Kell Játszani</string>
     <string name="easy">Könnyű</string>
     <string name="normal">Normál</string>
