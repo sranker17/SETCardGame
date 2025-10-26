@@ -5,6 +5,7 @@ import android.util.Log;
 import com.example.setcardgame.exception.JsonParsingException;
 import com.example.setcardgame.model.card.Card;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,6 +34,8 @@ public class MultiplayerGame {
     private List<Integer> nullCardIndexes = new ArrayList<>();
     private boolean playerLeft;
 
+    private static final String TAG = "MultiplayerGame";
+
     public MultiplayerGame(JSONObject game) {
         createMultiplayerGame(game);
     }
@@ -40,12 +43,14 @@ public class MultiplayerGame {
     public void setNullCardIndexesString(String nullCardIndexesString) {
         if (!nullCardIndexesString.equals("[]")) {
             nullCardIndexes.clear();
-            nullCardIndexesString = nullCardIndexesString.replace('[', ' ');
-            nullCardIndexesString = nullCardIndexesString.replace(']', ' ');
-            nullCardIndexesString = nullCardIndexesString.trim();
-            String[] nullCardIndexesStrings = nullCardIndexesString.split(",");
-            for (String cardIndexesString : nullCardIndexesStrings) {
-                nullCardIndexes.add(Integer.parseInt(cardIndexesString));
+            try {
+                JSONArray jsonArray = new JSONArray(nullCardIndexesString);
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    nullCardIndexes.add(jsonArray.getInt(i));
+                }
+            } catch (JSONException e) {
+                Log.e(TAG, "setNullCardIndexesString: " + e.getMessage());
+                throw new JsonParsingException(e.getMessage());
             }
         }
     }
@@ -61,29 +66,23 @@ public class MultiplayerGame {
     public void setBoardString(String boardString) {
         if (!boardString.equals("[]")) {
             board.clear();
-            boardString = boardString.replace('"', ' ');
-            boardString = boardString.replace('[', ' ');
-            boardString = boardString.replace(']', ' ');
-            boardString = boardString.replace('{', ' ');
-            boardString = boardString.replace('}', ' ');
-            boardString = boardString.replace(':', ' ');
-            boardString = boardString.replace("color", "");
-            boardString = boardString.replace("shape", "");
-            boardString = boardString.replace("quantity", "");
-            String[] words = boardString.split(",");
-
-            for (int i = 0; words.length > i; i++) {
-                words[i] = words[i].trim();
-            }
-
-            int i = 0;
-            while (words.length > i) {
-                if (!words[i].equals("null")) {
-                    Card newCard = new Card(words[i++], words[i++], words[i++]);
-                    board.add(newCard);
-                } else {
-                    board.add(null);
+            try {
+                JSONArray jsonArray = new JSONArray(boardString);
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    if (jsonArray.isNull(i)) {
+                        board.add(null);
+                    } else {
+                        JSONObject cardJson = jsonArray.getJSONObject(i);
+                        String color = cardJson.getString("color");
+                        String shape = cardJson.getString("shape");
+                        String quantity = cardJson.getString("quantity");
+                        Card newCard = new Card(color, shape, quantity);
+                        board.add(newCard);
+                    }
                 }
+            } catch (JSONException e) {
+                Log.e(TAG, "setBoardString: " + e.getMessage());
+                throw new JsonParsingException(e.getMessage());
             }
         }
     }
@@ -95,12 +94,14 @@ public class MultiplayerGame {
     public void setSelectedCardIndexesString(String selectedCardIndexesString) {
         if (!selectedCardIndexesString.equals("[]")) {
             selectedCardIndexes.clear();
-            selectedCardIndexesString = selectedCardIndexesString.replace('[', ' ');
-            selectedCardIndexesString = selectedCardIndexesString.replace(']', ' ');
-            selectedCardIndexesString = selectedCardIndexesString.trim();
-            String[] selectedCardIndexesStrings = selectedCardIndexesString.split(",");
-            for (String cardIndexesString : selectedCardIndexesStrings) {
-                selectedCardIndexes.add(Integer.parseInt(cardIndexesString));
+            try {
+                JSONArray jsonArray = new JSONArray(selectedCardIndexesString);
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    selectedCardIndexes.add(jsonArray.getInt(i));
+                }
+            } catch (JSONException e) {
+                Log.e(TAG, "setSelectedCardIndexesString: " + e.getMessage());
+                throw new JsonParsingException(e.getMessage());
             }
         }
     }
@@ -115,20 +116,18 @@ public class MultiplayerGame {
 
     public void setPointsString(String pointsString) {
         if (player1 != null && player2 != null && !pointsString.equals("{}")) {
+            try {
+                JSONObject jsonObject = new JSONObject(pointsString);
+                points.clear();
 
-            pointsString = pointsString.replace('"', ' ');
-            pointsString = pointsString.replace('{', ' ');
-            pointsString = pointsString.replace('}', ' ');
-            pointsString = pointsString.replace(':', ',');
-            String[] pointWords = pointsString.split(",");
-
-            for (int i = 0; pointWords.length > i; i++) {
-                pointWords[i] = pointWords[i].trim();
-            }
-
-            int i = 0;
-            while (pointWords.length > i) {
-                points.put(pointWords[i++], Integer.parseInt(pointWords[i++]));
+                for (java.util.Iterator<String> it = jsonObject.keys(); it.hasNext(); ) {
+                    String key = it.next();
+                    int value = jsonObject.getInt(key);
+                    points.put(key, value);
+                }
+            } catch (JSONException e) {
+                Log.e(TAG, "setPointsString: " + e.getMessage());
+                throw new JsonParsingException(e.getMessage());
             }
         }
     }
@@ -159,7 +158,7 @@ public class MultiplayerGame {
             setSelectedCardIndexesString(game.getString("selectedCardIndexes"));
             setPointsString(game.getString("points"));
         } catch (JSONException e) {
-            Log.e("MultiplayerGame", "createMultiplayerGame: " + e.getMessage());
+            Log.e(TAG, "createMultiplayerGame: " + e.getMessage());
             throw new JsonParsingException(e.getMessage());
         }
     }

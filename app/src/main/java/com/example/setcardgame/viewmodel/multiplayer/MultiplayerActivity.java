@@ -89,114 +89,7 @@ public class MultiplayerActivity extends AppCompatActivity {
                 }
                 Log.d(TAG, msg.toString());
                 if (tempGame.getPlayer1() != null && tempGame.getPlayer2() != null) {
-                    runOnUiThread(() -> {
-                        //start game
-                        if (game == null) {
-                            game = new MultiplayerGame(msg);
-                            startGame();
-                            Log.d(TAG, "Game started with id: " + gameId);
-                        } else {
-                            //SET button press
-                            if (tempGame.getBlockedBy() != null && tempGame.getBlockedBy().equals(foundUsername) && tempGame.getSelectedCardIndexes().isEmpty()) {
-                                Log.d(TAG, "my block");
-                                try {
-                                    game.setBlockedByString(msg.getString("blockedBy"));
-                                    setBtn.setBackgroundTintList(ContextCompat.getColorStateList(MultiplayerActivity.this, R.color.green));
-                                    switchBoardClicks(true);
-                                } catch (JSONException e) {
-                                    Log.e(TAG, "my block, blockedBy: " + e.getMessage());
-                                    throw new JsonParsingException(e.getMessage());
-                                }
-                            } else if (tempGame.getBlockedBy() != null && !tempGame.getBlockedBy().equals(foundUsername) && tempGame.getSelectedCardIndexes().isEmpty()) {
-                                Log.d(TAG, "opponent's block");
-                                try {
-                                    game.setBlockedByString(msg.getString("blockedBy"));
-                                } catch (JSONException e) {
-                                    Log.e(TAG, "opponent's block, blockedBy: " + e.getMessage());
-                                    throw new JsonParsingException(e.getMessage());
-                                }
-                                setBtn.setEnabled(false);
-                                setBtn.setBackgroundTintList(ContextCompat.getColorStateList(MultiplayerActivity.this, R.color.dark_red));
-                            }
-
-                            //opponent is selecting cards
-                            if (tempGame.getBlockedBy() != null && !tempGame.getBlockedBy().equals(foundUsername)) {
-                                game.setSelectedCardIndexes(tempGame.getSelectedCardIndexes());
-                                setSelectedCardsBackgroundForOpponent(game.getSelectedCardIndexes());
-                            }
-
-                            //3 cards have been selected
-                            if (tempGame.getSelectedCardIndexes().size() == 3 && tempGame.getBlockedBy() == null) {
-                                game.setSelectedCardIndexes(tempGame.getSelectedCardIndexes());
-                                setSelectedCardsBackgroundForOpponent(game.getSelectedCardIndexes());
-
-                                if (game.hasSamePoints(tempGame.getPoints())) {
-                                    //wrong combo
-                                    unCorrectSelectedCards(tempGame.getSelectedCardIndexes());
-
-                                    game.clearSelectedCardIndexes();
-                                    selectedCardIds.clear();
-                                    resetCardBackgrounds();
-                                    resetButtonAndCardClicks();
-
-                                    if (game.getBlockedBy().equals(foundUsername)) {
-                                        resetButtonAndCardClicksOnError();
-                                        punishPlayerError();
-                                        Log.d(TAG, "set not found");
-                                    } else {
-                                        resetButtonAndCardClicks();
-                                    }
-                                    game.setBlockedBy(null);
-                                } else {
-                                    //right combo, board changed
-                                    Log.d(TAG, "set found");
-                                    correctSelectedCards(tempGame.getSelectedCardIndexes());
-                                    game.setPoints(tempGame.getPoints());
-                                    updatePointTextViews();
-                                    game.setBoard(tempGame.getBoard());
-                                    game.setNullCardIndexes(tempGame.getNullCardIndexes());
-
-                                    for (int i = 0; game.getSelectedCardIndexes().size() > i; i++) {
-                                        if (!game.getNullCardIndexes().isEmpty()) {
-                                            boardIV.get(game.getSelectedCardIndexes().get(i)).setVisibility(View.INVISIBLE);
-                                        } else {
-                                            ImageView img = boardIV.get(game.getSelectedCardIndexes().get(i));
-                                            int resImage = getResources().getIdentifier(game.getBoard().get(game.getSelectedCardIndexes().get(i)).toString(), "drawable", getPackageName());
-                                            img.setImageResource(resImage);
-                                            img.setContentDescription(game.getBoard().get(game.getSelectedCardIndexes().get(i)).toString());
-                                        }
-                                    }
-
-                                    if (tempGame.getWinner() != null) {
-                                        game.setWinner(tempGame.getWinner());
-                                        Log.d(TAG, "Game ended with id: " + gameId);
-                                        endGame();
-                                    }
-
-                                    resetButtonAndCardClicks();
-                                    game.setBlockedBy(null);
-                                    game.clearSelectedCardIndexes();
-                                    selectedCardIds.clear();
-                                    resetCardBackgrounds();
-                                }
-                            }
-                            //time ran out. button has been reset
-                            if (game.getBlockedBy() != null && tempGame.getSelectedCardIndexes().size() != 3 && tempGame.getBlockedBy() == null) {
-                                game.clearSelectedCardIndexes();
-                                selectedCardIds.clear();
-                                resetCardBackgrounds();
-                                if (game.getBlockedBy().equals(foundUsername)) {
-                                    resetButtonAndCardClicksOnError();
-                                    punishPlayerError();
-                                    Log.d(TAG, "punished");
-                                } else {
-                                    resetButtonAndCardClicks();
-                                    Log.d(TAG, "not punished");
-                                }
-                                game.setBlockedBy(null);
-                            }
-                        }
-                    });
+                    runOnUiThread(() -> handleMultiplayerGame(msg, tempGame));
                 }
             } catch (JSONException e) {
                 Log.e(TAG, "topicMessage: " + e.getMessage());
@@ -205,6 +98,130 @@ public class MultiplayerActivity extends AppCompatActivity {
         }, throwable -> Log.d(TAG, "cannot create websocket"));
         WebSocketClient.compositeDisposable.add(topic);
         WebSocketClient.mStompClient.send("/app/start", jsonGameId.toString()).subscribe();
+    }
+
+    private void handleMultiplayerGame(JSONObject msg, MultiplayerGame tempGame) {
+        if (game == null) {
+            game = new MultiplayerGame(msg);
+            startGame();
+            Log.d(TAG, "Game started with id: " + gameId);
+        } else {
+            //SET button press
+            if (tempGame.getBlockedBy() != null && tempGame.getBlockedBy().equals(foundUsername) && tempGame.getSelectedCardIndexes().isEmpty()) {
+                Log.d(TAG, "my block");
+                try {
+                    game.setBlockedByString(msg.getString("blockedBy"));
+                    setBtn.setBackgroundTintList(ContextCompat.getColorStateList(MultiplayerActivity.this, R.color.green));
+                    switchBoardClicks(true);
+                } catch (JSONException e) {
+                    Log.e(TAG, "my block, blockedBy: " + e.getMessage());
+                    throw new JsonParsingException(e.getMessage());
+                }
+            } else if (tempGame.getBlockedBy() != null && !tempGame.getBlockedBy().equals(foundUsername) && tempGame.getSelectedCardIndexes().isEmpty()) {
+                Log.d(TAG, "opponent's block");
+                try {
+                    game.setBlockedByString(msg.getString("blockedBy"));
+                } catch (JSONException e) {
+                    Log.e(TAG, "opponent's block, blockedBy: " + e.getMessage());
+                    throw new JsonParsingException(e.getMessage());
+                }
+                setBtn.setEnabled(false);
+                setBtn.setBackgroundTintList(ContextCompat.getColorStateList(MultiplayerActivity.this, R.color.dark_red));
+            }
+
+            //opponent is selecting cards
+            handleOpponentCardSelection(tempGame);
+
+            //3 cards have been selected
+            handleThreeCardsSelected(tempGame);
+            //time ran out. button has been reset
+            handleButtonReset(tempGame);
+        }
+    }
+
+    private void handleOpponentCardSelection(MultiplayerGame tempGame) {
+        if (tempGame.getBlockedBy() != null && !tempGame.getBlockedBy().equals(foundUsername)) {
+            game.setSelectedCardIndexes(tempGame.getSelectedCardIndexes());
+            setSelectedCardsBackgroundForOpponent(game.getSelectedCardIndexes());
+        }
+    }
+
+    private void handleButtonReset(MultiplayerGame tempGame) {
+        if (game.getBlockedBy() != null && tempGame.getSelectedCardIndexes().size() != 3 && tempGame.getBlockedBy() == null) {
+            game.clearSelectedCardIndexes();
+            selectedCardIds.clear();
+            resetCardBackgrounds();
+            if (game.getBlockedBy().equals(foundUsername)) {
+                resetButtonAndCardClicksOnError();
+                punishPlayerError();
+                Log.d(TAG, "punished");
+            } else {
+                resetButtonAndCardClicks();
+                Log.d(TAG, "not punished");
+            }
+            game.setBlockedBy(null);
+        }
+    }
+
+    private void handleThreeCardsSelected(MultiplayerGame tempGame) {
+        if (tempGame.getSelectedCardIndexes().size() == 3 && tempGame.getBlockedBy() == null) {
+            game.setSelectedCardIndexes(tempGame.getSelectedCardIndexes());
+            setSelectedCardsBackgroundForOpponent(game.getSelectedCardIndexes());
+
+            if (game.hasSamePoints(tempGame.getPoints())) {
+                //wrong combo
+                unCorrectSelectedCards(tempGame.getSelectedCardIndexes());
+
+                game.clearSelectedCardIndexes();
+                selectedCardIds.clear();
+                resetCardBackgrounds();
+                resetButtonAndCardClicks();
+
+                if (game.getBlockedBy().equals(foundUsername)) {
+                    resetButtonAndCardClicksOnError();
+                    punishPlayerError();
+                    Log.d(TAG, "set not found");
+                } else {
+                    resetButtonAndCardClicks();
+                }
+                game.setBlockedBy(null);
+            } else {
+                //right combo, board changed
+                Log.d(TAG, "set found");
+                correctSelectedCards(tempGame.getSelectedCardIndexes());
+                game.setPoints(tempGame.getPoints());
+                updatePointTextViews();
+                game.setBoard(tempGame.getBoard());
+                game.setNullCardIndexes(tempGame.getNullCardIndexes());
+
+                rebuildBoard();
+
+                if (tempGame.getWinner() != null) {
+                    game.setWinner(tempGame.getWinner());
+                    Log.d(TAG, "Game ended with id: " + gameId);
+                    endGame();
+                }
+
+                resetButtonAndCardClicks();
+                game.setBlockedBy(null);
+                game.clearSelectedCardIndexes();
+                selectedCardIds.clear();
+                resetCardBackgrounds();
+            }
+        }
+    }
+
+    private void rebuildBoard() {
+        for (int i = 0; game.getSelectedCardIndexes().size() > i; i++) {
+            if (!game.getNullCardIndexes().isEmpty()) {
+                boardIV.get(game.getSelectedCardIndexes().get(i)).setVisibility(View.INVISIBLE);
+            } else {
+                ImageView img = boardIV.get(game.getSelectedCardIndexes().get(i));
+                int resImage = getResources().getIdentifier(game.getBoard().get(game.getSelectedCardIndexes().get(i)).toString(), "drawable", getPackageName());
+                img.setImageResource(resImage);
+                img.setContentDescription(game.getBoard().get(game.getSelectedCardIndexes().get(i)).toString());
+            }
+        }
     }
 
     private void startGame() {
@@ -305,57 +322,65 @@ public class MultiplayerActivity extends AppCompatActivity {
     public void onCardClick(View view) {
         if (game.getBlockedBy().equals(foundUsername) && selectedCardIds.size() < 3) {
             if (!selectedCardIds.contains(view.getId())) {
-                resetInt++;
-                if (resetInt == 3) {
-                    resetTimer.cancel();
-                    resetTimer.purge();
-                    resetInt = 0;
-                }
-                boolean found = false;
-                int counter = 0;
-                while (!found && boardIV.size() > counter) {
-                    if (boardIV.get(counter).getId() == view.getId()) {
-                        found = true;
-                        view.setBackgroundResource(R.drawable.card_background_selected);
-                        selectedCardIds.add(view.getId());
-
-                        JSONObject gameplayJson = new JSONObject();
-                        try {
-                            gameplayJson.put(GAME_ID, gameId);
-                            gameplayJson.put(PLAYER_ID, foundUsername);
-                            gameplayJson.put(SELECT, true);
-                            gameplayJson.put(SELECTED_CARD_INDEX, counter);
-                        } catch (JSONException e) {
-                            Log.e(TAG, "onCardClick, select: " + e.getMessage());
-                            throw new JsonParsingException(e.getMessage());
-                        }
-
-                        WebSocketClient.mStompClient.send("/app/gameplay", gameplayJson.toString()).subscribe();
-                    }
-                    counter++;
-                }
+                selectCard(view);
             } else {
-                resetInt--;
-                for (int i = 0; boardIV.size() > i; i++) {
-                    if (boardIV.get(i).getId() == view.getId()) {
-                        boardIV.get(i).setBackgroundResource(R.color.trans);
-
-                        JSONObject gameplayJson = new JSONObject();
-                        try {
-                            gameplayJson.put(GAME_ID, gameId);
-                            gameplayJson.put(PLAYER_ID, foundUsername);
-                            gameplayJson.put(SELECT, false);
-                            gameplayJson.put(SELECTED_CARD_INDEX, i);
-                        } catch (JSONException e) {
-                            Log.e(TAG, "onCardClick, unselect: " + e.getMessage());
-                            throw new JsonParsingException(e.getMessage());
-                        }
-
-                        WebSocketClient.mStompClient.send("/app/gameplay", gameplayJson.toString()).subscribe();
-                    }
-                }
-                selectedCardIds.remove((Integer) view.getId());
+                unselectCard(view);
             }
+        }
+    }
+
+    private void unselectCard(View view) {
+        resetInt--;
+        for (int i = 0; boardIV.size() > i; i++) {
+            if (boardIV.get(i).getId() == view.getId()) {
+                boardIV.get(i).setBackgroundResource(R.color.trans);
+
+                JSONObject gameplayJson = new JSONObject();
+                try {
+                    gameplayJson.put(GAME_ID, gameId);
+                    gameplayJson.put(PLAYER_ID, foundUsername);
+                    gameplayJson.put(SELECT, false);
+                    gameplayJson.put(SELECTED_CARD_INDEX, i);
+                } catch (JSONException e) {
+                    Log.e(TAG, "onCardClick, unselect: " + e.getMessage());
+                    throw new JsonParsingException(e.getMessage());
+                }
+
+                WebSocketClient.mStompClient.send("/app/gameplay", gameplayJson.toString()).subscribe();
+            }
+        }
+        selectedCardIds.remove((Integer) view.getId());
+    }
+
+    private void selectCard(View view) {
+        resetInt++;
+        if (resetInt == 3) {
+            resetTimer.cancel();
+            resetTimer.purge();
+            resetInt = 0;
+        }
+        boolean found = false;
+        int counter = 0;
+        while (!found && boardIV.size() > counter) {
+            if (boardIV.get(counter).getId() == view.getId()) {
+                found = true;
+                view.setBackgroundResource(R.drawable.card_background_selected);
+                selectedCardIds.add(view.getId());
+
+                JSONObject gameplayJson = new JSONObject();
+                try {
+                    gameplayJson.put(GAME_ID, gameId);
+                    gameplayJson.put(PLAYER_ID, foundUsername);
+                    gameplayJson.put(SELECT, true);
+                    gameplayJson.put(SELECTED_CARD_INDEX, counter);
+                } catch (JSONException e) {
+                    Log.e(TAG, "onCardClick, select: " + e.getMessage());
+                    throw new JsonParsingException(e.getMessage());
+                }
+
+                WebSocketClient.mStompClient.send("/app/gameplay", gameplayJson.toString()).subscribe();
+            }
+            counter++;
         }
     }
 
