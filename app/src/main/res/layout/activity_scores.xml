@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/light_blue"
+    android:background="@drawable/set_background"
     tools:context=".viewmodel.scoreboard.PlayerScoresActivity">
 
     <com.google.android.material.tabs.TabLayout
@@ -25,6 +25,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/viewPagerPlayer"
-        android:background="@color/light_blue" />
+        android:background="@drawable/set_background" />
 
 </LinearLayout>
