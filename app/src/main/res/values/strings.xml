@@ -20,7 +20,7 @@
     <string name="contentDescriptionForCards">card</string>
     <string name="newGameBtn">New Game</string>
     <string name="backToMenuBtn">Menu</string>
-    <string name="howToText">A SET consists of three cards in which each property is examined separately, must match or differ. This rule must match the three cards selected for ALL properties. In other words, the shape is either identical on all three cards or different on each; the color is either the same on all three cards or different on each; finally, the number of pieces must either match all of them or be different.</string>
+    <string name="howToText">The goal of SET: Find 3 cards that together form a SET.\n\nSET rule:\n• Every property (shape, color, number) must either be the same on all 3 cards, or all different.\n\nExamples:\n• 3 cards with same shape, but different colors and different numbers\n• 3 cards with different shapes, different colors and different numbers\n• 3 cards with same shape, same color, but different numbers\n\nGame: Find 3 cards that together form a SET!</string>
     <string name="howToTitle">How To Play</string>
     <string name="easy">Easy</string>
     <string name="normal">Normal</string>
