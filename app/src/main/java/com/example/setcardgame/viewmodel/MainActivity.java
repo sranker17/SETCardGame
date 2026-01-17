@@ -29,7 +29,12 @@ public class MainActivity extends BaseActivity implements ServerStatusListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        setupStatusBar();
+        setupToolbar(R.id.toolbar, R.string.setCardGameText);
+        
+        // Hide back button on main menu
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        }
 
         multiBtn = findViewById(R.id.multiplayerBtn);
         scoreboardBtn = findViewById(R.id.scoreboardBtn);

@@ -13,7 +13,7 @@ public class SelectMultiplayerTypeActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_multiplayer_type);
-        setupStatusBar();
+        setupToolbar(R.id.toolbar, R.string.chooseMultiTypeText);
     }
 
     public void switchToPrivateGame(View view) {

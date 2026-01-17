@@ -8,11 +8,15 @@
     android:background="@drawable/set_background"
     tools:context=".viewmodel.multiplayer.MultiplayerActivity">
 
-    <View
-        android:id="@+id/statusBarView"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@color/blue" />
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/blue"
+        android:elevation="4dp"
+        app:titleTextColor="@color/white"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:navigationIconTint="@color/white" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -24,7 +28,7 @@
         android:layout_width="105dp"
         android:layout_height="51dp"
         android:layout_marginStart="3dp"
-        android:layout_marginTop="72dp"
+        android:layout_marginTop="24dp"
         android:background="@drawable/radius"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -32,12 +36,12 @@
     <View
         android:id="@+id/view2"
         android:layout_width="156dp"
-        android:layout_height="49dp"
-        android:layout_marginTop="72dp"
+        android:layout_height="51dp"
         android:layout_marginEnd="7dp"
         android:background="@drawable/radius"
+        app:layout_constraintBottom_toBottomOf="@+id/view"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/view" />
 
     <TextView
         android:id="@+id/opponentPointTextView"
@@ -50,7 +54,8 @@
         app:layout_constraintEnd_toEndOf="@+id/view2"
         app:layout_constraintHorizontal_bias="0.89"
         app:layout_constraintStart_toStartOf="@+id/view2"
-        app:layout_constraintTop_toTopOf="@+id/view2" />
+        app:layout_constraintTop_toTopOf="@+id/view2"
+        app:layout_constraintVertical_bias="0.5" />
 
     <TextView
         android:id="@+id/ownPointTextView"
@@ -62,7 +67,8 @@
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="@+id/view"
         app:layout_constraintStart_toEndOf="@+id/MeTextView"
-        app:layout_constraintTop_toTopOf="@+id/view" />
+        app:layout_constraintTop_toTopOf="@+id/view"
+        app:layout_constraintVertical_bias="0.5" />
 
     <Button
         android:id="@+id/callSETBtn"
@@ -220,7 +226,8 @@
         app:layout_constraintEnd_toEndOf="@+id/view"
         app:layout_constraintHorizontal_bias="0.36"
         app:layout_constraintStart_toStartOf="@+id/view"
-        app:layout_constraintTop_toTopOf="@+id/view" />
+        app:layout_constraintTop_toTopOf="@+id/view"
+        app:layout_constraintVertical_bias="0.5" />
 
     <TextView
         android:id="@+id/opponentTextView"
@@ -232,7 +239,8 @@
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="@+id/view2"
         app:layout_constraintEnd_toStartOf="@+id/opponentPointTextView"
-        app:layout_constraintTop_toTopOf="@+id/view2" />
+        app:layout_constraintTop_toTopOf="@+id/view2"
+        app:layout_constraintVertical_bias="0.5" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

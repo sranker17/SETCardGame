@@ -13,7 +13,7 @@ public class PrivateGameActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_private_game);
-        setupStatusBar();
+        setupToolbar(R.id.toolbar, R.string.privateGameText);
     }
 
     public void switchToJoinGame(View v) {

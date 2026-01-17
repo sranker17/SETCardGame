@@ -13,7 +13,7 @@ public class AuthenticationActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_authentication);
-        setupStatusBar();
+        setupToolbar(R.id.toolbar, R.string.authentication);
     }
 
     public void switchToLogin(View v) {

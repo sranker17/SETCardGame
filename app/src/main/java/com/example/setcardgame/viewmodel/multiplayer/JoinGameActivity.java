@@ -38,7 +38,7 @@ public class JoinGameActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join_game);
-        setupStatusBar();
+        setupToolbar(R.id.toolbar, R.string.joinGameText);
 
         connectionCodeET = findViewById(R.id.connectionCodeET);
 

@@ -49,7 +49,7 @@ public class SingleplayerActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_singleplayer);
-        setupStatusBar();
+        setupToolbar(R.id.toolbar, R.string.singleplayerText);
 
         Intent sp = getIntent();
         if (!Objects.requireNonNull(sp.getStringExtra(DIFF_MODE)).isEmpty()) {

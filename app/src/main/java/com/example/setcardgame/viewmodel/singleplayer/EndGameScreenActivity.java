@@ -41,7 +41,12 @@ public class EndGameScreenActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_end_game_screen);
-        setupStatusBar();
+        setupToolbar(R.id.toolbar, R.string.scoreText);
+        
+        // Hide back button on end game screen
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        }
 
         Intent egs = getIntent();
         finalTime = Integer.parseInt(Objects.requireNonNull(egs.getStringExtra(TIME)));

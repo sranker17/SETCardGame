@@ -34,7 +34,12 @@ public class WaitingForGameActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_waiting_for_game);
-        setupStatusBar();
+        setupToolbar(R.id.toolbar, R.string.waitingText);
+        
+        // Hide back button on waiting for game screen
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        }
 
         SharedPreferences sp = authService.getEncryptedSharedPreferences();
         String username = sp.getString(USERNAME, null);

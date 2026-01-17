@@ -22,7 +22,12 @@ public class MultiplayerEndScreenActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_multiplayer_end_screen);
-        setupStatusBar();
+        setupToolbar(R.id.toolbar, R.string.scoreTextView);
+        
+        // Hide back button on end game screen
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        }
 
         Intent mpes = getIntent();
         String opponentScore = mpes.getStringExtra("opponentScore");

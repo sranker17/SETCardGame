@@ -16,7 +16,7 @@ public class DifficultyActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_difficulty);
-        setupStatusBar();
+        setupToolbar(R.id.toolbar, R.string.difficulty);
     }
 
     public void switchToSingleplayer(View v) {

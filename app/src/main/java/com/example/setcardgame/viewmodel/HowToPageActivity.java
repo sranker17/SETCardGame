@@ -11,6 +11,6 @@ public class HowToPageActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_how_to_page);
-        setupStatusBar();
+        setupToolbar(R.id.toolbar, R.string.howToTitle);
     }
 }

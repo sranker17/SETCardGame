@@ -38,7 +38,12 @@ public class CreatePrivateGameActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_private_game);
-        setupStatusBar();
+        setupToolbar(R.id.toolbar, R.string.createPrivateGameText);
+        
+        // Hide back button on create private game screen
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        }
 
         connectionCodeTV = findViewById(R.id.connectionCodeTV);
 

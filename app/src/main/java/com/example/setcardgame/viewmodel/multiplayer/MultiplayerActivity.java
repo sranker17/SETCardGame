@@ -57,7 +57,7 @@ public class MultiplayerActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_multiplayer);
-        setupStatusBar();
+        setupToolbar(R.id.toolbar, R.string.multiplayerText);
 
         Intent mp = getIntent();
         gameId = Integer.parseInt(Objects.requireNonNull(mp.getStringExtra(GAME_ID)));
