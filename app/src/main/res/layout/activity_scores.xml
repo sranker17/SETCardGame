@@ -5,7 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@drawable/set_background"
     tools:context=".viewmodel.scoreboard.PlayerScoresActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/blue"
+        android:elevation="4dp"
+        app:titleTextColor="@color/white"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:navigationIconTint="@color/white" />
 
     <com.google.android.material.tabs.TabLayout
         android:background="@color/blue"
@@ -15,13 +26,15 @@
         app:tabMode="fixed"
         app:tabGravity="fill"
         app:tabIndicatorColor="@color/white"
-        android:id="@+id/tabLayoutPlayer"></com.google.android.material.tabs.TabLayout>
+        app:tabSelectedTextColor="@color/white"
+        app:tabTextAppearance="@style/TabTextAppearance"
+        android:id="@+id/tabLayoutPlayer"
+        android:elevation="4dp" />
 
     <androidx.viewpager.widget.ViewPager
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/viewPagerPlayer">
-
-    </androidx.viewpager.widget.ViewPager>
+        android:id="@+id/viewPagerPlayer"
+        android:background="@drawable/set_background" />
 
 </LinearLayout>

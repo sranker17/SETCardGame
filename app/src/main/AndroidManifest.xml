@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.setcardgame">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -10,74 +9,87 @@
         android:label="@string/appName"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.SETCardGame">
+        android:theme="@style/Theme.SETCardGame"
+        android:usesCleartextTraffic="true">
         <activity
             android:name=".viewmodel.scoreboard.WorldScoresActivity"
             android:parentActivityName=".viewmodel.scoreboard.ScoreboardActivity"
             android:label="@string/worldScoresText"
+            android:theme="@style/Theme.SETCardGame.NoActionBar"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".viewmodel.scoreboard.PlayerScoresActivity"
             android:parentActivityName=".viewmodel.scoreboard.ScoreboardActivity"
             android:label="@string/myScoreText"
+            android:theme="@style/Theme.SETCardGame.NoActionBar"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".viewmodel.multiplayer.MultiplayerEndScreenActivity"
             android:exported="false"
             android:label="@string/scoreTextView"
+            android:theme="@style/Theme.SETCardGame.NoActionBar"
             android:screenOrientation="portrait" />
         <activity
             android:name=".viewmodel.multiplayer.JoinGameActivity"
             android:exported="false"
             android:label="@string/joinGameText"
             android:parentActivityName=".viewmodel.multiplayer.PrivateGameActivity"
+            android:theme="@style/Theme.SETCardGame.NoActionBar"
             android:screenOrientation="portrait" />
         <activity
             android:name=".viewmodel.multiplayer.PrivateGameActivity"
             android:exported="false"
             android:label="@string/privateGameText"
             android:parentActivityName=".viewmodel.multiplayer.SelectMultiplayerTypeActivity"
+            android:theme="@style/Theme.SETCardGame.NoActionBar"
             android:screenOrientation="portrait" />
         <activity
             android:name=".viewmodel.multiplayer.WaitingForGameActivity"
             android:exported="false"
             android:label="@string/waitingText"
+            android:theme="@style/Theme.SETCardGame.NoActionBar"
             android:screenOrientation="portrait" />
         <activity
             android:name=".viewmodel.multiplayer.CreatePrivateGameActivity"
             android:exported="false"
             android:label="@string/createPrivateGameText"
+            android:theme="@style/Theme.SETCardGame.NoActionBar"
             android:screenOrientation="portrait" />
         <activity
             android:name=".viewmodel.multiplayer.SelectMultiplayerTypeActivity"
             android:exported="false"
             android:label="@string/chooseMultiTypeText"
             android:parentActivityName=".viewmodel.MainActivity"
+            android:theme="@style/Theme.SETCardGame.NoActionBar"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".viewmodel.DifficultyActivity"
+            android:name=".viewmodel.singleplayer.DifficultyActivity"
             android:exported="false"
             android:label="@string/difficulty"
             android:parentActivityName=".viewmodel.MainActivity"
+            android:theme="@style/Theme.SETCardGame.NoActionBar"
             android:screenOrientation="portrait" />
         <activity
             android:name=".viewmodel.HowToPageActivity"
             android:exported="false"
             android:label="@string/howToTitle"
             android:parentActivityName=".viewmodel.MainActivity"
+            android:theme="@style/Theme.SETCardGame.NoActionBar"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".viewmodel.EndGameScreenActivity"
+            android:name=".viewmodel.singleplayer.EndGameScreenActivity"
             android:exported="false"
             android:label="@string/scoreText"
             android:parentActivityName=".viewmodel.MainActivity"
+            android:theme="@style/Theme.SETCardGame.NoActionBar"
             android:screenOrientation="portrait" />
         <activity
             android:name=".viewmodel.scoreboard.ScoreboardActivity"
             android:exported="false"
             android:label="@string/scoreboardText"
+            android:theme="@style/Theme.SETCardGame.NoActionBar"
             android:parentActivityName=".viewmodel.MainActivity"
             android:screenOrientation="portrait" />
         <activity
@@ -85,17 +97,41 @@
             android:exported="false"
             android:label="@string/multiplayerText"
             android:parentActivityName=".viewmodel.MainActivity"
+            android:theme="@style/Theme.SETCardGame.NoActionBar"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".viewmodel.SingleplayerActivity"
+            android:name=".viewmodel.singleplayer.SingleplayerActivity"
             android:exported="false"
             android:label="@string/singleplayerText"
             android:parentActivityName=".viewmodel.MainActivity"
+            android:theme="@style/Theme.SETCardGame.NoActionBar"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".viewmodel.auth.RegisterActivity"
+            android:exported="false"
+            android:label="@string/registerText"
+            android:parentActivityName=".viewmodel.auth.AuthenticationActivity"
+            android:theme="@style/Theme.SETCardGame.NoActionBar"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".viewmodel.auth.LoginActivity"
+            android:exported="false"
+            android:label="@string/loginText"
+            android:parentActivityName=".viewmodel.auth.AuthenticationActivity"
+            android:theme="@style/Theme.SETCardGame.NoActionBar"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".viewmodel.auth.AuthenticationActivity"
+            android:exported="false"
+            android:label="@string/authentication"
+            android:theme="@style/Theme.SETCardGame.NoActionBar"
             android:screenOrientation="portrait" />
         <activity
             android:name=".viewmodel.MainActivity"
+            android:launchMode="singleTop"
             android:exported="true"
             android:label="@string/setCardGameText"
+            android:theme="@style/Theme.SETCardGame.NoActionBar"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

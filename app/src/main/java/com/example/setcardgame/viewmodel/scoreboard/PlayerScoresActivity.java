@@ -2,74 +2,106 @@ package com.example.setcardgame.viewmodel.scoreboard;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.setcardgame.R;
-import com.example.setcardgame.model.Difficulty;
-import com.example.setcardgame.model.Username;
-import com.example.setcardgame.model.scoreboard.Scoreboard;
+import com.example.setcardgame.viewmodel.BaseActivity;
+import com.example.setcardgame.listener.ScoreboardResponseListener;
+import com.example.setcardgame.model.Error;
 import com.example.setcardgame.model.scoreboard.ScoresFragment;
+import com.example.setcardgame.model.scoreboard.TopScores;
 import com.example.setcardgame.model.scoreboard.ViewPagerAdapter;
-import com.example.setcardgame.service.ScoreboardDataService;
+import com.example.setcardgame.service.AuthService;
+import com.example.setcardgame.service.ScoreboardService;
 import com.google.android.material.tabs.TabLayout;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Locale;
 
-public class PlayerScoresActivity extends AppCompatActivity {
-
+public class PlayerScoresActivity extends BaseActivity {
+    private final AuthService authService = new AuthService(PlayerScoresActivity.this);
+    private final ScoreboardService scoreboardService = new ScoreboardService(PlayerScoresActivity.this);
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private ViewPagerAdapter adapter;
-    private final String username = Username.getName();
-    private final ScoreboardDataService scoreboardDataService = new ScoreboardDataService(PlayerScoresActivity.this);
-    private static final String TAG = "Player score";
+    private static final String TAG = "userScores";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scores);
+        setupToolbar(R.id.toolbar, R.string.myScoreText);
 
         tabLayout = findViewById(R.id.tabLayoutPlayer);
         viewPager = findViewById(R.id.viewPagerPlayer);
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
-        scoreboardDataService.getPlayerScores(true, username, new ScoreboardDataService.ScoreboardResponseListener() {
+        if (authService.isTokenExpired()) {
+            authService.refreshToken(isOnline -> {
+                if (isOnline) {
+                    Log.i(TAG, "Getting player scores without refreshed token");
+                    getPlayerScores();
+                } else {
+                    Log.e(TAG, "Server offline");
+                }
+            });
+        } else {
+            Log.i(TAG, "Getting player scores with current token");
+            getPlayerScores();
+        }
+    }
+
+    private void getPlayerScores() {
+        scoreboardService.getPlayerScores("/user", new ScoreboardResponseListener() {
             @Override
-            public void onError(String message) {
-                Toast.makeText(PlayerScoresActivity.this, getString(R.string.cantGetScores), Toast.LENGTH_SHORT).show();
-                Log.d(TAG, getString(R.string.cantGetScores));
+            public void onError(Error errorResponse) {
+                Log.e(TAG, errorResponse.toString());
+                String toastMessage;
+                switch (errorResponse.getStatus()) {
+                    case 400:
+                        toastMessage = getString(R.string.invalidParameters);
+                        break;
+                    case 401:
+                        toastMessage = getString(R.string.badCredentials);
+                        break;
+                    case 403:
+                        toastMessage = getString(R.string.accountError);
+                        break;
+                    case 409:
+                        toastMessage = getString(R.string.takenUsername);
+                        break;
+                    case 500:
+                        toastMessage = getString(R.string.internalServerError);
+                        break;
+                    case 503:
+                        toastMessage = getString(R.string.serverUnavailable);
+                        break;
+                    default:
+                        toastMessage = errorResponse.getDescription();
+                }
+                Toast.makeText(PlayerScoresActivity.this, toastMessage, Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void onResponse(List<Scoreboard> scoreboardModels) {
-                int easyCounter = 0;
-                int normalCounter = 0;
-                List<Scoreboard> easyScoreList = new ArrayList<>();
-                List<Scoreboard> normalScoreList = new ArrayList<>();
-
-                for (Scoreboard score : scoreboardModels) {
-                    if (score.getDifficulty() == Difficulty.EASY && easyCounter < 100) {
-                        easyCounter++;
-                        score.setPlacement(easyCounter);
-                        easyScoreList.add(score);
-                    }
-                    if (score.getDifficulty() == Difficulty.NORMAL && normalCounter < 100) {
-                        normalCounter++;
-                        score.setPlacement(normalCounter);
-                        normalScoreList.add(score);
-                    }
-                }
-
-                adapter.addFragment(new ScoresFragment(easyScoreList), String.format("%s", getString(R.string.easy)));
-                adapter.addFragment(new ScoresFragment(normalScoreList), String.format("%s", getString(R.string.normal)));
+            public void onResponse(TopScores topScores) {
+                Log.i(TAG, "Top user scores received");
+                adapter.addFragment(new ScoresFragment(topScores.getEasyScores()), String.format(Locale.US, "%s", getString(R.string.easy)));
+                adapter.addFragment(new ScoresFragment(topScores.getNormalScores()), String.format(Locale.US, "%s", getString(R.string.normal)));
 
                 viewPager.setAdapter(adapter);
                 tabLayout.setupWithViewPager(viewPager);
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

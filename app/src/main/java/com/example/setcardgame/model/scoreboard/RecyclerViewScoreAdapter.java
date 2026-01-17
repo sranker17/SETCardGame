@@ -4,6 +4,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.setcardgame.R;
 
 import java.util.List;
+import java.util.Locale;
 
 import lombok.AllArgsConstructor;
 
@@ -30,20 +33,16 @@ public class RecyclerViewScoreAdapter extends RecyclerView.Adapter<RecyclerViewS
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewScoreAdapter.ViewHolder holder, int position) {
-        String placementContent = list.get(position).getPlacement() + ".";
-        String pointsContent = String.format("%s: %d", context.getString(R.string.pointsText), list.get(position).getScore());
+        String placementContent = String.valueOf(position + 1);
+        String pointsContent = String.format(Locale.US, "%s: %d", context.getString(R.string.pointsText), list.get(position).getScore());
 
         int time = list.get(position).getTime();
         int seconds = time % 60;
         int minutes = time / 60;
-        String timeContent = String.format("%s: %d:%02d", context.getString(R.string.timeText), minutes, seconds);
+        String timeContent = String.format(Locale.US, "%d:%02d", minutes, seconds);
 
-        String myScoreContent = "";
-        if (list.get(position).isMyScore()) {
-            myScoreContent = String.format("(%s)", context.getString(R.string.ownText));
-        }
-
-        holder.setData(placementContent, pointsContent, timeContent, myScoreContent);
+        boolean isOwnScore = Boolean.TRUE.equals(list.get(position).getUserScore());
+        holder.setData(placementContent, pointsContent, timeContent, isOwnScore);
     }
 
     @Override
@@ -56,7 +55,7 @@ public class RecyclerViewScoreAdapter extends RecyclerView.Adapter<RecyclerViewS
         private final TextView placement;
         private final TextView points;
         private final TextView time;
-        private final TextView myScoreText;
+        private final RelativeLayout scoreCard;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -64,14 +63,21 @@ public class RecyclerViewScoreAdapter extends RecyclerView.Adapter<RecyclerViewS
             placement = itemView.findViewById(R.id.placement);
             points = itemView.findViewById(R.id.pointsView);
             time = itemView.findViewById(R.id.timeView);
-            myScoreText = itemView.findViewById(R.id.myScoreView);
+            scoreCard = itemView.findViewById(R.id.scoreCard);
         }
 
-        public void setData(String placementContent, String pointsContent, String timeContent, String myScoreContent) {
+        public void setData(String placementContent, String pointsContent, String timeContent, boolean isOwnScore) {
             placement.setText(placementContent);
             points.setText(pointsContent);
             time.setText(timeContent);
-            myScoreText.setText(myScoreContent);
+            
+            if (isOwnScore) {
+                // Change background to highlight own score
+                scoreCard.setBackgroundResource(R.drawable.own_score_background);
+            } else {
+                // Use normal background
+                scoreCard.setBackgroundResource(R.drawable.normal_score_background);
+            }
         }
     }
 }

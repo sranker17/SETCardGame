@@ -1,4 +1,4 @@
-package com.example.setcardgame.viewmodel;
+package com.example.setcardgame.viewmodel.singleplayer;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,8 +11,6 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.setcardgame.R;
 import com.example.setcardgame.model.Difficulty;
 import com.example.setcardgame.model.SingleplayerGame;
@@ -20,16 +18,17 @@ import com.example.setcardgame.model.card.Card;
 import com.example.setcardgame.model.card.Color;
 import com.example.setcardgame.model.card.Quantity;
 import com.example.setcardgame.model.card.Shape;
+import com.example.setcardgame.viewmodel.BaseActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class SingleplayerActivity extends AppCompatActivity {
-
+public class SingleplayerActivity extends BaseActivity {
     private final List<ImageView> board = new ArrayList<>();
     private final List<Card> cards = new ArrayList<>();
     private final List<Card> boardCards = new ArrayList<>();
@@ -37,7 +36,6 @@ public class SingleplayerActivity extends AppCompatActivity {
     private final List<Integer> selectedCardIds = new ArrayList<>();
     private final Timer resetBackgroundTimer = new Timer();
     private TextView pointTextView;
-    private TextView timerTextView;
     private Difficulty difficulty = Difficulty.NORMAL;
     private Timer timer;
     private TimerTask timerTask;
@@ -51,6 +49,7 @@ public class SingleplayerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_singleplayer);
+        setupToolbar(R.id.toolbar, R.string.singleplayerText);
 
         Intent sp = getIntent();
         if (!Objects.requireNonNull(sp.getStringExtra(DIFF_MODE)).isEmpty()) {
@@ -71,11 +70,12 @@ public class SingleplayerActivity extends AppCompatActivity {
                     int timeInInt = getTimer();
                     int seconds = timeInInt % 60;
                     int minutes = timeInInt / 60;
-                    timerTextView.setText(String.format("%d:%02d", minutes, seconds));
+                    TextView timerTextView = findViewById(R.id.timerTextView);
+                    timerTextView.setText(String.format(Locale.US, "%d:%02d", minutes, seconds));
                 });
             }
         };
-        timer.scheduleAtFixedRate(timerTask, 0, 1000);
+        timer.schedule(timerTask, 0, 1000);
     }
 
     private int getTimer() {
@@ -85,12 +85,22 @@ public class SingleplayerActivity extends AppCompatActivity {
     }
 
     private void startGame() {
+        clearGameState();
+        setupBoard();
+        configureDifficulty();
+        generateAndPlaceCards();
+        initializeUI();
+    }
+
+    private void clearGameState() {
         board.clear();
         boardCards.clear();
         cards.clear();
         selectedCards.clear();
         selectedCardIds.clear();
+    }
 
+    private void setupBoard() {
         board.add(findViewById(R.id.card0));
         board.add(findViewById(R.id.card1));
         board.add(findViewById(R.id.card2));
@@ -100,116 +110,172 @@ public class SingleplayerActivity extends AppCompatActivity {
         board.add(findViewById(R.id.card6));
         board.add(findViewById(R.id.card7));
         board.add(findViewById(R.id.card8));
+    }
 
-
+    private void configureDifficulty() {
         if (difficulty == Difficulty.NORMAL) {
             TableLayout tableLayout = findViewById(R.id.gameTableLayout);
             TableRow lastTableRow = findViewById(R.id.tableRow3);
             tableLayout.removeView(lastTableRow);
+        } else if (difficulty == Difficulty.EASY) {
+            addEasyModeCards();
+            adjustCardSizeForSmallScreens();
         }
+    }
 
-        if (difficulty == Difficulty.EASY) {
-            board.add(findViewById(R.id.card9));
-            board.add(findViewById(R.id.card10));
-            board.add(findViewById(R.id.card11));
+    private void addEasyModeCards() {
+        board.add(findViewById(R.id.card9));
+        board.add(findViewById(R.id.card10));
+        board.add(findViewById(R.id.card11));
+    }
 
-            if (getScreenSizeInInches() < 5.3) {
-                ImageView card = findViewById(R.id.card8);
-                ViewGroup.LayoutParams params = card.getLayoutParams();
-                params.height *= 0.8;
-                params.width *= 0.8;
+    private void adjustCardSizeForSmallScreens() {
+        if (getScreenSizeInInches() < 5.3) {
+            ImageView card = findViewById(R.id.card8);
+            ViewGroup.LayoutParams params = card.getLayoutParams();
+            params.height *= 0.8;
+            params.width *= 0.8;
 
-                for (ImageView imageViewCards : board) {
-                    imageViewCards.setLayoutParams(params);
-                }
+            for (ImageView imageViewCards : board) {
+                imageViewCards.setLayoutParams(params);
             }
         }
+    }
 
+    private void generateAndPlaceCards() {
         do {
-            cards.clear();
-            for (Color color : Color.values()) {
-                for (Shape shape : Shape.values()) {
-                    for (Quantity quantity : Quantity.values()) {
-                        cards.add(new Card(color, shape, quantity));
-                    }
+            generateAllCards();
+            Collections.shuffle(cards);
+            placeCardsOnBoard();
+        } while (!game.hasSet(boardCards, board));
+    }
+
+    private void generateAllCards() {
+        cards.clear();
+        for (Color color : Color.values()) {
+            for (Shape shape : Shape.values()) {
+                for (Quantity quantity : Quantity.values()) {
+                    cards.add(new Card(color, shape, quantity));
                 }
             }
+        }
+    }
 
-            Collections.shuffle(cards);
+    private void placeCardsOnBoard() {
+        for (int i = 0; board.size() > i; i++) {
+            ImageView img = board.get(i);
+            int resImage = getResources().getIdentifier(cards.get(0).toString(), "drawable", getPackageName());
+            img.setImageResource(resImage);
+            img.setContentDescription(cards.get(0).toString());
+            boardCards.add(cards.get(0));
+            cards.remove(0);
+        }
+    }
 
-            for (int i = 0; board.size() > i; i++) {
-                ImageView img = board.get(i);
-                int resImage = getResources().getIdentifier(cards.get(0).toString(), "drawable", getPackageName());
-                img.setImageResource(resImage);
-                img.setContentDescription(cards.get(0).toString());
-                boardCards.add(cards.get(0));
-                cards.remove(0);
-            }
-        } while (!game.hasSet(boardCards, board));
-
+    private void initializeUI() {
         pointTextView = findViewById(R.id.opponentPointTextView);
-        timerTextView = findViewById(R.id.timerTextView);
+        TextView timerTextView = findViewById(R.id.timerTextView);
         pointTextView.setText("0");
         timerTextView.setText("0:00");
     }
 
     public void onCardClick(View view) {
-        if (!selectedCardIds.contains(view.getId())) {
-            boolean found = false;
-            int counter = 0;
-            while (!found && board.size() > counter) {
-                if (board.get(counter).getId() == view.getId()) {
-                    found = true;
-                    view.setBackgroundResource(R.drawable.card_background_selected);
-                    selectedCardIds.add(view.getId());
-                    selectedCards.add(boardCards.get(counter));
-                }
-                counter++;
-            }
-
-            if (selectedCardIds.size() == 3) {
-                if (game.hasSet(selectedCards, board)) {
-                    for (int i = 0; board.size() > i; i++) {
-                        if (board.get(i).getId() == selectedCardIds.get(0)
-                                || board.get(i).getId() == selectedCardIds.get(1)
-                                || board.get(i).getId() == selectedCardIds.get(2)) {
-                            board.get(i).setBackgroundResource(R.drawable.card_background_right);
-                        }
-                    }
-                    int point = Integer.parseInt((String) pointTextView.getText());
-                    pointTextView.setText(String.valueOf(++point));
-                    stopUserInteractions = true;
-                    removeCardsFromBoard();
-
-                    if (game.isGameOver(board) || !game.hasSet(boardCards, board)) {
-                        timerTask.cancel();
-                        endGame();
-                    }
-
-                } else {
-                    for (int i = 0; board.size() > i; i++) {
-                        if (board.get(i).getId() == selectedCardIds.get(0)
-                                || board.get(i).getId() == selectedCardIds.get(1)
-                                || board.get(i).getId() == selectedCardIds.get(2)) {
-                            board.get(i).setBackgroundResource(R.drawable.card_background_wrong);
-                        }
-                    }
-                    stopUserInteractions = true;
-                }
-                selectedCardIds.clear();
-                selectedCards.clear();
-                resetCardBackgrounds();
-            }
+        if (isCardAlreadySelected(view.getId())) {
+            deselectCard(view);
         } else {
-            for (int i = 0; board.size() > i; i++) {
-                if (board.get(i).getId() == view.getId()) {
-                    board.get(i).setBackgroundResource(R.color.trans);
-                }
+            selectCard(view);
+            if (isThreeCardsSelected()) {
+                processThreeCardSelection();
             }
-            selectedCards.remove(selectedCardIds.indexOf(view.getId()));
-            selectedCardIds.remove((Integer) view.getId());
         }
+    }
 
+    private boolean isCardAlreadySelected(int cardId) {
+        return selectedCardIds.contains(cardId);
+    }
+
+    private void deselectCard(View view) {
+        int cardIndex = findCardIndex(view.getId());
+        if (cardIndex != -1) {
+            board.get(cardIndex).setBackgroundResource(R.color.trans);
+        }
+        selectedCards.remove(selectedCardIds.indexOf(view.getId()));
+        selectedCardIds.remove((Integer) view.getId());
+    }
+
+    private void selectCard(View view) {
+        int cardIndex = findCardIndex(view.getId());
+        if (cardIndex != -1) {
+            view.setBackgroundResource(R.drawable.card_background_selected);
+            selectedCardIds.add(view.getId());
+            selectedCards.add(boardCards.get(cardIndex));
+        }
+    }
+
+    private int findCardIndex(int cardId) {
+        for (int i = 0; i < board.size(); i++) {
+            if (board.get(i).getId() == cardId) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private boolean isThreeCardsSelected() {
+        return selectedCardIds.size() == 3;
+    }
+
+    private void processThreeCardSelection() {
+        if (game.hasSet(selectedCards, board)) {
+            handleCorrectSet();
+        } else {
+            handleIncorrectSet();
+        }
+        clearSelection();
+        resetCardBackgrounds();
+    }
+
+    private void handleCorrectSet() {
+        highlightSelectedCards(R.drawable.card_background_right);
+        updateScore();
+        stopUserInteractions = true;
+        removeCardsFromBoard();
+        checkGameEnd();
+    }
+
+    private void handleIncorrectSet() {
+        highlightSelectedCards(R.drawable.card_background_wrong);
+        stopUserInteractions = true;
+    }
+
+    private void highlightSelectedCards(int backgroundResource) {
+        for (int i = 0; i < board.size(); i++) {
+            if (isCardSelected(i)) {
+                board.get(i).setBackgroundResource(backgroundResource);
+            }
+        }
+    }
+
+    private boolean isCardSelected(int cardIndex) {
+        int cardId = board.get(cardIndex).getId();
+        return selectedCardIds.contains(cardId);
+    }
+
+    private void updateScore() {
+        int point = Integer.parseInt((String) pointTextView.getText());
+        pointTextView.setText(String.valueOf(++point));
+    }
+
+    private void checkGameEnd() {
+        if (game.isGameOver(board) || !game.hasSet(boardCards, board)) {
+            timerTask.cancel();
+            endGame();
+        }
+    }
+
+    private void clearSelection() {
+        selectedCardIds.clear();
+        selectedCards.clear();
     }
 
     private void resetCardBackgrounds() {
@@ -262,7 +328,13 @@ public class SingleplayerActivity extends AppCompatActivity {
 
     private double getScreenSizeInInches() {
         DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        // Use modern API
+        android.graphics.Rect bounds = getWindowManager().getCurrentWindowMetrics().getBounds();
+        dm.widthPixels = bounds.width();
+        dm.heightPixels = bounds.height();
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        dm.xdpi = displayMetrics.xdpi;
+        dm.ydpi = displayMetrics.ydpi;
         double mWidthPixels = dm.widthPixels;
         double mHeightPixels = dm.heightPixels;
         double x = Math.pow(mWidthPixels / dm.xdpi, 2);

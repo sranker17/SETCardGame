@@ -1,64 +1,59 @@
 package com.example.setcardgame.viewmodel.multiplayer;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.setcardgame.R;
+import com.example.setcardgame.viewmodel.BaseActivity;
+import com.example.setcardgame.config.PropertyReader;
 import com.example.setcardgame.config.WebSocketClient;
+import com.example.setcardgame.exception.JsonParsingException;
 import com.example.setcardgame.model.MultiplayerGame;
-import com.example.setcardgame.model.UrlConstants;
-import com.example.setcardgame.model.Username;
+import com.example.setcardgame.service.AuthService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Properties;
+
 import io.reactivex.disposables.Disposable;
 
-public class WaitingForGameActivity extends AppCompatActivity {
-
+public class WaitingForGameActivity extends BaseActivity {
+    private final AuthService authService = new AuthService(WaitingForGameActivity.this);
+    private MultiplayerGame game;
     private static final String TAG = "waiting";
     private static final String GAME_ID = "gameId";
-    private MultiplayerGame game;
-    private final String username = Username.getName();
+    private static final String USERNAME = "username";
+    private static final String TOKEN = "token";
+    private static final String WSS = "wss";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_waiting_for_game);
-
-        WebSocketClient.createWebSocket(UrlConstants.WSS_URL + "multiconnect");
-        Disposable topic = WebSocketClient.mStompClient.topic("/topic/waiting").subscribe(topicMessage -> {
-            try {
-                JSONObject msg = new JSONObject(topicMessage.getPayload());
-                if (username.equals(msg.getString("player1"))) {
-                    game = new MultiplayerGame(msg);
-                    Log.d(TAG, game.getGameId() + "");
-                    if (!msg.getString("player2").equals("null")) {
-                        switchToMultiplayer();
-                    }
-                }
-                if (username.equals(msg.getString("player2")) && !msg.getString("player1").equals("null")) {
-                    game = new MultiplayerGame(msg);
-                    switchToMultiplayer();
-                }
-            } catch (JSONException e) {
-                e.getMessage();
-            }
-        }, throwable -> Log.d(TAG, "error at subscribing"));
-        WebSocketClient.compositeDisposable.add(topic);
-
-        JSONObject jsonPlayer = new JSONObject();
-        try {
-            jsonPlayer.put("username", username);
-        } catch (JSONException e) {
-            e.getMessage();
+        setupToolbar(R.id.toolbar, R.string.waitingText);
+        
+        // Hide back button on waiting for game screen
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
 
-        WebSocketClient.mStompClient.send("/app/connect/random", jsonPlayer.toString()).subscribe();
+        SharedPreferences sp = authService.getEncryptedSharedPreferences();
+        String username = sp.getString(USERNAME, null);
+
+        if (username == null) {
+            Log.e(TAG, "Username not found");
+            return;
+        }
+        authService.refreshToken(isOnline -> {
+            if (isOnline) {
+                String token = sp.getString(TOKEN, null);
+                createWebSocket(username, token);
+            }
+        });
     }
 
     public void switchToMultiplayer() {
@@ -73,7 +68,8 @@ public class WaitingForGameActivity extends AppCompatActivity {
             try {
                 destroyGame.put(GAME_ID, game.getGameId());
             } catch (JSONException e) {
-                e.getMessage();
+                Log.e(TAG, "switchBackToSelectMultiplayerType: " + e.getMessage());
+                throw new JsonParsingException(e.getMessage());
             }
 
             WebSocketClient.mStompClient.send("/app/game/destroy", destroyGame.toString()).subscribe();
@@ -96,7 +92,8 @@ public class WaitingForGameActivity extends AppCompatActivity {
             try {
                 destroyGame.put(GAME_ID, game.getGameId());
             } catch (JSONException e) {
-                e.getMessage();
+                Log.e(TAG, "onDestroy: " + e.getMessage());
+                throw new JsonParsingException(e.getMessage());
             }
 
             WebSocketClient.mStompClient.send("/app/game/destroy", destroyGame.toString()).subscribe();
@@ -105,4 +102,41 @@ public class WaitingForGameActivity extends AppCompatActivity {
         WebSocketClient.disconnectWebSocket();
         game = null;
     }
+
+    private void createWebSocket(String username, String token) {
+        Properties properties = PropertyReader.getInstance(this).getProperties("application.properties");
+        String wss = properties.getProperty(WSS);
+        WebSocketClient.createWebSocket(wss + "multiconnect", token);
+        Disposable topic = WebSocketClient.mStompClient.topic("/topic/waiting").subscribe(topicMessage -> {
+            try {
+                JSONObject msg = new JSONObject(topicMessage.getPayload());
+                if (username.equals(msg.getString("player1"))) {
+                    game = new MultiplayerGame(msg);
+                    Log.d(TAG, game.getGameId() + "");
+                    if (!msg.getString("player2").equals("null")) {
+                        switchToMultiplayer();
+                    }
+                }
+                if (username.equals(msg.getString("player2")) && !msg.getString("player1").equals("null")) {
+                    game = new MultiplayerGame(msg);
+                    switchToMultiplayer();
+                }
+            } catch (JSONException e) {
+                Log.e(TAG, "createWebSocket, topicMessage: " + e.getMessage());
+                throw new JsonParsingException(e.getMessage());
+            }
+        }, throwable -> Log.d(TAG, "error at subscribing"));
+        WebSocketClient.compositeDisposable.add(topic);
+
+        JSONObject jsonPlayer = new JSONObject();
+        try {
+            jsonPlayer.put(USERNAME, username);
+        } catch (JSONException e) {
+            Log.e(TAG, "createWebSocket, jsonPlayer: " + e.getMessage());
+            throw new JsonParsingException(e.getMessage());
+        }
+
+        WebSocketClient.mStompClient.send("/app/connect/random", jsonPlayer.toString()).subscribe();
+    }
+
 }

@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 public class SingleplayerGame {
+    private static final String CHEAT = "cheat";
 
     public boolean hasSet(List<Card> cards, List<ImageView> board) {
         if (cards.size() >= 3) {
@@ -59,10 +60,10 @@ public class SingleplayerGame {
                             }
 
                             if (!visibilityChecks.contains(false)) {
-                                Log.d("cheat", "card1: " + cardDesc1);
-                                Log.d("cheat", "card2: " + cardDesc2);
-                                Log.d("cheat", "card3: " + cardDesc3);
-                                Log.d("cheat", " ");
+                                Log.d(CHEAT, "card1: " + cardDesc1);
+                                Log.d(CHEAT, "card2: " + cardDesc2);
+                                Log.d(CHEAT, "card3: " + cardDesc3);
+                                Log.d(CHEAT, " ");
                                 propertyChecks.clear();
                                 visibilityChecks.clear();
                                 return true;
@@ -86,4 +87,3 @@ public class SingleplayerGame {
         return !hasVisible;
     }
 }
-

@@ -1,77 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scoreCard"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@drawable/normal_score_background"
+    android:padding="16dp"
+    android:elevation="2dp"
+    android:layout_margin="8dp">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/light_blue">
-
-        <View
-            android:id="@+id/view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="7dp"
-            android:layout_marginTop="3dp"
-            android:layout_marginRight="7dp"
-            android:layout_marginBottom="5dp"
-            android:background="@drawable/radius" />
-
-        <TextView
-            android:id="@+id/placement"
-            android:layout_width="wrap_content"
+        <!-- Rank -->
+        <LinearLayout
+            android:id="@+id/rankContainer"
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="14dp"
-            android:layout_marginTop="11dp"
-            android:textColor="@color/blue"
-            android:text="1."
-            android:textSize="18sp" />
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginEnd="16dp">
 
-        <TextView
-            android:id="@+id/pointsView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="14dp"
-            android:layout_marginTop="11dp"
-            android:textColor="@color/blue"
-            android:layout_toRightOf="@+id/placement"
-            android:text="Points: 9"
-            android:textSize="18sp" />
+            <TextView
+                android:id="@+id/placement"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"
+                android:gravity="center" />
 
-        <TextView
-            android:id="@+id/timeView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="14dp"
-            android:layout_marginTop="11dp"
-            android:textColor="@color/blue"
-            android:layout_toRightOf="@+id/pointsView"
-            android:text="Time: 0:16"
-            android:textSize="18sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/rank"
+                android:textSize="10sp"
+                android:textColor="@color/text_secondary"
+                android:gravity="center" />
 
-        <TextView
-            android:id="@+id/myScoreView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="14dp"
-            android:layout_marginTop="11dp"
-            android:textColor="@color/blue"
-            android:layout_toRightOf="@+id/timeView"
-            android:text="(My Score)"
-            android:textSize="18sp" />
+        </LinearLayout>
 
-        <View
-            android:id="@+id/divider"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_below="@+id/placement"
-            android:layout_marginTop="13dp"
-            android:background="?android:attr/listDivider"
-            android:backgroundTint="@color/dark_blue"
-            android:backgroundTintMode="add" />
+        <!-- Score Details -->
+                <TextView
+                    android:id="@+id/pointsView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="Points: 9"
+                    android:textSize="16sp"
+                    android:textColor="@color/text_primary"
+                    android:textStyle="bold" />
 
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:orientation="vertical"
+                    android:gravity="end">
 
-    </RelativeLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/timeText"
+                        android:textSize="12sp"
+                        android:textColor="@color/text_secondary" />
 
+                    <TextView
+                        android:id="@+id/timeView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0:16"
+                        android:textSize="16sp"
+                        android:textColor="@color/text_primary"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
 </RelativeLayout>
