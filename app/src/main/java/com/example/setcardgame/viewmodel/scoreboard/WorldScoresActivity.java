@@ -3,12 +3,20 @@ package com.example.setcardgame.viewmodel.scoreboard;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.setcardgame.R;
+import com.example.setcardgame.viewmodel.BaseActivity;
 import com.example.setcardgame.listener.ScoreboardResponseListener;
 import com.example.setcardgame.model.Error;
 import com.example.setcardgame.model.scoreboard.ScoresFragment;
@@ -20,7 +28,7 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.util.Locale;
 
-public class WorldScoresActivity extends AppCompatActivity {
+public class WorldScoresActivity extends BaseActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private ViewPagerAdapter adapter;
@@ -33,6 +41,36 @@ public class WorldScoresActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scores);
+
+        // Set status bar color (for Toolbar-based activities, we still need to set the window color)
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(ContextCompat.getColor(this, R.color.blue));
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        
+        // Extend Toolbar to cover status bar area
+        int statusBarHeight = getStatusBarHeight();
+        TypedValue tv = new TypedValue();
+        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            int actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
+            toolbar.setPadding(0, statusBarHeight, 0, 0);
+            ViewGroup.LayoutParams params = toolbar.getLayoutParams();
+            params.height = actionBarHeight + statusBarHeight;
+            toolbar.setLayoutParams(params);
+        }
+        
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(R.string.worldScoresText);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+        
+        // Set navigation icon color to white
+        if (toolbar.getNavigationIcon() != null) {
+            DrawableCompat.setTint(toolbar.getNavigationIcon(), ContextCompat.getColor(this, R.color.white));
+        }
 
         tabLayout = findViewById(R.id.tabLayoutPlayer);
         viewPager = findViewById(R.id.viewPagerPlayer);
@@ -109,4 +147,14 @@ public class WorldScoresActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

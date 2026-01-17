@@ -8,13 +8,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.setcardgame.R;
+import com.example.setcardgame.viewmodel.BaseActivity;
 import com.example.setcardgame.service.AuthService;
 import com.example.setcardgame.viewmodel.MainActivity;
 
-public class MultiplayerEndScreenActivity extends AppCompatActivity {
+public class MultiplayerEndScreenActivity extends BaseActivity {
     private final AuthService authService = new AuthService(MultiplayerEndScreenActivity.this);
     private static final String USERNAME = "username";
     private static final String TAG = "multiplayerEndScreen";
@@ -23,6 +22,8 @@ public class MultiplayerEndScreenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_multiplayer_end_screen);
+        setupStatusBar();
+
         Intent mpes = getIntent();
         String opponentScore = mpes.getStringExtra("opponentScore");
         String ownScore = mpes.getStringExtra("ownScore");
@@ -69,4 +70,5 @@ public class MultiplayerEndScreenActivity extends AppCompatActivity {
         Intent m = new Intent(this, MainActivity.class);
         startActivity(m);
     }
+
 }

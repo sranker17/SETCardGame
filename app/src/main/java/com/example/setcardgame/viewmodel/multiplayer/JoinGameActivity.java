@@ -7,9 +7,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.setcardgame.R;
+import com.example.setcardgame.viewmodel.BaseActivity;
 import com.example.setcardgame.config.PropertyReader;
 import com.example.setcardgame.config.WebSocketClient;
 import com.example.setcardgame.exception.JsonParsingException;
@@ -23,7 +22,7 @@ import java.util.Properties;
 
 import io.reactivex.disposables.Disposable;
 
-public class JoinGameActivity extends AppCompatActivity {
+public class JoinGameActivity extends BaseActivity {
     private final AuthService authService = new AuthService(JoinGameActivity.this);
     private EditText connectionCodeET;
     private MultiplayerGame game;
@@ -39,6 +38,8 @@ public class JoinGameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join_game);
+        setupStatusBar();
+
         connectionCodeET = findViewById(R.id.connectionCodeET);
 
         SharedPreferences sp = authService.getEncryptedSharedPreferences();
@@ -94,4 +95,5 @@ public class JoinGameActivity extends AppCompatActivity {
         }, throwable -> Log.d(TAG, "error at subscribing"));
         WebSocketClient.compositeDisposable.add(topic);
     }
+
 }

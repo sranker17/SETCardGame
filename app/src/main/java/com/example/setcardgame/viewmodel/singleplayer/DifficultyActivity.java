@@ -4,12 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.setcardgame.R;
 import com.example.setcardgame.model.Difficulty;
+import com.example.setcardgame.viewmodel.BaseActivity;
 
-public class DifficultyActivity extends AppCompatActivity {
+public class DifficultyActivity extends BaseActivity {
 
     private static final String DIFF_MODE = "diffMode";
 
@@ -17,6 +16,7 @@ public class DifficultyActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_difficulty);
+        setupStatusBar();
     }
 
     public void switchToSingleplayer(View v) {

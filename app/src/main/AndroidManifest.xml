@@ -15,12 +15,14 @@
             android:name=".viewmodel.scoreboard.WorldScoresActivity"
             android:parentActivityName=".viewmodel.scoreboard.ScoreboardActivity"
             android:label="@string/worldScoresText"
+            android:theme="@style/Theme.SETCardGame.NoActionBar"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".viewmodel.scoreboard.PlayerScoresActivity"
             android:parentActivityName=".viewmodel.scoreboard.ScoreboardActivity"
             android:label="@string/myScoreText"
+            android:theme="@style/Theme.SETCardGame.NoActionBar"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
@@ -78,6 +80,7 @@
             android:name=".viewmodel.scoreboard.ScoreboardActivity"
             android:exported="false"
             android:label="@string/scoreboardText"
+            android:theme="@style/Theme.SETCardGame.NoActionBar"
             android:parentActivityName=".viewmodel.MainActivity"
             android:screenOrientation="portrait" />
         <activity
