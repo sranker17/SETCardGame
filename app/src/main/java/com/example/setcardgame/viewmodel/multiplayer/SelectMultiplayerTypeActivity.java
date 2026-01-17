@@ -4,16 +4,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.setcardgame.R;
+import com.example.setcardgame.viewmodel.BaseActivity;
 
-public class SelectMultiplayerTypeActivity extends AppCompatActivity {
+public class SelectMultiplayerTypeActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_multiplayer_type);
+        setupToolbar(R.id.toolbar, R.string.chooseMultiTypeText);
     }
 
     public void switchToPrivateGame(View view) {

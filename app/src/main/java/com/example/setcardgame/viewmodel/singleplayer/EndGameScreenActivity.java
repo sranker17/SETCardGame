@@ -8,9 +8,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.setcardgame.R;
+import com.example.setcardgame.viewmodel.BaseActivity;
 import com.example.setcardgame.listener.ScoreAddedResponseListener;
 import com.example.setcardgame.model.Difficulty;
 import com.example.setcardgame.model.Error;
@@ -25,7 +24,7 @@ import org.json.JSONObject;
 import java.util.Locale;
 import java.util.Objects;
 
-public class EndGameScreenActivity extends AppCompatActivity {
+public class EndGameScreenActivity extends BaseActivity {
     private final AuthService authService = new AuthService(EndGameScreenActivity.this);
     private final ScoreboardService scoreboardService = new ScoreboardService(EndGameScreenActivity.this);
     private int finalTime;
@@ -42,6 +41,12 @@ public class EndGameScreenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_end_game_screen);
+        setupToolbar(R.id.toolbar, R.string.scoreText);
+        
+        // Hide back button on end game screen
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        }
 
         Intent egs = getIntent();
         finalTime = Integer.parseInt(Objects.requireNonNull(egs.getStringExtra(TIME)));

@@ -6,9 +6,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.setcardgame.R;
+import com.example.setcardgame.viewmodel.BaseActivity;
 import com.example.setcardgame.config.PropertyReader;
 import com.example.setcardgame.config.WebSocketClient;
 import com.example.setcardgame.exception.JsonParsingException;
@@ -22,7 +21,7 @@ import java.util.Properties;
 
 import io.reactivex.disposables.Disposable;
 
-public class WaitingForGameActivity extends AppCompatActivity {
+public class WaitingForGameActivity extends BaseActivity {
     private final AuthService authService = new AuthService(WaitingForGameActivity.this);
     private MultiplayerGame game;
     private static final String TAG = "waiting";
@@ -35,6 +34,12 @@ public class WaitingForGameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_waiting_for_game);
+        setupToolbar(R.id.toolbar, R.string.waitingText);
+        
+        // Hide back button on waiting for game screen
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        }
 
         SharedPreferences sp = authService.getEncryptedSharedPreferences();
         String username = sp.getString(USERNAME, null);
@@ -133,4 +138,5 @@ public class WaitingForGameActivity extends AppCompatActivity {
 
         WebSocketClient.mStompClient.send("/app/connect/random", jsonPlayer.toString()).subscribe();
     }
+
 }

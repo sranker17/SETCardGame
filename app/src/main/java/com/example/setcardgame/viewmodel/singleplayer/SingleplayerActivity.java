@@ -11,8 +11,6 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.setcardgame.R;
 import com.example.setcardgame.model.Difficulty;
 import com.example.setcardgame.model.SingleplayerGame;
@@ -20,6 +18,7 @@ import com.example.setcardgame.model.card.Card;
 import com.example.setcardgame.model.card.Color;
 import com.example.setcardgame.model.card.Quantity;
 import com.example.setcardgame.model.card.Shape;
+import com.example.setcardgame.viewmodel.BaseActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,7 +28,7 @@ import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class SingleplayerActivity extends AppCompatActivity {
+public class SingleplayerActivity extends BaseActivity {
     private final List<ImageView> board = new ArrayList<>();
     private final List<Card> cards = new ArrayList<>();
     private final List<Card> boardCards = new ArrayList<>();
@@ -50,6 +49,7 @@ public class SingleplayerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_singleplayer);
+        setupToolbar(R.id.toolbar, R.string.singleplayerText);
 
         Intent sp = getIntent();
         if (!Objects.requireNonNull(sp.getStringExtra(DIFF_MODE)).isEmpty()) {
@@ -328,18 +328,13 @@ public class SingleplayerActivity extends AppCompatActivity {
 
     private double getScreenSizeInInches() {
         DisplayMetrics dm = new DisplayMetrics();
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
-            // Use modern API for Android 11+
-            android.graphics.Rect bounds = getWindowManager().getCurrentWindowMetrics().getBounds();
-            dm.widthPixels = bounds.width();
-            dm.heightPixels = bounds.height();
-            DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-            dm.xdpi = displayMetrics.xdpi;
-            dm.ydpi = displayMetrics.ydpi;
-        } else {
-            // Use legacy API for older versions
-            getWindowManager().getDefaultDisplay().getMetrics(dm);
-        }
+        // Use modern API
+        android.graphics.Rect bounds = getWindowManager().getCurrentWindowMetrics().getBounds();
+        dm.widthPixels = bounds.width();
+        dm.heightPixels = bounds.height();
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        dm.xdpi = displayMetrics.xdpi;
+        dm.ydpi = displayMetrics.ydpi;
         double mWidthPixels = dm.widthPixels;
         double mHeightPixels = dm.heightPixels;
         double x = Math.pow(mWidthPixels / dm.xdpi, 2);

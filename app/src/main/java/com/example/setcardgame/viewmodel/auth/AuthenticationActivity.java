@@ -4,16 +4,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.setcardgame.R;
+import com.example.setcardgame.viewmodel.BaseActivity;
 
-public class AuthenticationActivity extends AppCompatActivity {
+public class AuthenticationActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_authentication);
+        setupToolbar(R.id.toolbar, R.string.authentication);
     }
 
     public void switchToLogin(View v) {

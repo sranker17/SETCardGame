@@ -7,9 +7,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.setcardgame.R;
+import com.example.setcardgame.viewmodel.BaseActivity;
 import com.example.setcardgame.config.PropertyReader;
 import com.example.setcardgame.config.WebSocketClient;
 import com.example.setcardgame.exception.JsonParsingException;
@@ -23,7 +22,7 @@ import java.util.Properties;
 
 import io.reactivex.disposables.Disposable;
 
-public class CreatePrivateGameActivity extends AppCompatActivity {
+public class CreatePrivateGameActivity extends BaseActivity {
     private final AuthService authService = new AuthService(CreatePrivateGameActivity.this);
     private MultiplayerGame game;
     private static final String TAG = "privateGame";
@@ -39,6 +38,13 @@ public class CreatePrivateGameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_private_game);
+        setupToolbar(R.id.toolbar, R.string.createPrivateGameText);
+        
+        // Hide back button on create private game screen
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        }
+
         connectionCodeTV = findViewById(R.id.connectionCodeTV);
 
         SharedPreferences sp = authService.getEncryptedSharedPreferences();
@@ -138,4 +144,5 @@ public class CreatePrivateGameActivity extends AppCompatActivity {
 
         WebSocketClient.mStompClient.send(CREATE_GAME_TOPIC, jsonPlayer.toString()).subscribe();
     }
+
 }

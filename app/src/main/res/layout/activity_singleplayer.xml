@@ -1,19 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center"
-    tools:context=".viewmodel.singleplayer.SingleplayerActivity"
-    android:background="@drawable/set_background">
+    android:orientation="vertical"
+    android:background="@drawable/set_background"
+    tools:context=".viewmodel.singleplayer.SingleplayerActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/blue"
+        android:elevation="4dp"
+        app:titleTextColor="@color/white"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:navigationIconTint="@color/white" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:background="@drawable/set_background">
 
     <View
         android:id="@+id/view"
         android:layout_width="89dp"
         android:layout_height="58dp"
         android:layout_marginStart="3dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="24dp"
         android:background="@drawable/radius"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -22,11 +38,11 @@
         android:id="@+id/view2"
         android:layout_width="54dp"
         android:layout_height="58dp"
-        android:layout_marginTop="12dp"
         android:layout_marginEnd="4dp"
         android:background="@drawable/radius"
+        app:layout_constraintBottom_toBottomOf="@+id/view"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/view" />
 
     <TextView
         android:id="@+id/opponentPointTextView"
@@ -52,7 +68,8 @@
         app:layout_constraintBottom_toBottomOf="@+id/view"
         app:layout_constraintEnd_toEndOf="@+id/view"
         app:layout_constraintStart_toStartOf="@+id/view"
-        app:layout_constraintTop_toTopOf="@+id/view" />
+        app:layout_constraintTop_toTopOf="@+id/view"
+        app:layout_constraintVertical_bias="0.5" />
 
     <TableLayout
         android:id="@+id/gameTableLayout"
@@ -63,7 +80,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/opponentPointTextView">
+        app:layout_constraintTop_toBottomOf="@+id/view">
 
         <TableRow
             android:id="@+id/tableRow0"
@@ -221,4 +238,5 @@
         </TableRow>
     </TableLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

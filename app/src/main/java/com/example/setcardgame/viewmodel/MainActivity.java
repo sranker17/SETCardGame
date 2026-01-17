@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.example.setcardgame.R;
@@ -18,7 +17,7 @@ import com.example.setcardgame.viewmodel.multiplayer.SelectMultiplayerTypeActivi
 import com.example.setcardgame.viewmodel.scoreboard.ScoreboardActivity;
 import com.example.setcardgame.viewmodel.singleplayer.DifficultyActivity;
 
-public class MainActivity extends AppCompatActivity implements ServerStatusListener {
+public class MainActivity extends BaseActivity implements ServerStatusListener {
     private final AuthService authService = new AuthService(MainActivity.this);
     private Button multiBtn;
     private Button scoreboardBtn;
@@ -30,6 +29,12 @@ public class MainActivity extends AppCompatActivity implements ServerStatusListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        setupToolbar(R.id.toolbar, R.string.setCardGameText);
+        
+        // Hide back button on main menu
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        }
 
         multiBtn = findViewById(R.id.multiplayerBtn);
         scoreboardBtn = findViewById(R.id.scoreboardBtn);
@@ -112,4 +117,5 @@ public class MainActivity extends AppCompatActivity implements ServerStatusListe
             }
         }
     }
+
 }

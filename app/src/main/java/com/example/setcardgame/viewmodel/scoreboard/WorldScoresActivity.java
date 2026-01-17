@@ -3,12 +3,13 @@ package com.example.setcardgame.viewmodel.scoreboard;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.setcardgame.R;
+import com.example.setcardgame.viewmodel.BaseActivity;
 import com.example.setcardgame.listener.ScoreboardResponseListener;
 import com.example.setcardgame.model.Error;
 import com.example.setcardgame.model.scoreboard.ScoresFragment;
@@ -20,7 +21,7 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.util.Locale;
 
-public class WorldScoresActivity extends AppCompatActivity {
+public class WorldScoresActivity extends BaseActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private ViewPagerAdapter adapter;
@@ -33,6 +34,7 @@ public class WorldScoresActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scores);
+        setupToolbar(R.id.toolbar, R.string.worldScoresText);
 
         tabLayout = findViewById(R.id.tabLayoutPlayer);
         viewPager = findViewById(R.id.viewPagerPlayer);
@@ -109,4 +111,14 @@ public class WorldScoresActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

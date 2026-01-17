@@ -2,12 +2,13 @@ package com.example.setcardgame.viewmodel.scoreboard;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.setcardgame.R;
+import com.example.setcardgame.viewmodel.BaseActivity;
 import com.example.setcardgame.listener.ScoreboardResponseListener;
 import com.example.setcardgame.model.Error;
 import com.example.setcardgame.model.scoreboard.ScoresFragment;
@@ -19,7 +20,7 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.util.Locale;
 
-public class PlayerScoresActivity extends AppCompatActivity {
+public class PlayerScoresActivity extends BaseActivity {
     private final AuthService authService = new AuthService(PlayerScoresActivity.this);
     private final ScoreboardService scoreboardService = new ScoreboardService(PlayerScoresActivity.this);
     private TabLayout tabLayout;
@@ -31,6 +32,7 @@ public class PlayerScoresActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scores);
+        setupToolbar(R.id.toolbar, R.string.myScoreText);
 
         tabLayout = findViewById(R.id.tabLayoutPlayer);
         viewPager = findViewById(R.id.viewPagerPlayer);
@@ -92,5 +94,14 @@ public class PlayerScoresActivity extends AppCompatActivity {
                 tabLayout.setupWithViewPager(viewPager);
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

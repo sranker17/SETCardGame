@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.example.setcardgame.R;
@@ -19,6 +18,7 @@ import com.example.setcardgame.config.WebSocketClient;
 import com.example.setcardgame.exception.JsonParsingException;
 import com.example.setcardgame.model.MultiplayerGame;
 import com.example.setcardgame.service.AuthService;
+import com.example.setcardgame.viewmodel.BaseActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,7 +31,7 @@ import java.util.TimerTask;
 
 import io.reactivex.disposables.Disposable;
 
-public class MultiplayerActivity extends AppCompatActivity {
+public class MultiplayerActivity extends BaseActivity {
     private final AuthService authService = new AuthService(MultiplayerActivity.this);
     private static final String TAG = "Multiplayer";
     private static final String PLAYER_ID = "playerId";
@@ -57,6 +57,8 @@ public class MultiplayerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_multiplayer);
+        setupToolbar(R.id.toolbar, R.string.multiplayerText);
+
         Intent mp = getIntent();
         gameId = Integer.parseInt(Objects.requireNonNull(mp.getStringExtra(GAME_ID)));
         setBtn = findViewById(R.id.callSETBtn);

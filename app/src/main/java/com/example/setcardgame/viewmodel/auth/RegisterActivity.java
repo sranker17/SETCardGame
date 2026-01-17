@@ -7,9 +7,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.setcardgame.R;
+import com.example.setcardgame.viewmodel.BaseActivity;
 import com.example.setcardgame.exception.JsonParsingException;
 import com.example.setcardgame.exception.RefreshException;
 import com.example.setcardgame.listener.AuthResponseListener;
@@ -21,7 +20,7 @@ import com.example.setcardgame.viewmodel.MainActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends BaseActivity {
     private final AuthService authService = new AuthService(RegisterActivity.this);
     private EditText usernameET;
     private EditText passwordET;
@@ -32,6 +31,7 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        setupToolbar(R.id.toolbar, R.string.registerText);
 
         usernameET = findViewById(R.id.usernameInput);
         passwordET = findViewById(R.id.passwordInput);
