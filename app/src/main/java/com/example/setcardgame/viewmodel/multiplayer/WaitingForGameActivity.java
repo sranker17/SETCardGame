@@ -24,11 +24,13 @@ import io.reactivex.disposables.Disposable;
 public class WaitingForGameActivity extends BaseActivity {
     private final AuthService authService = new AuthService(WaitingForGameActivity.this);
     private MultiplayerGame game;
+    private String foundUsername;
     private static final String TAG = "waiting";
     private static final String GAME_ID = "gameId";
     private static final String USERNAME = "username";
     private static final String TOKEN = "token";
     private static final String WSS = "wss";
+    private static final String PLAYER_ID = "playerId";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,16 +44,16 @@ public class WaitingForGameActivity extends BaseActivity {
         }
 
         SharedPreferences sp = authService.getEncryptedSharedPreferences();
-        String username = sp.getString(USERNAME, null);
+        foundUsername = sp.getString(USERNAME, null);
 
-        if (username == null) {
+        if (foundUsername == null) {
             Log.e(TAG, "Username not found");
             return;
         }
         authService.refreshToken(isOnline -> {
             if (isOnline) {
                 String token = sp.getString(TOKEN, null);
-                createWebSocket(username, token);
+                createWebSocket(foundUsername, token);
             }
         });
     }
@@ -67,6 +69,7 @@ public class WaitingForGameActivity extends BaseActivity {
             JSONObject destroyGame = new JSONObject();
             try {
                 destroyGame.put(GAME_ID, game.getGameId());
+                destroyGame.put(PLAYER_ID, foundUsername);
             } catch (JSONException e) {
                 Log.e(TAG, "switchBackToSelectMultiplayerType: " + e.getMessage());
                 throw new JsonParsingException(e.getMessage());

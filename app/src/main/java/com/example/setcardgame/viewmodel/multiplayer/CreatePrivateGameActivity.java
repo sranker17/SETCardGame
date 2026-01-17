@@ -28,11 +28,13 @@ public class CreatePrivateGameActivity extends BaseActivity {
     private static final String TAG = "privateGame";
     private static final String GAME_ID = "gameId";
     private static final String USERNAME = "username";
+    private static final String PLAYER_ID = "playerId";
     private static final String DESTROY_GAME_TOPIC = "/app/game/destroy";
     private static final String CREATE_GAME_TOPIC = "/app/create";
     private static final String TOKEN = "token";
     private static final String WSS = "wss";
     private TextView connectionCodeTV;
+    private String foundUsername;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,15 +50,15 @@ public class CreatePrivateGameActivity extends BaseActivity {
         connectionCodeTV = findViewById(R.id.connectionCodeTV);
 
         SharedPreferences sp = authService.getEncryptedSharedPreferences();
-        String username = sp.getString(USERNAME, null);
-        if (username == null) {
+        foundUsername = sp.getString(USERNAME, null);
+        if (foundUsername == null) {
             Log.e(TAG, "Username not found");
             return;
         }
         authService.refreshToken(isOnline -> {
             if (isOnline) {
                 String token = sp.getString(TOKEN, null);
-                createWebSocket(username, token);
+                createWebSocket(foundUsername, token);
             }
         });
 
@@ -73,6 +75,7 @@ public class CreatePrivateGameActivity extends BaseActivity {
             JSONObject destroyGame = new JSONObject();
             try {
                 destroyGame.put(GAME_ID, game.getGameId());
+                destroyGame.put(PLAYER_ID, foundUsername);
             } catch (JSONException e) {
                 Log.e(TAG, "deleteGame: " + e.getMessage());
                 throw new JsonParsingException(e.getMessage());
@@ -97,6 +100,7 @@ public class CreatePrivateGameActivity extends BaseActivity {
             JSONObject destroyGame = new JSONObject();
             try {
                 destroyGame.put(GAME_ID, game.getGameId());
+                destroyGame.put(PLAYER_ID, foundUsername);
             } catch (JSONException e) {
                 Log.e(TAG, "onDestroy: " + e.getMessage());
                 throw new JsonParsingException(e.getMessage());

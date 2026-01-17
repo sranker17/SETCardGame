@@ -87,7 +87,7 @@ public class MultiplayerActivity extends BaseActivity {
                 if (tempGame.isPlayerLeft()) {
                     game = tempGame;
                     Log.d(TAG, "Other player left the game");
-                    endGame();
+                    endGame(true);
                 }
                 Log.d(TAG, msg.toString());
                 if (tempGame.getPlayer1() != null && tempGame.getPlayer2() != null) {
@@ -201,7 +201,7 @@ public class MultiplayerActivity extends BaseActivity {
                 if (tempGame.getWinner() != null) {
                     game.setWinner(tempGame.getWinner());
                     Log.d(TAG, "Game ended with id: " + gameId);
-                    endGame();
+                    endGame(false);
                 }
 
                 resetButtonAndCardClicks();
@@ -437,11 +437,11 @@ public class MultiplayerActivity extends BaseActivity {
         }
     }
 
-    private void endGame() {
+    private void endGame(boolean isPlayerLeft) {
         Intent mpes = new Intent(this, MultiplayerEndScreenActivity.class);
         mpes.putExtra("opponentScore", opponentPointTextView.getText());
         mpes.putExtra("ownScore", ownPointTextView.getText());
-        mpes.putExtra("winner", game.getWinner());
+        mpes.putExtra("winner", isPlayerLeft ? foundUsername : game.getWinner());
         if (game.getPlayer1() != null && game.getPlayer2() != null) {
             if (game.getPlayer1().equals(foundUsername)) {
                 mpes.putExtra("opponent", game.getPlayer2());
